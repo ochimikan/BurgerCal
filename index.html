@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BurgerCal — マック・モス・バーキン カロリー＆栄養比較</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --cream:#fbebc9;
+    --cream-light:#fff5dd;
+    --cream-dark:#e8d4a0;
+    --red:#ca2722;
+    --red-dark:#8c1a16;
+    --red-deep:#5a0f0c;
+    --yellow:#f5c842;
+    --coral:#ee9077;
+    --brown:#4a2814;
+    --ink:#1a1208;
+    --mc:#ffc72c;--mc-dark:#da291c;
+    --mos:#1f7a3a;
+    --bk:#d62300;
+  }
+  html,body{overflow-x:hidden;max-width:100%}
+  img{max-width:100%;height:auto}
+  body{
+    margin:0;
+    font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic UI",-apple-system,sans-serif;
+    background:var(--cream);
+    color:var(--brown);
+    line-height:1.6;
+    /* レトロな細かいドットパターン */
+    background-image:radial-gradient(circle at 1px 1px, rgba(202,39,34,.07) 1px, transparent 0);
+    background-size:14px 14px;
+  }
+  /* キーボード操作時のフォーカス可視化 */
+  button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible{
+    outline:3px solid var(--yellow);outline-offset:2px;
+    box-shadow:0 0 0 1px var(--red-dark);
+  }
+  /* モーション軽減設定への配慮 */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;scroll-behavior:auto !important;
+    }
+  }
+
+  /* ===== HERO HEADER ===== */
+  header.hero{
+    background:var(--cream-light);
+    border-bottom:6px solid var(--red);
+    padding:24px 20px 20px;
+    text-align:center;
+    position:relative;
+  }
+  .hero-mv{
+    display:block;width:100%;max-width:540px;height:auto;
+    margin:0 auto;
+  }
+  .hero-tag{
+    margin:12px 0 0;font-weight:700;font-size:14px;color:var(--brown);
+    line-height:1.5;
+  }
+  .hero-tag .sub{
+    display:block;margin-top:4px;font-weight:500;font-size:12px;
+    color:var(--brown);opacity:.75;letter-spacing:.5px;
+  }
+
+  /* ===== LAYOUT ===== */
+  .layout{
+    display:grid;grid-template-columns:1fr 380px;gap:24px;
+    padding:24px;max-width:1280px;margin:0 auto;
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls-sticky{
+    position:sticky;top:0;z-index:50;background:var(--cream);
+    padding:12px 0 8px;margin-top:-12px;
+  }
+  .controls-sticky::after{
+    content:"";display:block;height:8px;
+    background:linear-gradient(180deg,var(--cream),transparent);
+    position:absolute;left:0;right:0;bottom:-8px;pointer-events:none;
+  }
+  .controls{
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px;
+  }
+  .tab-row{
+    display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;margin-bottom:8px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:thin;
+  }
+  .tab-row::-webkit-scrollbar{height:4px}
+  .tab-row::-webkit-scrollbar-thumb{background:var(--cream-dark);border-radius:2px}
+
+  /* ===== RETRO BUTTONS ===== */
+  .chain-btn,.cat-btn,.reset,.auto-btn{
+    flex:0 0 auto;cursor:pointer;white-space:nowrap;
+    font-family:"Bebas Neue","Anton",sans-serif;
+    letter-spacing:1px;
+    border:2.5px solid var(--red);
+    background:var(--cream-light);color:var(--red);
+    padding:8px 16px;border-radius:30px;
+    font-size:14px;font-weight:700;
+    box-shadow:3px 3px 0 var(--red-dark);
+    transition:transform .12s, box-shadow .12s, background .12s;
+  }
+  .chain-btn:hover,.cat-btn:hover,.auto-btn:hover{
+    transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark);
+  }
+  .chain-btn.active,.cat-btn.active{
+    background:var(--red);color:var(--cream-light);
+    transform:translate(2px,2px);box-shadow:1px 1px 0 var(--red-dark);
+  }
+  .chain-btn.active[data-chain="mc"]{background:var(--mc);color:var(--mc-dark);border-color:var(--mc-dark);box-shadow:1px 1px 0 var(--mc-dark)}
+  .chain-btn.active[data-chain="mos"]{background:var(--mos);border-color:#0d4a20;box-shadow:1px 1px 0 #0d4a20}
+  .chain-btn.active[data-chain="bk"]{background:var(--bk);border-color:#7a1500;box-shadow:1px 1px 0 #7a1500}
+  .cat-btn img{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px}
+  .auto-btn{
+    background:var(--yellow);color:var(--red-dark);border-color:var(--red);
+    box-shadow:3px 3px 0 var(--red-dark);
+  }
+  .reset{
+    margin-left:auto;background:var(--cream-light);color:var(--brown);
+    border-color:var(--brown);box-shadow:3px 3px 0 var(--brown);
+    font-size:12px;padding:6px 14px;
+  }
+  .reset:hover{background:#fde2dc;color:var(--red);border-color:var(--red);box-shadow:3px 3px 0 var(--red)}
+  .search{
+    flex:1;min-width:160px;padding:9px 14px;
+    border:2.5px solid var(--brown);border-radius:30px;
+    background:var(--cream-light);color:var(--brown);
+    font-size:14px;font-weight:500;
+    box-shadow:3px 3px 0 var(--brown);
+    outline:none;
+  }
+  .search:focus{border-color:var(--red);box-shadow:3px 3px 0 var(--red)}
+  .search::placeholder{color:var(--brown);opacity:.5}
+
+  /* ===== SUGGEST PANEL ===== */
+  .suggest-panel{
+    background:var(--cream-light);border:3px solid var(--red);border-radius:12px;
+    padding:18px;margin-bottom:18px;box-shadow:5px 5px 0 var(--red-dark);
+  }
+  .sp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .sp-head h3{
+    margin:0;font-family:"Bebas Neue",sans-serif;font-size:20px;
+    color:var(--red);letter-spacing:1.5px;
+  }
+  .sp-close{
+    background:var(--red);color:#fff;border:none;
+    width:30px;height:30px;border-radius:50%;
+    font-size:18px;cursor:pointer;line-height:1;font-weight:700;
+  }
+  .sp-form{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:13px;margin-bottom:14px;color:var(--brown);font-weight:500}
+  .sp-form label{display:inline-flex;align-items:center;gap:5px}
+  .sp-form input[type=number]{
+    width:80px;padding:5px 8px;border:2px solid var(--brown);border-radius:6px;
+    background:#fff;font-weight:700;color:var(--brown);
+  }
+  .sp-form .gen-btn{
+    background:var(--red);color:#fff;border:2px solid var(--red-dark);
+    padding:8px 18px;border-radius:30px;font-weight:700;cursor:pointer;
+    font-family:"Bebas Neue",sans-serif;font-size:15px;letter-spacing:1.5px;
+    box-shadow:3px 3px 0 var(--red-dark);
+  }
+  .sp-form .gen-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark)}
+  .sp-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .combo-card{
+    background:#fff;border:2.5px solid var(--red);border-radius:10px;
+    padding:12px;display:flex;flex-direction:column;gap:6px;
+    box-shadow:4px 4px 0 var(--red-dark);
+  }
+  .combo-head{display:flex;justify-content:space-between;align-items:center}
+  .combo-rank{
+    font-family:"Bebas Neue",sans-serif;font-size:18px;color:var(--red);letter-spacing:1px;
+  }
+  .combo-kcal{
+    font-family:"Anton",sans-serif;font-size:18px;color:var(--red-dark);
+  }
+  .combo-card ul{margin:0;padding-left:0;list-style:none;font-size:12px}
+  .combo-card li{padding:3px 0;display:flex;align-items:center;gap:5px;color:var(--brown)}
+  .combo-card li em{font-style:normal;color:var(--brown);opacity:.6;font-size:10px;margin-left:auto;font-weight:600}
+  .combo-stats{
+    font-size:10px;color:var(--brown);opacity:.7;
+    border-top:2px dashed var(--cream-dark);padding-top:6px;font-weight:600;
+  }
+  .apply-btn{
+    background:var(--red);color:#fff;border:2px solid var(--red-dark);
+    padding:7px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:1px;
+    box-shadow:2px 2px 0 var(--red-dark);
+  }
+  .apply-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--red-dark)}
+  .sp-empty{text-align:center;color:var(--brown);opacity:.7;font-size:13px;padding:20px;grid-column:1/-1}
+
+  /* ===== CATEGORY SECTIONS ===== */
+  .category{margin-bottom:28px}
+  .category h2{
+    font-family:"Anton","Bebas Neue",sans-serif;
+    font-size:26px;letter-spacing:2px;
+    margin:0 0 12px;padding:8px 14px;
+    background:var(--red);color:var(--cream-light);
+    border-radius:8px;display:flex;align-items:center;gap:12px;
+    box-shadow:4px 4px 0 var(--red-dark);
+    transform:rotate(-.5deg);
+  }
+  .category h2 img{
+    width:42px;height:42px;object-fit:contain;
+    filter:drop-shadow(2px 2px 0 rgba(0,0,0,.15));
+  }
+  .category h2 .count{
+    font-family:"Bebas Neue",sans-serif;font-size:14px;
+    margin-left:auto;opacity:.85;letter-spacing:1px;
+  }
+
+  /* ===== ITEM CARDS ===== */
+  .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .item{
+    background:#fff;border:2.5px solid var(--brown);border-radius:10px;
+    padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+    cursor:pointer;
+    box-shadow:3px 3px 0 var(--brown);
+    transition:transform .12s, box-shadow .12s, background .12s;
+  }
+  .item:hover{
+    transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--brown);
+  }
+  .item.selected{
+    background:var(--cream);border-color:var(--red);
+    box-shadow:5px 5px 0 var(--red-dark);
+    transform:translate(-2px,-2px) rotate(-.3deg);
+  }
+  .item-head{display:flex;align-items:center;gap:8px}
+  .item-head input[type=checkbox]{
+    width:20px;height:20px;cursor:pointer;accent-color:var(--red);flex-shrink:0;
+  }
+  .item-name{flex:1;font-weight:700;font-size:14px;color:var(--ink)}
+  .chain-tag{
+    font-family:"Bebas Neue",sans-serif;
+    font-size:10px;font-weight:700;letter-spacing:1px;
+    padding:2px 7px;border-radius:4px;color:#fff;
+  }
+  .chain-tag.mc{background:var(--mc-dark)}
+  .chain-tag.mos{background:var(--mos)}
+  .chain-tag.bk{background:var(--bk)}
+  .item-stats{font-size:11px;color:var(--brown);display:flex;flex-wrap:wrap;gap:8px;font-weight:600}
+  .item-stats span{white-space:nowrap}
+  .item-kcal{
+    font-family:"Anton",sans-serif;font-size:16px;letter-spacing:.5px;
+    color:var(--red) !important;
+  }
+  .qty{display:flex;align-items:center;gap:6px;margin-top:4px}
+  .qty span{font-size:11px;color:var(--brown);opacity:.7;font-weight:600}
+  .qty button{
+    width:28px;height:28px;border:2px solid var(--red);background:#fff;
+    border-radius:50%;cursor:pointer;font-weight:700;font-size:14px;
+    line-height:1;color:var(--red);
+  }
+  .qty button:hover{background:var(--red);color:#fff}
+  .qty input{
+    width:42px;text-align:center;padding:3px;
+    border:2px solid var(--brown);border-radius:6px;
+    font-size:14px;font-weight:700;color:var(--brown);background:#fff;
+  }
+
+  /* ===== ASIDE PANEL ===== */
+  .panel{
+    position:sticky;top:18px;align-self:start;
+    background:var(--cream-light);border:3px solid var(--red);border-radius:14px;
+    padding:18px;box-shadow:6px 6px 0 var(--red-dark);
+    max-height:calc(100vh - 36px);overflow-y:auto;
+  }
+  .panel h2{
+    margin:0 0 12px;font-family:"Anton",sans-serif;font-size:24px;
+    color:var(--red);letter-spacing:2px;text-align:center;
+    border-bottom:3px dashed var(--red);padding-bottom:8px;
+  }
+  .profile{
+    background:#fff;border:2px solid var(--brown);border-radius:10px;
+    padding:14px;margin-bottom:16px;
+  }
+  .profile h3{
+    margin:0 0 10px;font-family:"Bebas Neue",sans-serif;
+    font-size:15px;color:var(--brown);letter-spacing:1.5px;
+  }
+  .profile-row{display:flex;gap:8px;margin-bottom:8px}
+  .profile label{
+    font-size:11px;color:var(--brown);opacity:.85;font-weight:600;
+    display:flex;flex-direction:column;gap:3px;flex:1;letter-spacing:.5px;
+  }
+  .profile-act{display:flex;flex-direction:column;gap:3px}
+  .profile select,.profile input{
+    padding:7px 9px;border:2px solid var(--brown);border-radius:6px;
+    font-size:13px;background:#fff;color:var(--brown);font-weight:600;
+  }
+  .profile select:focus,.profile input:focus{outline:none;border-color:var(--red)}
+  .profile-result{
+    margin-top:10px;font-size:12px;color:var(--brown);text-align:center;
+    padding:8px;background:var(--cream);border-radius:6px;line-height:1.7;font-weight:600;
+  }
+  .profile-result b{
+    color:var(--red);font-size:18px;font-family:"Anton",sans-serif;letter-spacing:.5px;
+  }
+  #mealHint{font-size:11px;font-weight:700}
+  .total-kcal{
+    font-family:"Anton",sans-serif;font-size:54px;color:var(--red);
+    text-align:center;margin:6px 0;letter-spacing:1px;line-height:1;
+    text-shadow:3px 3px 0 var(--cream-dark);
+  }
+  .total-kcal small{
+    font-size:16px;color:var(--brown);font-weight:400;margin-left:4px;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:1px;
+  }
+  .target-bar{
+    height:14px;background:var(--cream);border:2px solid var(--brown);
+    border-radius:8px;overflow:hidden;margin:8px 0 4px;
+  }
+  .target-bar > div{
+    height:100%;background:linear-gradient(90deg,#22a05a,var(--yellow),var(--red));
+    transition:width .3s;
+  }
+  .target-info{
+    font-size:12px;color:var(--brown);text-align:center;margin-bottom:14px;font-weight:600;
+  }
+
+  .nutrient-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+  .nutrient{
+    background:#fff;border:2px solid var(--brown);border-radius:8px;padding:9px 11px;
+  }
+  .nutrient .label{font-size:11px;color:var(--brown);opacity:.85;font-weight:600;letter-spacing:.5px}
+  .nutrient .value{font-family:"Anton",sans-serif;font-size:22px;font-weight:400;color:var(--brown)}
+  .nutrient .value small{
+    font-size:12px;font-weight:500;color:var(--brown);opacity:.7;font-family:"Bebas Neue",sans-serif;
+  }
+
+  .pfc-chart{margin:14px 0 6px;position:relative;height:180px}
+  .pfc-legend{
+    display:flex;justify-content:center;gap:14px;font-size:11px;
+    color:var(--brown);margin-bottom:8px;font-weight:600;
+  }
+  .pfc-legend span::before{
+    content:"";display:inline-block;width:10px;height:10px;border-radius:2px;
+    margin-right:4px;vertical-align:middle;
+  }
+  .leg-p::before{background:#3b82f6}
+  .leg-f::before{background:#f59e0b}
+  .leg-c::before{background:#10b981}
+
+  .selected-list{margin:14px 0;border-top:2px dashed var(--red);padding-top:12px}
+  .selected-list h3{
+    font-family:"Bebas Neue",sans-serif;font-size:14px;
+    margin:0 0 10px;color:var(--red);letter-spacing:1.5px;
+  }
+  .sel-row{
+    display:flex;justify-content:space-between;align-items:center;font-size:12px;
+    padding:5px 0;border-bottom:1px dotted var(--cream-dark);color:var(--brown);
+  }
+  .sel-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+  .sel-row .kcal{color:var(--red);font-weight:700;margin-left:8px;font-family:"Bebas Neue",sans-serif;font-size:14px}
+  .empty{text-align:center;color:var(--brown);opacity:.6;font-size:12px;padding:20px 0;font-style:italic}
+
+  .site-footer{
+    grid-column:1/-1;background:var(--cream-light);
+    border-top:4px solid var(--red);padding:22px 24px 28px;
+    margin-top:8px;font-size:12px;color:var(--brown);
+  }
+  .footer-warn{
+    background:#fff;border:2px dashed var(--red);border-radius:10px;
+    padding:12px 16px;margin-bottom:18px;text-align:center;
+    line-height:1.7;
+  }
+  .footer-warn b{color:var(--red);font-size:13px}
+  .footer-warn a{color:var(--red);text-decoration:underline}
+  .footer-links{
+    max-width:780px;margin:0 auto;
+    border-top:2px dashed var(--cream-dark);
+  }
+  .footer-links details{
+    border-bottom:2px dashed var(--cream-dark);
+    padding:10px 4px;
+  }
+  .footer-links summary{
+    cursor:pointer;font-family:"Bebas Neue",sans-serif;
+    font-size:14px;letter-spacing:1.5px;color:var(--red);
+    font-weight:700;list-style:none;
+    padding:4px 0;display:flex;align-items:center;gap:8px;
+  }
+  .footer-links summary::-webkit-details-marker{display:none}
+  .footer-links summary::before{
+    content:"+";display:inline-block;width:18px;height:18px;
+    background:var(--red);color:#fff;border-radius:50%;
+    font-size:14px;line-height:18px;text-align:center;font-family:sans-serif;
+  }
+  .footer-links details[open] summary::before{content:"−"}
+  .footer-links p{
+    margin:8px 0 4px 26px;line-height:1.8;font-size:11px;
+    color:var(--brown);opacity:.95;
+  }
+  .footer-credit{
+    text-align:center;margin-top:18px;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:2.5px;
+    font-size:13px;color:var(--red);
+  }
+
+  /* ===== TABLET (769〜960px) ===== */
+  @media (max-width:960px){
+    .layout{grid-template-columns:1fr;padding:16px;gap:16px}
+    .panel{position:static;max-height:none}
+    body{padding-bottom:72px}
+  }
+  @media (min-width:769px) and (max-width:960px){
+    .items{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .item-name{font-size:13px}
+    .category h2{font-size:22px}
+    .hero-mv{max-width:420px}
+  }
+
+  /* ===== MOBILE BAR (タブレット+モバイル共通で表示) ===== */
+  .mobile-bar{display:none}
+  @media (max-width:960px){
+    .mobile-bar{
+      display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
+      background:var(--red);color:var(--cream-light);
+      padding:10px 14px;align-items:center;justify-content:space-between;gap:10px;
+      box-shadow:0 -4px 0 var(--red-dark);border-top:3px solid var(--red-dark);
+    }
+    .mobile-bar-info{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+    .mobile-bar-kcal{font-family:"Anton",sans-serif;font-size:24px;letter-spacing:1px}
+    .mobile-bar-kcal small{font-size:11px;font-weight:400;margin-left:4px;opacity:.85}
+    .mobile-bar-pct{font-size:11px;opacity:.9;font-weight:600;margin-top:2px}
+    .mobile-bar-actions{display:flex;gap:6px;flex-shrink:0}
+    .mobile-bar button{
+      background:var(--cream-light);color:var(--red);border:2px solid var(--red-dark);
+      padding:7px 12px;border-radius:20px;font-weight:700;font-size:12px;cursor:pointer;
+      font-family:"Bebas Neue",sans-serif;letter-spacing:1px;white-space:nowrap;
+      box-shadow:2px 2px 0 var(--red-dark);
+    }
+    .mobile-bar button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--red-dark)}
+  }
+
+  /* ===== MOBILE (≤768px) ===== */
+  @media (max-width:768px){
+    body{padding-bottom:72px}
+    header.hero{padding:18px 14px 14px;border-bottom-width:5px}
+    .hero-mv{max-width:240px}
+    .hero-tag{font-size:13px;margin-top:10px}
+    .hero-tag .sub{font-size:11px}
+    .layout{padding:12px;gap:14px}
+    .items{grid-template-columns:1fr;gap:8px}
+    .item{padding:10px 12px}
+    .item-name{font-size:13px}
+    .item-stats{font-size:10px;gap:6px}
+    .category h2{font-size:20px;letter-spacing:1.5px;padding:7px 12px}
+    .category h2 img{width:32px;height:32px}
+    .total-kcal{font-size:42px}
+    .panel h2{font-size:20px}
+    .chain-btn,.cat-btn,.reset,.auto-btn{font-size:13px;padding:7px 13px}
+    .cat-btn img{width:18px;height:18px}
+    .mobile-bar-kcal{font-size:20px}
+    .mobile-bar button{padding:6px 10px;font-size:11px}
+  }
+  @media (max-width:480px){
+    .hero-mv{max-width:200px}
+    .total-kcal{font-size:38px}
+    .nutrient .value{font-size:18px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <picture>
+    <source media="(max-width:768px)" srcset="assets/mv-sp.png">
+    <img src="assets/mv-pc.png" alt="BurgerCal — マック・モス・バーガーキングのカロリー比較" class="hero-mv">
+  </picture>
+  <p class="hero-tag">
+    マック・モス・バーガーキング、賢く比較してカロリー管理。
+    <span class="sub">Compare. Count. Customize.</span>
+  </p>
+</header>
+
+<div class="layout">
+
+  <main>
+    <div class="controls-sticky">
+      <div class="tab-row">
+        <button class="chain-btn active" data-chain="all">すべて</button>
+        <button class="chain-btn" data-chain="mc">マクドナルド</button>
+        <button class="chain-btn" data-chain="mos">モスバーガー</button>
+        <button class="chain-btn" data-chain="bk">バーガーキング</button>
+      </div>
+      <div class="tab-row">
+        <button class="cat-btn active" data-cat="all">すべて</button>
+        <button class="cat-btn" data-cat="バーガー"><img src="assets/burger.png" alt="" aria-hidden="true">バーガー</button>
+        <button class="cat-btn" data-cat="サイド"><img src="assets/side.png" alt="" aria-hidden="true">サイド</button>
+        <button class="cat-btn" data-cat="ドリンク"><img src="assets/drink.png" alt="" aria-hidden="true">ドリンク</button>
+        <button class="cat-btn" data-cat="デザート"><img src="assets/dessert.png" alt="" aria-hidden="true">デザート</button>
+      </div>
+      <div class="controls">
+        <input type="text" class="search" placeholder="メニュー名で検索...">
+        <button class="auto-btn" id="autoBtn">🤖 おまかせ提案</button>
+        <button class="reset" id="resetBtn">クリア</button>
+      </div>
+    </div>
+
+    <div class="suggest-panel" id="suggestPanel" hidden>
+      <div class="sp-head">
+        <h3>🤖 カロリー指定でおまかせ組み合わせ</h3>
+        <button class="sp-close" id="closeSuggest" aria-label="閉じる">×</button>
+      </div>
+      <div class="sp-form">
+        <label>上限カロリー
+          <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> kcal
+        </label>
+        <label><input type="checkbox" id="suggBurger" checked> バーガー</label>
+        <label><input type="checkbox" id="suggSide" checked> サイド</label>
+        <label><input type="checkbox" id="suggDrink"> ドリンク</label>
+        <label><input type="checkbox" id="suggDessert"> デザート</label>
+        <label><input type="checkbox" id="suggSameChain" checked> 同じチェーンで揃える</label>
+        <button class="gen-btn" id="genSuggest">提案する</button>
+      </div>
+      <div class="sp-results" id="suggestResults"></div>
+    </div>
+
+    <div id="menuArea"></div>
+  </main>
+
+  <aside class="panel">
+    <div class="profile" id="profileSection">
+      <h3>あなたのプロフィール</h3>
+      <div class="profile-row">
+        <label>性別
+          <select id="pfGender">
+            <option value="M">男性</option>
+            <option value="F">女性</option>
+          </select>
+        </label>
+        <label>年齢
+          <input type="number" id="pfAge" min="1" max="120" value="1">
+        </label>
+      </div>
+      <div class="profile-row">
+        <label>身長 (cm)
+          <input type="number" id="pfHeight" min="100" max="220" step="0.1" value="100">
+        </label>
+        <label>体重 (kg)
+          <input type="number" id="pfWeight" min="20" max="200" step="0.1" value="20">
+        </label>
+      </div>
+      <label class="profile-act">活動レベル
+        <select id="pfAct">
+          <option value="low">低い（座り仕事中心）</option>
+          <option value="mid" selected>普通（軽い運動・通勤あり）</option>
+          <option value="high">高い（立ち仕事・運動習慣）</option>
+        </select>
+      </label>
+      <div class="profile-result">
+        基礎代謝: <b id="pfBmr">1,400</b> kcal/日<br>
+        推奨カロリー: <b id="pfTarget">2,450</b> kcal/日
+      </div>
+    </div>
+
+    <h2>合計</h2>
+    <div class="total-kcal" id="totalKcal">0<small>kcal</small></div>
+    <div class="target-bar"><div id="targetBar" style="width:0%"></div></div>
+    <div class="target-info">推奨 <span id="targetKcalText">2,700</span>kcal の <span id="targetPct">0</span>%　<span id="mealHint"></span></div>
+
+    <div class="selected-list">
+      <h3>選択中のアイテム</h3>
+      <div id="selList"><div class="empty">まだ何も選んでいません</div></div>
+    </div>
+
+    <div class="nutrient-grid">
+      <div class="nutrient"><div class="label">タンパク質</div><div class="value" id="totalP">0<small>g</small></div></div>
+      <div class="nutrient"><div class="label">脂質</div><div class="value" id="totalF">0<small>g</small></div></div>
+      <div class="nutrient"><div class="label">炭水化物</div><div class="value" id="totalC">0<small>g</small></div></div>
+      <div class="nutrient"><div class="label">食塩相当量</div><div class="value" id="totalS">0<small>g</small></div></div>
+    </div>
+
+    <div class="pfc-legend">
+      <span class="leg-p">P タンパク質</span>
+      <span class="leg-f">F 脂質</span>
+      <span class="leg-c">C 炭水化物</span>
+    </div>
+    <div class="pfc-chart"><canvas id="pfcChart"></canvas></div>
+    <div class="target-info">理想的なPFC比率: P 15% / F 25% / C 60%</div>
+  </aside>
+
+  <div class="mobile-bar">
+    <div class="mobile-bar-info">
+      <span class="mobile-bar-kcal" id="mobileKcal">0<small>kcal</small></span>
+      <span class="mobile-bar-pct" id="mobilePct"></span>
+    </div>
+    <div class="mobile-bar-actions">
+      <button id="mobileShowProfile" type="button">👤 プロフ</button>
+      <button id="mobileShowPanel" type="button">📊 詳細</button>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-warn">
+      ⚠ <b>本サイトは各社公式とは一切関係ありません。</b><br>
+      栄養成分は各社公式サイト（<a href="https://www.mcdonalds.co.jp/quality/allergy_Nutrition/nutrient/" target="_blank" rel="noopener">マック</a> /
+      <a href="https://www.mos.jp/menu/allergy/" target="_blank" rel="noopener">モス</a> /
+      <a href="https://www.burgerkingjapan.co.jp/menu" target="_blank" rel="noopener">バーガーキング</a>）の
+      公開情報を元にした概算値です。最新・正確な値は必ず各公式サイトでご確認ください。
+    </div>
+
+    <div class="footer-links">
+      <details>
+        <summary>免責事項 — Disclaimer</summary>
+        <p>本サイトは情報提供を目的としており、医療・栄養指導行為ではありません。
+        表示される推奨カロリーは「日本人の食事摂取基準（2020年版）」に基づく国立健康・栄養研究所の式（Ganpule式）を用いた参考値であり、
+        20〜74歳を対象範囲としています。妊娠・授乳中の方、特定の疾患をお持ちの方、
+        その他個別の指導が必要な場合は、医師・管理栄養士など専門家にご相談ください。</p>
+        <p>掲載されている栄養成分値は、メニュー改訂・期間限定品の入れ替え・成分見直し等により実際の値と差異が生じることがあります。
+        本サイトに掲載された情報を利用したことに起因するいかなる損害についても、運営者は一切の責任を負いません。</p>
+      </details>
+
+      <details>
+        <summary>商標・著作権について — Trademarks</summary>
+        <p>本サイト内に登場する「マクドナルド」「Big Mac／ビッグマック」「モスバーガー」「バーガーキング」「Whopper／ワッパー」等の名称・ロゴは、
+        各社の登録商標または商標です。本サイトは比較・情報提供目的でこれらの名称を使用しているのみで、
+        各社による公認・認証・後援を受けたものではなく、各社と一切の関係を持たない独立した個人サイトです。</p>
+        <p>掲載している栄養情報の数値は事実情報であり著作権の対象外ですが、出典として各社公式サイトへの参照リンクを記載しています。</p>
+      </details>
+
+      <details>
+        <summary>プライバシーポリシー — Privacy Policy</summary>
+        <p>本サイトでは、利用者のプロフィール情報（性別・年齢・身長・体重・活動レベル）を
+        利用者の端末内（ブラウザの localStorage）にのみ保存します。
+        これらの情報がサーバーへ送信されることはなく、第三者に提供されることもありません。</p>
+        <p>本サイトは Cookie を使用していません。アクセス解析・広告配信・追跡スクリプトも使用していません。
+        保存されたデータは、ブラウザの設定や開発者ツールからいつでも削除できます。</p>
+        <p>外部リソースとして Google Fonts と Chart.js（CDN）を読み込んでいます。
+        これらのサービスへのアクセス時、IPアドレス等の標準的なリクエスト情報が各サービス提供者に渡る場合があります。
+        詳しくは各サービスのプライバシーポリシーをご確認ください。</p>
+      </details>
+
+      <details>
+        <summary>このサイトについて — About</summary>
+        <p>BurgerCal は、主要バーガーチェーン（マクドナルド・モスバーガー・バーガーキング）のメニューを比較しながら、
+        合計カロリーと栄養バランスを確認できる個人開発のツールです。
+        ご意見・誤りのご指摘等ありましたら、各公式の最新栄養情報をご確認のうえお知らせください。</p>
+      </details>
+    </div>
+
+    <div class="footer-credit">
+      © 2026 BurgerCal — Compare. Count. Customize.
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ===== メニューデータ（kcal / タンパク質g / 脂質g / 炭水化物g / 食塩g） =====
+// 各社公式栄養表（マック公式 / モス2026年3月18日版PDF / BK 2026年1月8日版PDF）に基づく
+const menu = [
+  // ===== マクドナルド =====
+  {chain:"mc", cat:"バーガー", name:"ハンバーガー", kcal:259, p:13.0, f:9.5, c:30.3, s:1.4},
+  {chain:"mc", cat:"バーガー", name:"チーズバーガー", kcal:310, p:15.9, f:13.5, c:31.0, s:1.9},
+  {chain:"mc", cat:"バーガー", name:"ダブルチーズバーガー", kcal:459, p:26.4, f:25.1, c:31.8, s:2.9},
+  {chain:"mc", cat:"バーガー", name:"ビッグマック", kcal:525, p:26.1, f:28.0, c:42.1, s:2.7},
+  {chain:"mc", cat:"バーガー", name:"てりやきマックバーガー", kcal:477, p:14.5, f:30.2, c:37.5, s:2.1},
+  {chain:"mc", cat:"バーガー", name:"フィレオフィッシュ", kcal:338, p:15.0, f:14.2, c:37.4, s:1.6},
+  {chain:"mc", cat:"バーガー", name:"えびフィレオ", kcal:408, p:11.4, f:18.6, c:49.5, s:2.2},
+  {chain:"mc", cat:"バーガー", name:"チキンフィレオ", kcal:479, p:19.9, f:23.8, c:47.0, s:3.0},
+  {chain:"mc", cat:"バーガー", name:"ベーコンレタスバーガー", kcal:362, p:17.4, f:19.4, c:30.1, s:2.2},
+  {chain:"mc", cat:"バーガー", name:"倍ダブルチーズバーガー", kcal:657, p:41.5, f:40.3, c:31.8, s:3.8},
+  {chain:"mc", cat:"サイド",   name:"マックフライポテト S", kcal:224, p:3.0, f:10.9, c:28.7, s:0.4},
+  {chain:"mc", cat:"サイド",   name:"マックフライポテト M", kcal:409, p:5.5, f:19.8, c:52.4, s:0.7},
+  {chain:"mc", cat:"サイド",   name:"マックフライポテト L", kcal:515, p:7.0, f:25.0, c:66.0, s:0.9},
+  {chain:"mc", cat:"サイド",   name:"チキンマックナゲット 5ピース", kcal:262, p:15.3, f:15.9, c:14.4, s:1.2},
+  {chain:"mc", cat:"サイド",   name:"シャカチキ", kcal:246, p:14.7, f:13.3, c:16.9, s:1.7},
+  {chain:"mc", cat:"サイド",   name:"えだまめコーン", kcal:83, p:5.2, f:3.0, c:9.6, s:0.2},
+  {chain:"mc", cat:"ドリンク", name:"コカ・コーラ M", kcal:145, p:0, f:0, c:36.5, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"コカ・コーラ L", kcal:188, p:0, f:0, c:47.2, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"プレミアムローストコーヒー S", kcal:7, p:0.4, f:0, c:1.2, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"爽健美茶 M", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"ミニッツメイド オレンジ S", kcal:102, p:1.5, f:0, c:24.0, s:0.0},
+  {chain:"mc", cat:"デザート", name:"マックシェイク バニラ M", kcal:367, p:6.8, f:5.7, c:72.2, s:0.4},
+  {chain:"mc", cat:"デザート", name:"ホットアップルパイ", kcal:211, p:2.1, f:10.9, c:26.2, s:0.6},
+  {chain:"mc", cat:"デザート", name:"ソフトツイスト", kcal:146, p:4.0, f:3.7, c:24.2, s:0.2},
+
+  // ===== モスバーガー =====
+  {chain:"mos", cat:"バーガー", name:"モスバーガー", kcal:372, p:15.2, f:17.0, c:40.0, s:2.3},
+  {chain:"mos", cat:"バーガー", name:"モスチーズバーガー", kcal:425, p:18.2, f:21.4, c:40.4, s:2.8},
+  {chain:"mos", cat:"バーガー", name:"テリヤキバーガー", kcal:385, p:14.3, f:18.2, c:41.2, s:2.6},
+  {chain:"mos", cat:"バーガー", name:"テリヤキチキンバーガー", kcal:303, p:20.1, f:10.3, c:32.4, s:2.2},
+  {chain:"mos", cat:"バーガー", name:"スパイシーモスバーガー", kcal:374, p:15.3, f:17.0, c:40.4, s:2.5},
+  {chain:"mos", cat:"バーガー", name:"モス野菜バーガー", kcal:363, p:14.1, f:18.6, c:35.4, s:1.8},
+  {chain:"mos", cat:"バーガー", name:"海老カツバーガー", kcal:397, p:14.5, f:19.3, c:42.2, s:2.1},
+  {chain:"mos", cat:"バーガー", name:"ロースカツバーガー", kcal:410, p:16.6, f:16.3, c:49.7, s:2.3},
+  {chain:"mos", cat:"バーガー", name:"フィッシュバーガー", kcal:381, p:16.2, f:18.8, c:37.0, s:1.9},
+  {chain:"mos", cat:"バーガー", name:"チキンバーガー", kcal:386, p:15.0, f:18.5, c:40.0, s:1.5},
+  {chain:"mos", cat:"バーガー", name:"ハンバーガー", kcal:314, p:13.7, f:13.2, c:35.2, s:1.8},
+  {chain:"mos", cat:"バーガー", name:"チーズバーガー", kcal:367, p:16.7, f:17.6, c:35.6, s:2.3},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 モス野菜", kcal:223, p:9.1, f:16.5, c:10.4, s:1.3},
+  {chain:"mos", cat:"バーガー", name:"ホットドッグ", kcal:358, p:11.6, f:23.4, c:25.4, s:2.1},
+  {chain:"mos", cat:"サイド",   name:"フレンチフライポテト S", kcal:170, p:2.2, f:7.0, c:24.8, s:0.5},
+  {chain:"mos", cat:"サイド",   name:"フレンチフライポテト M", kcal:238, p:3.0, f:9.8, c:34.7, s:0.7},
+  {chain:"mos", cat:"サイド",   name:"フレンチフライポテト L", kcal:409, p:5.2, f:16.7, c:59.4, s:1.3},
+  {chain:"mos", cat:"サイド",   name:"オニオンフライ", kcal:219, p:3.5, f:12.7, c:22.8, s:1.1},
+  {chain:"mos", cat:"サイド",   name:"オニポテ", kcal:189, p:2.6, f:8.7, c:25.3, s:0.7},
+  {chain:"mos", cat:"サイド",   name:"チキンナゲット 5コ入り", kcal:195, p:14.8, f:10.2, c:10.9, s:0.8},
+  {chain:"mos", cat:"サイド",   name:"モスチキン", kcal:269, p:15.3, f:16.6, c:14.7, s:1.5},
+  {chain:"mos", cat:"ドリンク", name:"ペプシコーラ M", kcal:129, p:0, f:0, c:31.9, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"アイスコーヒー M", kcal:11, p:0.6, f:0, c:2.0, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ブレンドコーヒー", kcal:9, p:0.4, f:0, c:1.5, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"オレンジブレンド100 M", kcal:136, p:1.4, f:0, c:32.5, s:0.3},
+  {chain:"mos", cat:"デザート", name:"モスシェイク バニラ M", kcal:321, p:4.7, f:9.2, c:54.4, s:0.6},
+  {chain:"mos", cat:"デザート", name:"モスシェイク コーヒー M", kcal:293, p:4.5, f:8.3, c:49.7, s:0.5},
+  {chain:"mos", cat:"デザート", name:"ふんわりスフレパンケーキ メープル", kcal:333, p:5.6, f:16.7, c:39.9, s:0.3},
+
+  // ===== バーガーキング =====
+  {chain:"bk", cat:"バーガー", name:"ワッパー", kcal:672, p:28.2, f:39.9, c:50.8, s:3.0},
+  {chain:"bk", cat:"バーガー", name:"ワッパーチーズ", kcal:750, p:32.7, f:46.3, c:51.4, s:3.7},
+  {chain:"bk", cat:"バーガー", name:"ダブルワッパーチーズ", kcal:985, p:51.2, f:64.1, c:51.5, s:3.9},
+  {chain:"bk", cat:"バーガー", name:"アボカドワッパー", kcal:732, p:28.7, f:45.1, c:54.5, s:3.0},
+  {chain:"bk", cat:"バーガー", name:"クアトロチーズワッパー", kcal:823, p:37.5, f:53.7, c:48.0, s:3.8},
+  {chain:"bk", cat:"バーガー", name:"スモーキーBBQワッパー", kcal:674, p:28.1, f:39.9, c:51.3, s:2.9},
+  {chain:"bk", cat:"バーガー", name:"テリヤキワッパー", kcal:684, p:28.2, f:40.0, c:53.4, s:3.0},
+  {chain:"bk", cat:"バーガー", name:"ワッパージュニア", kcal:333, p:13.8, f:18.6, c:27.9, s:1.3},
+  {chain:"bk", cat:"バーガー", name:"チーズバーガー", kcal:291, p:15.9, f:13.3, c:27.3, s:1.6},
+  {chain:"bk", cat:"バーガー", name:"ダブルチーズバーガー", kcal:425, p:26.7, f:23.2, c:27.6, s:2.1},
+  {chain:"bk", cat:"サイド",   name:"フレンチフライ S", kcal:216, p:3.0, f:9.8, c:29.0, s:0.9},
+  {chain:"bk", cat:"サイド",   name:"フレンチフライ M", kcal:306, p:4.3, f:13.9, c:41.1, s:1.3},
+  {chain:"bk", cat:"サイド",   name:"フレンチフライ L", kcal:438, p:6.1, f:19.9, c:58.8, s:1.8},
+  {chain:"bk", cat:"サイド",   name:"チリチーズフライ", kcal:325, p:8.9, f:18.3, c:32.0, s:2.6},
+  {chain:"bk", cat:"サイド",   name:"オニオンリング", kcal:218, p:2.5, f:10.9, c:27.5, s:1.5},
+  {chain:"bk", cat:"サイド",   name:"チキンナゲット 5ピース", kcal:228, p:11.2, f:14.5, c:15.2, s:1.2},
+  {chain:"bk", cat:"サイド",   name:"チキンナゲット 8ピース", kcal:364, p:17.9, f:23.2, c:24.4, s:1.9},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラ M", kcal:129, p:0, f:0, c:32.4, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"アイスコーヒー M", kcal:8, p:0.4, f:0, c:1.3, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"アイスティー M", kcal:2, p:0.2, f:0, c:0.2, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ブレンドコーヒー M", kcal:10, p:0.5, f:0, c:1.7, s:0.0},
+  {chain:"bk", cat:"デザート", name:"アップルパイ", kcal:203, p:1.9, f:10.7, c:24.4, s:0.3},
+  {chain:"bk", cat:"デザート", name:"キャラメルサンデー", kcal:129, p:1.5, f:3.2, c:23.8, s:0.2},
+  {chain:"bk", cat:"デザート", name:"チョコレートサンデー", kcal:129, p:1.5, f:3.1, c:24.1, s:0.2},
+  {chain:"bk", cat:"デザート", name:"ソフトクリーム プレーン", kcal:102, p:1.4, f:3.0, c:17.6, s:0.2},
+];
+
+// ===== 状態 =====
+const state = {
+  chain:"all", cat:"all", q:"", selected:{},
+  profile:{gender:"M", age:1, height:100, weight:20, act:"mid"}
+};
+
+// ===== 基礎代謝量（国立健康・栄養研究所の式 / Ganpule式）=====
+// BMR (kcal/日) = (0.0481×W + 0.0234×H − 0.0138×age − 性別係数) × 1000 / 4.186
+// 性別係数: 男性 0.4235 / 女性 0.9708
+// 適用対象: 20〜74歳（範囲外は推定不可として null を返す）
+const VALID_GENDERS = new Set(["M","F"]);
+const VALID_ACTS = new Set(["low","mid","high"]);
+function clamp(v, min, max, fallback){
+  const n = parseFloat(v);
+  if(isNaN(n)) return fallback;
+  return Math.max(min, Math.min(max, n));
+}
+function normalizeProfile(raw = {}){
+  return {
+    gender: VALID_GENDERS.has(raw.gender) ? raw.gender : "M",
+    act:    VALID_ACTS.has(raw.act) ? raw.act : "mid",
+    age:    clamp(raw.age, 1, 120, 30),
+    height: clamp(raw.height, 100, 220, 165),
+    weight: clamp(raw.weight, 20, 200, 60),
+  };
+}
+function calcBmr(){
+  const {gender, age, height, weight} = state.profile;
+  if(age < 20 || age > 74) return null;
+  const sx = gender === "M" ? 0.4235 : 0.9708;
+  const mj = 0.0481*weight + 0.0234*height - 0.0138*age - sx;
+  return Math.max(0, mj * 1000 / 4.186);
+}
+// 身体活動レベル(PAL): 低い=1.50 / 普通=1.75 / 高い=2.00
+const PAL = {low:1.50, mid:1.75, high:2.00};
+function calcTargetKcal(){
+  const bmr = calcBmr();
+  if(bmr == null) return null;
+  return bmr * (PAL[state.profile.act] || 1.75);
+}
+
+// ===== 描画 =====
+const menuArea = document.getElementById("menuArea");
+
+// Chart.js が CDN 読み込み失敗してもスクリプト全体が止まらないようガード
+function createPfcChart(){
+  const canvas = document.getElementById("pfcChart");
+  const ctx = canvas && canvas.getContext("2d");
+  if(!ctx || typeof Chart === "undefined"){
+    console.warn("Chart.js が読み込めなかったため、PFCチャートは無効化されます。");
+    if(canvas) canvas.style.display = "none";
+    return { data:{datasets:[{data:[0.001,0.001,0.001]}]}, update(){} };
+  }
+  return new Chart(ctx,{
+  type:"doughnut",
+  data:{labels:["タンパク質","脂質","炭水化物"],datasets:[{
+    data:[1,1,1],backgroundColor:["#3b82f6","#f59e0b","#10b981"],borderWidth:2,borderColor:"#fff"
+  }]},
+  options:{
+    plugins:{legend:{display:false},tooltip:{callbacks:{
+      label:(c)=>`${c.label}: ${c.parsed} kcal (${((c.parsed/c.dataset.data.reduce((a,b)=>a+b,0))*100||0).toFixed(0)}%)`
+    }}},
+    cutout:"62%",responsive:true,maintainAspectRatio:false
+  }
+  });
+}
+const pfcChart = createPfcChart();
+
+function key(item){return item.chain+"|"+item.name}
+
+const CAT_ICONS = {
+  "バーガー": "assets/burger.png",
+  "サイド":   "assets/side.png",
+  "ドリンク": "assets/drink.png",
+  "デザート": "assets/dessert.png",
+};
+function renderMenu(){
+  const filtered = menu.filter(i=>{
+    if(state.chain!=="all" && i.chain!==state.chain) return false;
+    if(state.cat!=="all" && i.cat!==state.cat) return false;
+    if(state.q && !i.name.toLowerCase().includes(state.q.toLowerCase())) return false;
+    return true;
+  });
+  // group by category
+  const cats = state.cat==="all" ? ["バーガー","サイド","ドリンク","デザート"] : [state.cat];
+  let html = "";
+  for(const cat of cats){
+    const list = filtered.filter(i=>i.cat===cat);
+    if(!list.length) continue;
+    html += `<section class="category"><h2><img src="${CAT_ICONS[cat]}" alt="" aria-hidden="true">${cat}<span class="count">${list.length} ITEMS</span></h2><div class="items">`;
+    for(const i of list){
+      const k = key(i);
+      const sel = state.selected[k];
+      const checked = sel ? "checked" : "";
+      const qty = sel ? sel.qty : 1;
+      html += `
+        <div class="item ${sel?"selected "+i.chain:""}" data-key="${k}">
+          <div class="item-head">
+            <input type="checkbox" ${checked} data-key="${k}">
+            <span class="item-name">${i.name}</span>
+            <span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span>
+          </div>
+          <div class="item-stats">
+            <span class="item-kcal">${i.kcal}kcal</span>
+            <span>P ${i.p}g</span><span>F ${i.f}g</span><span>C ${i.c}g</span><span>塩 ${i.s}g</span>
+          </div>
+          ${sel?`<div class="qty" data-key="${k}">
+            <span style="font-size:11px;color:#888">個数:</span>
+            <button data-act="dec">−</button>
+            <input type="number" min="1" max="20" value="${qty}">
+            <button data-act="inc">＋</button>
+          </div>`:""}
+        </div>`;
+    }
+    html += `</div></section>`;
+  }
+  if(!html) html = `<div class="empty" style="padding:60px 0">該当するメニューがありません</div>`;
+  menuArea.innerHTML = html;
+}
+
+function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK"}[c]||c}
+
+// ===== 集計 =====
+function recalc(){
+  let kcal=0,p=0,f=0,c=0,s=0;
+  const rows=[];
+  for(const k in state.selected){
+    const {item,qty} = state.selected[k];
+    kcal += item.kcal*qty; p += item.p*qty; f += item.f*qty; c += item.c*qty; s += item.s*qty;
+    rows.push({name:item.name,chain:item.chain,kcal:item.kcal*qty,qty});
+  }
+  document.getElementById("totalKcal").innerHTML = Math.round(kcal)+`<small>kcal</small>`;
+  document.getElementById("mobileKcal").innerHTML = Math.round(kcal)+`<small>kcal</small>`;
+  document.getElementById("totalP").innerHTML = p.toFixed(1)+`<small>g</small>`;
+  document.getElementById("totalF").innerHTML = f.toFixed(1)+`<small>g</small>`;
+  document.getElementById("totalC").innerHTML = c.toFixed(1)+`<small>g</small>`;
+  document.getElementById("totalS").innerHTML = s.toFixed(1)+`<small>g</small>`;
+  const targetRaw = calcTargetKcal();
+  const bmrRaw = calcBmr();
+  const target = targetRaw == null ? null : Math.round(targetRaw);
+  const bmr = bmrRaw == null ? null : Math.round(bmrRaw);
+  if(target == null){
+    document.getElementById("targetBar").style.width = "0%";
+    document.getElementById("targetPct").textContent = "—";
+    document.getElementById("targetKcalText").textContent = "対象外";
+    document.getElementById("pfTarget").textContent = "対象外";
+    document.getElementById("pfBmr").textContent = "—";
+    document.getElementById("mobilePct").textContent = "";
+  } else {
+    const pct = Math.min(150, kcal/target*100);
+    document.getElementById("targetBar").style.width = pct+"%";
+    document.getElementById("targetPct").textContent = Math.round(pct);
+    document.getElementById("targetKcalText").textContent = target.toLocaleString();
+    document.getElementById("pfTarget").textContent = target.toLocaleString();
+    document.getElementById("pfBmr").textContent = bmr.toLocaleString();
+    document.getElementById("mobilePct").textContent = kcal>0 ? `(1日の${Math.round(pct)}%)` : "";
+  }
+  // カロリー段階別ヒント（1食=目安の1/3, 2食=2/3, 1日=target）
+  const hint = document.getElementById("mealHint");
+  if(target == null || kcal===0){
+    hint.textContent = "";
+  } else {
+    const r = kcal / target; // 0〜
+    let label, color;
+    if(r <= 1/3)        { label = "✅ 1食分目安内";        color = "#22a05a"; }
+    else if(r <= 0.45)  { label = "⚠ 1食分やや多め";       color = "#eab308"; }
+    else if(r <= 2/3)   { label = "⚠ 1食分超え（〜2食分）"; color = "#f59e0b"; }
+    else if(r <= 0.85)  { label = "⚠ 2食分相当";           color = "#f97316"; }
+    else if(r < 1)      { label = "🔴 1日分に近い";        color = "#ef4444"; }
+    else if(r < 1.3)    { label = "🚨 1日分超過";          color = "#dc2626"; }
+    else                { label = "🚨 1日分を大幅超過";     color = "#991b1b"; }
+    hint.innerHTML = `<span style="color:${color};font-weight:600">${label}</span>`;
+  }
+
+  // PFC kcal
+  const pK = p*4, fK = f*9, cK = c*4;
+  pfcChart.data.datasets[0].data = [pK||0.001, fK||0.001, cK||0.001];
+  pfcChart.update();
+
+  const sel = document.getElementById("selList");
+  if(rows.length){
+    sel.innerHTML = rows.sort((a,b)=>b.kcal-a.kcal).map(r=>
+      `<div class="sel-row"><span class="name"><span class="chain-tag ${r.chain}" style="font-size:9px;padding:1px 4px">${chainLabel(r.chain)}</span> ${r.name} ${r.qty>1?`×${r.qty}`:""}</span><span class="kcal">${Math.round(r.kcal)}kcal</span></div>`
+    ).join("");
+  } else {
+    sel.innerHTML = `<div class="empty">まだ何も選んでいません</div>`;
+  }
+}
+
+// ===== イベント =====
+document.querySelectorAll(".chain-btn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".chain-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    state.chain = b.dataset.chain;
+    renderMenu();
+  });
+});
+document.querySelectorAll(".cat-btn").forEach(b=>{
+  b.addEventListener("click",()=>{
+    document.querySelectorAll(".cat-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    state.cat = b.dataset.cat;
+    renderMenu();
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+});
+document.getElementById("mobileShowPanel").addEventListener("click",()=>{
+  document.querySelector(".panel").scrollIntoView({behavior:"smooth", block:"start"});
+});
+document.getElementById("mobileShowProfile").addEventListener("click",()=>{
+  document.getElementById("profileSection").scrollIntoView({behavior:"smooth", block:"start"});
+});
+document.querySelector(".search").addEventListener("input",e=>{
+  state.q = e.target.value;
+  renderMenu();
+});
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  state.selected = {};
+  renderMenu(); recalc();
+});
+
+// ===== おまかせ提案 =====
+let lastCombos = [];
+function generateCombos(){
+  const target = parseInt(document.getElementById("suggTarget").value)||800;
+  const opts = {
+    burger:  document.getElementById("suggBurger").checked,
+    side:    document.getElementById("suggSide").checked,
+    drink:   document.getElementById("suggDrink").checked,
+    dessert: document.getElementById("suggDessert").checked,
+    sameChain: document.getElementById("suggSameChain").checked,
+  };
+  const pool = menu.filter(i => state.chain==="all" || i.chain===state.chain);
+  const byCat = {
+    "バーガー": opts.burger  ? pool.filter(i=>i.cat==="バーガー") : [null],
+    "サイド":   opts.side    ? [null, ...pool.filter(i=>i.cat==="サイド")]   : [null],
+    "ドリンク": opts.drink   ? [null, ...pool.filter(i=>i.cat==="ドリンク")] : [null],
+    "デザート": opts.dessert ? [null, ...pool.filter(i=>i.cat==="デザート")] : [null],
+  };
+  // 必須カテゴリは null を含めない（バーガーが必須なら null なし）
+  const combos = [];
+  for(const b of byCat["バーガー"]){
+    for(const s of byCat["サイド"]){
+      for(const d of byCat["ドリンク"]){
+        for(const dz of byCat["デザート"]){
+          const items = [b,s,d,dz].filter(Boolean);
+          if(!items.length) continue;
+          if(opts.sameChain && new Set(items.map(i=>i.chain)).size > 1) continue;
+          const kcal = items.reduce((sum,i)=>sum+i.kcal,0);
+          if(kcal > target) continue;
+          combos.push({items, kcal});
+        }
+      }
+    }
+  }
+  // 目標に近い順
+  combos.sort((a,b)=> b.kcal - a.kcal);
+  // 多様性: 同じバーガーが続かないように上位5件選抜
+  const top = [];
+  const seenKey = new Set();
+  for(const c of combos){
+    const key = c.items.map(i=>i.name).sort().join("|");
+    if(seenKey.has(key)) continue;
+    seenKey.add(key);
+    const burger = c.items.find(i=>i.cat==="バーガー");
+    if(burger && top.some(t => t.items.find(i=>i.cat==="バーガー")?.name === burger.name)) continue;
+    top.push(c);
+    if(top.length >= 5) break;
+  }
+  return top;
+}
+
+function renderCombos(){
+  lastCombos = generateCombos();
+  const container = document.getElementById("suggestResults");
+  if(!lastCombos.length){
+    container.innerHTML = `<div class="sp-empty">条件に合う組み合わせが見つかりません。上限カロリーを上げるか、条件を緩めてください。</div>`;
+    return;
+  }
+  container.innerHTML = lastCombos.map((c,idx) => {
+    const tP = c.items.reduce((s,i)=>s+i.p,0);
+    const tF = c.items.reduce((s,i)=>s+i.f,0);
+    const tC = c.items.reduce((s,i)=>s+i.c,0);
+    const tS = c.items.reduce((s,i)=>s+i.s,0);
+    return `
+      <div class="combo-card">
+        <div class="combo-head">
+          <span class="combo-rank">#${idx+1}</span>
+          <span class="combo-kcal">${c.kcal}kcal</span>
+        </div>
+        <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
+        <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>
+        <button class="apply-btn" data-idx="${idx}">この組み合わせを選択</button>
+      </div>`;
+  }).join("");
+}
+
+document.getElementById("autoBtn").addEventListener("click",()=>{
+  const panel = document.getElementById("suggestPanel");
+  panel.hidden = !panel.hidden;
+  if(!panel.hidden && !lastCombos.length){
+    // 推奨カロリーがあれば1食分を初期値に
+    const tgt = calcTargetKcal();
+    if(tgt) document.getElementById("suggTarget").value = Math.round(tgt/3/50)*50;
+    renderCombos();
+  }
+});
+document.getElementById("closeSuggest").addEventListener("click",()=>{
+  document.getElementById("suggestPanel").hidden = true;
+});
+document.getElementById("genSuggest").addEventListener("click", renderCombos);
+document.getElementById("suggestResults").addEventListener("click",e=>{
+  const btn = e.target.closest(".apply-btn");
+  if(!btn) return;
+  const idx = parseInt(btn.dataset.idx);
+  const combo = lastCombos[idx];
+  if(!combo) return;
+  state.selected = {};
+  for(const item of combo.items){
+    state.selected[key(item)] = {item, qty:1};
+  }
+  renderMenu(); recalc();
+  // パネル上部にスクロール
+  document.querySelector(".panel").scrollTo({top:0, behavior:"smooth"});
+});
+
+// プロファイル入力（localStorage で保存）
+const saved = (()=>{try{return JSON.parse(localStorage.getItem("burger_profile"))}catch{return null}})();
+if(saved && typeof saved === "object"){
+  state.profile = normalizeProfile(saved);
+}
+// 初期表示を state.profile に同期（保存値の正規化や未入力時の既定値を反映）
+function syncProfileInputs(){
+  document.getElementById("pfGender").value = state.profile.gender;
+  document.getElementById("pfAge").value    = state.profile.age;
+  document.getElementById("pfHeight").value = state.profile.height;
+  document.getElementById("pfWeight").value = state.profile.weight;
+  document.getElementById("pfAct").value    = state.profile.act;
+}
+syncProfileInputs();
+
+function readProfileFromInputs(){
+  return normalizeProfile({
+    gender: document.getElementById("pfGender").value,
+    age:    document.getElementById("pfAge").value,
+    height: document.getElementById("pfHeight").value,
+    weight: document.getElementById("pfWeight").value,
+    act:    document.getElementById("pfAct").value,
+  });
+}
+// input イベント: 入力中はリアルタイム計算のみ（書き戻しなし、カーソル飛び防止）
+function onProfileInput(){
+  state.profile = readProfileFromInputs();
+  recalc();
+}
+// change イベント: フォーカスアウト時に正規化値を書き戻し＋保存
+function onProfileCommit(){
+  state.profile = readProfileFromInputs();
+  syncProfileInputs();
+  try { localStorage.setItem("burger_profile", JSON.stringify(state.profile)); } catch {}
+  recalc();
+}
+["pfGender","pfAge","pfHeight","pfWeight","pfAct"].forEach(id=>{
+  const el = document.getElementById(id);
+  el.addEventListener("input", onProfileInput);
+  el.addEventListener("change", onProfileCommit);
+});
+
+menuArea.addEventListener("click",e=>{
+  const itemEl = e.target.closest(".item");
+  if(!itemEl) return;
+  const k = itemEl.dataset.key;
+  const item = menu.find(i=>key(i)===k);
+  if(!item) return;
+
+  // qty buttons
+  if(e.target.matches(".qty button")){
+    e.stopPropagation();
+    const sel = state.selected[k]; if(!sel) return;
+    if(e.target.dataset.act==="inc") sel.qty = Math.min(20, sel.qty+1);
+    else sel.qty = Math.max(1, sel.qty-1);
+    renderMenu(); recalc();
+    return;
+  }
+  if(e.target.tagName==="INPUT" && e.target.type==="number") return;
+
+  // toggle select
+  if(state.selected[k]) delete state.selected[k];
+  else state.selected[k] = {item, qty:1};
+  renderMenu(); recalc();
+});
+
+menuArea.addEventListener("change",e=>{
+  if(e.target.type==="number"){
+    const k = e.target.closest(".qty").dataset.key;
+    const sel = state.selected[k]; if(!sel) return;
+    let v = parseInt(e.target.value)||1;
+    sel.qty = Math.max(1, Math.min(20, v));
+    renderMenu(); recalc();
+  }
+});
+
+// 初期描画
+renderMenu(); recalc();
+</script>
+</body>
+</html>

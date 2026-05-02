@@ -12,6 +12,10 @@
 <meta property="og:title" content="BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較">
 <meta property="og:description" content="いろんなバーガーチェーンのメニューを賢く比較。カロリー・栄養素を計算してかしこくカロリー管理。">
 <meta property="og:url" content="https://burgercal.pages.dev/">
+<meta property="og:image" content="https://burgercal.pages.dev/assets/OGP_1x1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
+<meta property="og:image:alt" content="BurgerCal — いろんなバーガーチェーンのカロリー比較">
 <meta property="og:image" content="https://burgercal.pages.dev/assets/ogp.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -404,6 +408,17 @@
   }
   .footer-warn b{color:var(--red);font-size:13px}
   .footer-warn a{color:var(--red);text-decoration:underline}
+  .data-source{
+    list-style:none;margin:0 auto 18px;padding:10px 14px;max-width:780px;
+    background:#fff;border:1.5px dashed var(--cream-dark);border-radius:8px;
+    font-size:11px;color:var(--brown);line-height:1.85;
+  }
+  .data-source li{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .data-source .chain-tag{font-size:10px;padding:1px 6px;flex-shrink:0}
+  .data-source-checked{
+    margin-top:4px;padding-top:6px;border-top:1px dashed var(--cream-dark);
+    opacity:.75;font-size:10px;
+  }
   .footer-links{
     max-width:780px;margin:0 auto;
     border-top:2px dashed var(--cream-dark);
@@ -483,8 +498,17 @@
     .item{padding:10px 12px}
     .item-name{font-size:13px}
     .item-stats{font-size:10px;gap:6px}
-    .category h2{font-size:20px;letter-spacing:1.5px;padding:7px 12px}
+    .category h2{font-size:20px;letter-spacing:1.5px;padding:7px 12px;cursor:pointer;user-select:none}
     .category h2 img{width:32px;height:32px}
+    .category h2::after{
+      content:"";display:inline-block;width:0;height:0;
+      border-left:7px solid transparent;border-right:7px solid transparent;
+      border-top:9px solid var(--cream-light);
+      margin-left:8px;flex-shrink:0;
+      transition:transform .25s ease;
+    }
+    .category[data-collapsed="true"] h2::after{transform:rotate(-90deg)}
+    .category[data-collapsed="true"] .items{display:none}
     .total-kcal{font-size:42px}
     .panel h2{font-size:20px}
     .chain-btn,.cat-btn,.reset,.auto-btn{font-size:13px;padding:7px 13px}
@@ -545,6 +569,15 @@
         <label>上限カロリー
           <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> kcal
         </label>
+        <label>優先軸
+          <select id="suggAxis">
+            <option value="kcal" selected>カロリーいっぱいまで使う</option>
+            <option value="protein">タンパク質を多めに</option>
+            <option value="lowsalt">塩分控えめ</option>
+            <option value="lowfat">脂質控えめ</option>
+            <option value="balance">PFCバランス重視</option>
+          </select>
+        </label>
         <label><input type="checkbox" id="suggBurger" checked> バーガー</label>
         <label><input type="checkbox" id="suggSide" checked> サイド</label>
         <label><input type="checkbox" id="suggDrink"> ドリンク</label>
@@ -589,14 +622,14 @@
       </label>
       <div class="profile-result">
         基礎代謝: <b id="pfBmr">1,400</b> kcal/日<br>
-        推奨カロリー: <b id="pfTarget">2,450</b> kcal/日
+        1日の推奨カロリー: <b id="pfTarget">2,450</b> kcal
       </div>
     </div>
 
     <h2>合計</h2>
     <div class="total-kcal" id="totalKcal">0<small>kcal</small></div>
     <div class="target-bar"><div id="targetBar" style="width:0%"></div></div>
-    <div class="target-info">推奨 <span id="targetKcalText">2,700</span>kcal の <span id="targetPct">0</span>%　<span id="mealHint"></span></div>
+    <div class="target-info">1日推奨 <span id="targetKcalText">2,700</span>kcal の <span id="targetPct">0</span>%　<span id="mealHint"></span></div>
 
     <div class="selected-list">
       <h3>選択中のアイテム</h3>
@@ -638,6 +671,13 @@
       <a href="https://www.burgerkingjapan.co.jp/menu" target="_blank" rel="noopener">バーガーキング</a>）の
       公開情報を元にした概算値です。最新・正確な値は必ず各公式サイトでご確認ください。
     </div>
+
+    <ul class="data-source">
+      <li><span class="chain-tag mc">マック</span>公式サイト掲載値（随時更新）</li>
+      <li><span class="chain-tag mos">モス</span>2026年3月18日版「アレルギー・栄養成分情報」PDF</li>
+      <li><span class="chain-tag bk">BK</span>2026年1月8日版「栄養成分表」PDF</li>
+      <li class="data-source-checked">サイト最終確認: 2026年5月3日</li>
+    </ul>
 
     <div class="footer-links">
       <details>
@@ -849,6 +889,10 @@ const CAT_ICONS = {
   "ドリンク": "assets/drink.png",
   "デザート": "assets/dessert.png",
 };
+// 折りたたみ状態（モバイルのみで効く。バーガーは既定で開、それ以外は閉）
+const collapsedCats = new Set(["サイド","ドリンク","デザート"]);
+const isMobileViewport = () => window.matchMedia("(max-width:768px)").matches;
+
 function renderMenu(){
   const filtered = menu.filter(i=>{
     if(state.chain!=="all" && i.chain!==state.chain) return false;
@@ -862,7 +906,8 @@ function renderMenu(){
   for(const cat of cats){
     const list = filtered.filter(i=>i.cat===cat);
     if(!list.length) continue;
-    html += `<section class="category"><h2><img src="${CAT_ICONS[cat]}" alt="" aria-hidden="true">${cat}<span class="count">${list.length} ITEMS</span></h2><div class="items">`;
+    const collapsed = collapsedCats.has(cat) ? "true" : "false";
+    html += `<section class="category" data-cat="${cat}" data-collapsed="${collapsed}"><h2><img src="${CAT_ICONS[cat]}" alt="" aria-hidden="true">${cat}<span class="count">${list.length} ITEMS</span></h2><div class="items">`;
     for(const i of list){
       const k = key(i);
       const sel = state.selected[k];
@@ -999,6 +1044,7 @@ document.getElementById("resetBtn").addEventListener("click",()=>{
 let lastCombos = [];
 function generateCombos(){
   const target = parseInt(document.getElementById("suggTarget").value)||800;
+  const axis = document.getElementById("suggAxis").value;
   const opts = {
     burger:  document.getElementById("suggBurger").checked,
     side:    document.getElementById("suggSide").checked,
@@ -1024,13 +1070,42 @@ function generateCombos(){
           if(opts.sameChain && new Set(items.map(i=>i.chain)).size > 1) continue;
           const kcal = items.reduce((sum,i)=>sum+i.kcal,0);
           if(kcal > target) continue;
-          combos.push({items, kcal});
+          const p = items.reduce((sum,i)=>sum+i.p,0);
+          const f = items.reduce((sum,i)=>sum+i.f,0);
+          const c = items.reduce((sum,i)=>sum+i.c,0);
+          const s = items.reduce((sum,i)=>sum+i.s,0);
+          combos.push({items, kcal, p, f, c, s});
         }
       }
     }
   }
-  // 目標に近い順
-  combos.sort((a,b)=> b.kcal - a.kcal);
+  // 軸ごとの並び替え。kcalが極端に低い候補（上限の50%未満）は除外して「使い切ろうとしている感」を出す
+  const minKcal = target * 0.5;
+  const usable = combos.filter(c => c.kcal >= minKcal);
+  const list = usable.length ? usable : combos;
+  if(axis === "protein"){
+    list.sort((a,b)=> b.p - a.p);
+  }else if(axis === "lowsalt"){
+    list.sort((a,b)=> a.s - b.s || b.kcal - a.kcal);
+  }else if(axis === "lowfat"){
+    list.sort((a,b)=> a.f - b.f || b.kcal - a.kcal);
+  }else if(axis === "balance"){
+    // 理想PFC比 P15% / F25% / C60% との差（kcalベース）が小さい順
+    list.sort((a,b)=>{
+      const score = x => {
+        const tot = x.p*4 + x.f*9 + x.c*4;
+        if(!tot) return Infinity;
+        return Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60);
+      };
+      return score(a) - score(b);
+    });
+  }else{
+    // kcal: 目標に近い順（=上限内で大きい順）
+    list.sort((a,b)=> b.kcal - a.kcal);
+  }
+  const combos_sorted = list;
+  combos.length = 0;
+  combos.push(...combos_sorted);
   // 多様性: 同じバーガーが続かないように上位5件選抜
   const top = [];
   const seenKey = new Set();
@@ -1140,6 +1215,22 @@ function onProfileCommit(){
   const el = document.getElementById(id);
   el.addEventListener("input", onProfileInput);
   el.addEventListener("change", onProfileCommit);
+});
+
+// カテゴリ見出しクリックでアコーディオン開閉（モバイルのみ）
+menuArea.addEventListener("click",e=>{
+  const h2 = e.target.closest(".category > h2");
+  if(!h2) return;
+  if(!isMobileViewport()) return;
+  const sec = h2.parentElement;
+  const cat = sec.dataset.cat;
+  if(collapsedCats.has(cat)){
+    collapsedCats.delete(cat);
+    sec.dataset.collapsed = "false";
+  }else{
+    collapsedCats.add(cat);
+    sec.dataset.collapsed = "true";
+  }
 });
 
 menuArea.addEventListener("click",e=>{

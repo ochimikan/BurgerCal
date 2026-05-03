@@ -347,25 +347,41 @@
   .chain-tag.kf{background:var(--kf)}
   .item-stats{font-size:11px;color:var(--brown);display:flex;flex-wrap:wrap;gap:8px;font-weight:600}
   .item-stats span{white-space:nowrap}
-  /* PFCバランス：積み上げバー */
-  .pfc-bar{
-    display:flex;height:6px;border-radius:3px;overflow:hidden;
-    background:var(--cream-dark);
-    border:1px solid rgba(74,40,20,.15);
-    margin-top:6px;
+  /* 1日推奨摂取量に対する栄養素バー（あすけん風） */
+  .nutri-bars{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:4px 12px;margin-top:8px;
   }
-  .pfc-bar > span{display:block;height:100%}
-  .pfc-bar .p{background:#3b82f6}
-  .pfc-bar .f{background:#f59e0b}
-  .pfc-bar .c{background:#10b981}
-  .pfc-pct{
-    margin-top:4px;font-size:10px;font-weight:600;color:var(--brown);opacity:.85;
-    display:flex;gap:8px;flex-wrap:wrap;letter-spacing:.2px;
-    font-variant-numeric:tabular-nums;
+  .nb-row{
+    display:flex;align-items:center;gap:5px;font-size:10px;
+    font-weight:600;color:var(--brown);
   }
-  .pfc-pct .p{color:#1d4ed8}
-  .pfc-pct .f{color:#b45309}
-  .pfc-pct .c{color:#047857}
+  .nb-label{flex:0 0 auto;min-width:14px;font-weight:700;letter-spacing:.3px}
+  .nb-bar{
+    flex:1;height:5px;background:var(--cream-dark);
+    border-radius:2px;overflow:hidden;min-width:18px;
+    border:1px solid rgba(74,40,20,.12);
+    position:relative;
+  }
+  .nb-fill{display:block;height:100%;border-radius:2px;transition:width .25s}
+  .nb-pct{
+    flex:0 0 auto;min-width:30px;text-align:right;
+    font-variant-numeric:tabular-nums;font-weight:700;
+  }
+  .nb-row.nb-over .nb-bar{box-shadow:0 0 0 1.5px #dc2626}
+  /* スマホは2列に折返してコンパクトに */
+  @media (max-width:600px){
+    .nutri-bars{grid-template-columns:1fr 1fr;gap:3px 10px}
+  }
+  @media (max-width:380px){
+    .nutri-bars{gap:3px 8px}
+    .nb-row{font-size:9px}
+    .nb-pct{min-width:26px}
+  }
+  /* おまかせカード内では少し大きめ */
+  .combo-card .nutri-bars{margin-top:6px}
+  .combo-card .nb-row{font-size:11px}
+  .combo-card .nb-bar{height:6px}
   .item-kcal{
     font-family:"Anton",sans-serif;font-size:16px;letter-spacing:.5px;
     color:var(--red) !important;
@@ -1365,7 +1381,7 @@ function renderMenu(){
             <span class="item-kcal">${i.kcal}kcal</span>
             <span>P ${i.p}g</span><span>F ${i.f}g</span><span>C ${i.c}g</span><span>塩 ${i.s}g</span>
           </div>
-          ${pfcBarHTML(i.p,i.f,i.c,false)}
+          ${nutriBarsHTML(i.p,i.f,i.c,i.s)}
           ${sel?`<div class="qty" data-key="${k}">
             <span style="font-size:11px;color:#888">個数:</span>
             <button data-act="dec">−</button>
@@ -1382,21 +1398,51 @@ function renderMenu(){
 
 function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディーズ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
 
-// PFC比率（カロリー基準）を計算・HTML生成
-function pfcRatio(p,f,c){
-  const pK=p*4, fK=f*9, cK=c*4;
-  const total = pK+fK+cK || 1;
+// 1日の推奨摂取量（g）。プロフィール未設定時は2,200kcal想定で概算
+function dailyTargets(){
+  const tgt = calcTargetKcal();
+  const kcal = tgt || 2200;
+  const isFemale = state.profile && state.profile.gender === 'F';
   return {
-    p:Math.round(pK/total*100),
-    f:Math.round(fK/total*100),
-    c:Math.round(cK/total*100)
+    kcal,
+    p: kcal * 0.15 / 4,         // P: 15% of kcal
+    f: kcal * 0.25 / 9,         // F: 25% of kcal
+    c: kcal * 0.60 / 4,         // C: 60% of kcal
+    s: isFemale ? 6.5 : 7.5,    // 食塩相当量（食事摂取基準2020）
+    isDefault: tgt == null
   };
 }
-function pfcBarHTML(p,f,c,withPct=false){
-  const r = pfcRatio(p,f,c);
-  const bar = `<div class="pfc-bar" role="img" aria-label="PFCバランス P${r.p}% F${r.f}% C${r.c}%" title="PFC: P${r.p}% / F${r.f}% / C${r.c}%"><span class="p" style="width:${r.p}%"></span><span class="f" style="width:${r.f}%"></span><span class="c" style="width:${r.c}%"></span></div>`;
-  if(!withPct) return bar;
-  return bar + `<div class="pfc-pct"><span class="p">P ${r.p}%</span><span class="f">F ${r.f}%</span><span class="c">C ${r.c}%</span></div>`;
+// %値→色（しきい値: 1食=33%基準。塩分は厳しめ）
+function nutriColor(pct, isSalt){
+  if(isSalt){
+    if(pct <= 25)  return "#22a05a";
+    if(pct <= 40)  return "#eab308";
+    if(pct <= 75)  return "#f97316";
+    return "#dc2626";
+  }
+  if(pct <= 33)  return "#22a05a";
+  if(pct <= 50)  return "#eab308";
+  if(pct <= 100) return "#f97316";
+  return "#dc2626";
+}
+function nutriBarsHTML(p,f,c,s){
+  const t = dailyTargets();
+  const items = [
+    {label:"P", val:p, target:t.p, isSalt:false},
+    {label:"F", val:f, target:t.f, isSalt:false},
+    {label:"C", val:c, target:t.c, isSalt:false},
+    {label:"塩",val:s, target:t.s, isSalt:true},
+  ];
+  const rows = items.map(it=>{
+    const pctRaw = it.target > 0 ? (it.val/it.target*100) : 0;
+    const pct = Math.round(pctRaw);
+    const w = Math.min(100, pctRaw); // バーは100%でカット（超過は色で表現）
+    const color = nutriColor(pct, it.isSalt);
+    const overCls = pct > 100 ? " nb-over" : "";
+    return `<div class="nb-row${overCls}" title="${it.label} ${it.val.toFixed ? it.val.toFixed(1) : it.val}g / 1日推奨 ${it.target.toFixed(1)}g (${pct}%)"><span class="nb-label">${it.label}</span><div class="nb-bar"><span class="nb-fill" style="width:${w}%;background:${color}"></span></div><span class="nb-pct" style="color:${color}">${pct}%</span></div>`;
+  }).join("");
+  const note = t.isDefault ? "（プロフィール未入力時は2,200kcal想定の概算）" : "（あなたの推奨値ベース）";
+  return `<div class="nutri-bars" aria-label="1日推奨に対する栄養割合${note}">${rows}</div>`;
 }
 
 // ===== 集計 =====
@@ -1612,7 +1658,7 @@ function renderCombos(){
         </div>
         <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
         <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>
-        ${pfcBarHTML(tP,tF,tC,true)}
+        ${nutriBarsHTML(tP,tF,tC,tS)}
         <button class="apply-btn" data-idx="${idx}">この組み合わせを選択</button>
       </div>`;
   }).join("");
@@ -1711,6 +1757,11 @@ function onProfileCommit(){
   syncProfileInputs();
   try { localStorage.setItem("burger_profile", JSON.stringify(state.profile)); } catch {}
   recalc();
+  // 推奨値が変わったので各メニュー／組み合わせのバーも再計算
+  renderMenu();
+  if(!document.getElementById("suggestPanel").hidden && lastCombos.length){
+    renderCombos();
+  }
 }
 ["pfGender","pfAge","pfHeight","pfWeight","pfAct"].forEach(id=>{
   const el = document.getElementById(id);
@@ -1748,6 +1799,7 @@ function onProfileCommit(){
       syncProfileInputs();
       try { localStorage.setItem("burger_profile", JSON.stringify(state.profile)); } catch {}
       recalc();
+      renderMenu(); // ウェルカム後に推奨値ベースで再描画
     }
     try { localStorage.setItem(KEY_WELCOMED, "1"); } catch {}
     modal.hidden = true;

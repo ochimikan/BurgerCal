@@ -590,7 +590,14 @@
     margin:0 0 8px;font-family:"Anton",sans-serif;
     color:var(--red);font-size:22px;letter-spacing:1.5px;text-align:center;
   }
-  .welcome-intro{margin:0 0 14px;font-size:13px;color:var(--brown);text-align:center;line-height:1.6}
+  .welcome-intro{margin:0 0 8px;font-size:13px;color:var(--brown);text-align:center;line-height:1.6}
+  .welcome-privacy{
+    margin:0 0 14px;padding:7px 10px;
+    font-size:11px;line-height:1.5;text-align:center;font-weight:700;
+    color:#0d4a20;background:#e8f5ec;
+    border:1.5px solid var(--mos);border-radius:6px;
+    letter-spacing:.2px;
+  }
   .welcome-row{display:flex;gap:10px;margin-bottom:10px}
   .welcome-row label{flex:1}
   .welcome-modal label{
@@ -847,6 +854,7 @@
   <div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
     <h2 id="welcomeTitle">ようこそ BurgerCal へ 🍔</h2>
     <p class="welcome-intro">基礎情報を入力すると、1日の推奨カロリーや「おまかせ提案」がぴったりに調整されます。</p>
+    <p class="welcome-privacy">🔒 入力内容はお使いの端末内のみに保存され、サーバーや第三者に送信されることはありません。</p>
     <div class="welcome-row">
       <label>性別
         <select id="wGender">

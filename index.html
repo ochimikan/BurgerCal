@@ -218,6 +218,8 @@
   .suggest-panel{
     background:var(--cream-light);border:3px solid var(--red);border-radius:12px;
     padding:18px;margin-bottom:18px;box-shadow:5px 5px 0 var(--red-dark);
+    /* sticky な操作バーの下に隠れないようスクロール時のオフセットを確保 */
+    scroll-margin-top:230px;
   }
   .sp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
   .sp-head h3{
@@ -345,6 +347,25 @@
   .chain-tag.kf{background:var(--kf)}
   .item-stats{font-size:11px;color:var(--brown);display:flex;flex-wrap:wrap;gap:8px;font-weight:600}
   .item-stats span{white-space:nowrap}
+  /* PFCバランス：積み上げバー */
+  .pfc-bar{
+    display:flex;height:6px;border-radius:3px;overflow:hidden;
+    background:var(--cream-dark);
+    border:1px solid rgba(74,40,20,.15);
+    margin-top:6px;
+  }
+  .pfc-bar > span{display:block;height:100%}
+  .pfc-bar .p{background:#3b82f6}
+  .pfc-bar .f{background:#f59e0b}
+  .pfc-bar .c{background:#10b981}
+  .pfc-pct{
+    margin-top:4px;font-size:10px;font-weight:600;color:var(--brown);opacity:.85;
+    display:flex;gap:8px;flex-wrap:wrap;letter-spacing:.2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .pfc-pct .p{color:#1d4ed8}
+  .pfc-pct .f{color:#b45309}
+  .pfc-pct .c{color:#047857}
   .item-kcal{
     font-family:"Anton",sans-serif;font-size:16px;letter-spacing:.5px;
     color:var(--red) !important;
@@ -1344,6 +1365,7 @@ function renderMenu(){
             <span class="item-kcal">${i.kcal}kcal</span>
             <span>P ${i.p}g</span><span>F ${i.f}g</span><span>C ${i.c}g</span><span>塩 ${i.s}g</span>
           </div>
+          ${pfcBarHTML(i.p,i.f,i.c,false)}
           ${sel?`<div class="qty" data-key="${k}">
             <span style="font-size:11px;color:#888">個数:</span>
             <button data-act="dec">−</button>
@@ -1359,6 +1381,23 @@ function renderMenu(){
 }
 
 function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディーズ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
+
+// PFC比率（カロリー基準）を計算・HTML生成
+function pfcRatio(p,f,c){
+  const pK=p*4, fK=f*9, cK=c*4;
+  const total = pK+fK+cK || 1;
+  return {
+    p:Math.round(pK/total*100),
+    f:Math.round(fK/total*100),
+    c:Math.round(cK/total*100)
+  };
+}
+function pfcBarHTML(p,f,c,withPct=false){
+  const r = pfcRatio(p,f,c);
+  const bar = `<div class="pfc-bar" role="img" aria-label="PFCバランス P${r.p}% F${r.f}% C${r.c}%" title="PFC: P${r.p}% / F${r.f}% / C${r.c}%"><span class="p" style="width:${r.p}%"></span><span class="f" style="width:${r.f}%"></span><span class="c" style="width:${r.c}%"></span></div>`;
+  if(!withPct) return bar;
+  return bar + `<div class="pfc-pct"><span class="p">P ${r.p}%</span><span class="f">F ${r.f}%</span><span class="c">C ${r.c}%</span></div>`;
+}
 
 // ===== 集計 =====
 function recalc(){
@@ -1573,6 +1612,7 @@ function renderCombos(){
         </div>
         <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
         <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>
+        ${pfcBarHTML(tP,tF,tC,true)}
         <button class="apply-btn" data-idx="${idx}">この組み合わせを選択</button>
       </div>`;
   }).join("");
@@ -1611,6 +1651,10 @@ document.getElementById("autoBtn").addEventListener("click",()=>{
       if(v) document.getElementById("suggTarget").value = v;
       renderCombos();
     }
+    // 下までスクロールしている時にパネルを開いても見落とさないよう、自動でスクロール
+    requestAnimationFrame(()=>{
+      panel.scrollIntoView({behavior:"smooth", block:"start"});
+    });
   }
 });
 document.getElementById("closeSuggest").addEventListener("click",()=>{

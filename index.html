@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較</title>
 <meta name="description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
 
@@ -188,7 +188,15 @@
   .auto-btn{
     background:var(--yellow);color:var(--red-dark);border-color:var(--red);
     box-shadow:3px 3px 0 var(--red-dark);
+    font-size:16px;padding:11px 22px;letter-spacing:1.2px;
+    border-width:3px;
+    display:inline-flex;align-items:center;gap:8px;
   }
+  .auto-btn img{
+    width:26px;height:26px;object-fit:contain;flex-shrink:0;
+    filter:drop-shadow(1px 1px 0 rgba(0,0,0,.1));
+  }
+  .auto-btn:hover{box-shadow:4px 4px 0 var(--red-dark)}
   .reset{
     margin-left:auto;background:var(--cream-light);color:var(--brown);
     border-color:var(--brown);box-shadow:3px 3px 0 var(--brown);
@@ -519,7 +527,7 @@
   @media (max-width:960px){
     .layout{grid-template-columns:minmax(0,1fr);padding:16px;gap:16px}
     .panel{position:static;max-height:none}
-    body{padding-bottom:72px}
+    body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
   }
   @media (min-width:769px) and (max-width:960px){
     .items{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -534,7 +542,10 @@
     .mobile-bar{
       display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
       background:var(--red);color:var(--cream-light);
-      padding:10px 14px;align-items:center;justify-content:space-between;gap:10px;
+      padding:10px 14px;
+      /* iOS のホームインジケータ／動的UIによる隙間を埋める */
+      padding-bottom:max(10px, env(safe-area-inset-bottom));
+      align-items:center;justify-content:space-between;gap:10px;
       box-shadow:0 -4px 0 var(--red-dark);border-top:3px solid var(--red-dark);
     }
     .mobile-bar-info{display:flex;flex-direction:column;line-height:1.1;min-width:0}
@@ -553,7 +564,7 @@
 
   /* ===== MOBILE (≤768px) ===== */
   @media (max-width:768px){
-    body{padding-bottom:72px}
+    body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
     header.hero{padding:18px 14px 14px;border-bottom-width:5px}
     .hero-mv{max-width:340px}
     .hero-tag{font-size:13px;margin-top:10px}
@@ -577,6 +588,8 @@
     .total-kcal{font-size:42px}
     .panel h2{font-size:20px}
     .chain-btn,.cat-btn,.reset,.auto-btn{font-size:13px;padding:7px 13px}
+    .auto-btn{font-size:15px;padding:10px 20px}
+    .auto-btn img{width:24px;height:24px}
     .cat-btn img{width:18px;height:18px}
     .mobile-bar-kcal{font-size:20px}
     .mobile-bar button{padding:6px 10px;font-size:11px}
@@ -595,12 +608,14 @@
     .tab-row{gap:6px;padding:4px 0 6px;flex-wrap:nowrap;overflow-x:auto}
     .chain-btn,.cat-btn{font-size:11px;padding:5px 11px;letter-spacing:.3px;flex:0 0 auto}
     .reset,.auto-btn{font-size:12px;padding:6px 11px;flex:0 0 auto}
+    .auto-btn{font-size:14px;padding:9px 16px;flex:1 1 auto;min-width:160px}
+    .auto-btn img{width:22px;height:22px}
     .controls{gap:6px;flex-wrap:wrap}
     .search{font-size:13px;padding:8px 12px;flex:1 1 100%;min-width:0}
     .cat-btn img{width:14px;height:14px;margin-right:3px}
     .category h2{font-size:18px;padding:6px 10px}
     .category h2 img{width:26px;height:26px}
-    .mobile-bar{padding:8px 10px}
+    .mobile-bar{padding:8px 10px;padding-bottom:max(8px, env(safe-area-inset-bottom))}
     .mobile-bar-kcal{font-size:18px}
     .mobile-bar button{padding:5px 8px;font-size:10px}
   }
@@ -673,6 +688,7 @@
     .tab-row{flex-wrap:wrap;overflow-x:visible;gap:5px;padding:2px 0 4px}
     .chain-btn,.cat-btn{font-size:10px;padding:4px 9px;letter-spacing:.2px}
     .reset,.auto-btn{font-size:11px;padding:5px 10px}
+    .auto-btn{font-size:13px;padding:8px 14px}
     .cat-btn img{width:12px;height:12px;margin-right:2px}
   }
 </style>
@@ -714,7 +730,7 @@
       </div>
       <div class="controls">
         <input type="text" class="search" placeholder="メニュー名で検索...">
-        <button class="auto-btn" id="autoBtn">🤖 おまかせ提案</button>
+        <button class="auto-btn" id="autoBtn"><img src="assets/omakase.png" alt="" aria-hidden="true">おまかせ提案</button>
         <button class="reset" id="resetBtn">クリア</button>
       </div>
     </div>

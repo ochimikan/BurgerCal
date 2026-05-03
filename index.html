@@ -57,7 +57,7 @@
     --mos:#1f7a3a;
     --bk:#d62300;
   }
-  html,body{overflow-x:hidden;max-width:100%}
+  html,body{overflow-x:clip;max-width:100%}
   img{max-width:100%;height:auto}
   body{
     margin:0;
@@ -112,7 +112,7 @@
   /* ===== CONTROLS ===== */
   .controls-sticky{
     position:sticky;top:0;z-index:50;background:var(--cream);
-    padding:12px 0 8px;margin-top:-12px;
+    padding:12px 14px 8px;margin:-12px -14px 0;
   }
   .controls-sticky::after{
     content:"";display:block;height:8px;
@@ -397,9 +397,10 @@
   .empty{text-align:center;color:var(--brown);opacity:.6;font-size:12px;padding:20px 0;font-style:italic}
 
   .site-footer{
-    grid-column:1/-1;background:var(--cream-light);
+    background:var(--cream-light);
     border-top:4px solid var(--red);padding:22px 24px 28px;
-    margin-top:8px;font-size:12px;color:var(--brown);
+    max-width:1280px;margin:8px auto 0;
+    font-size:12px;color:var(--brown);
   }
   .footer-warn{
     background:#fff;border:2px dashed var(--red);border-radius:10px;
@@ -520,6 +521,80 @@
     .hero-mv{max-width:200px}
     .total-kcal{font-size:38px}
     .nutrient .value{font-size:18px}
+  }
+
+  /* ===== WELCOME MODAL ===== */
+  .welcome-modal{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(74,40,20,.55);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;animation:welcomeIn .2s ease;
+  }
+  .welcome-modal[hidden]{display:none}
+  @keyframes welcomeIn{from{opacity:0}to{opacity:1}}
+  .welcome-card{
+    background:var(--cream-light);
+    border:3px solid var(--red);border-radius:14px;
+    padding:24px 22px;max-width:440px;width:100%;
+    box-shadow:6px 6px 0 var(--red-dark);
+    max-height:90vh;overflow-y:auto;
+  }
+  .welcome-card h2{
+    margin:0 0 8px;font-family:"Anton",sans-serif;
+    color:var(--red);font-size:22px;letter-spacing:1.5px;text-align:center;
+  }
+  .welcome-intro{margin:0 0 14px;font-size:13px;color:var(--brown);text-align:center;line-height:1.6}
+  .welcome-row{display:flex;gap:10px;margin-bottom:10px}
+  .welcome-row label{flex:1}
+  .welcome-modal label{
+    display:block;font-size:11px;font-weight:700;color:var(--brown);
+    letter-spacing:.5px;
+  }
+  .welcome-modal select,.welcome-modal input{
+    width:100%;margin-top:4px;padding:8px 10px;
+    border:2px solid var(--brown);border-radius:6px;
+    background:#fff;font-family:inherit;font-size:13px;color:var(--brown);
+  }
+  .welcome-act{display:block;margin-bottom:14px}
+  .welcome-disclaimer{
+    margin:14px 0;padding:10px 12px;font-size:11px;line-height:1.6;
+    background:#fff;border:1.5px dashed var(--red);border-radius:8px;
+    color:var(--brown);
+  }
+  .welcome-actions{display:flex;gap:10px;margin-top:6px}
+  .welcome-skip,.welcome-go{
+    flex:1;font-family:"Bebas Neue",sans-serif;
+    font-size:14px;letter-spacing:1.5px;padding:10px;
+    border-radius:8px;cursor:pointer;border:2.5px solid var(--brown);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .welcome-skip{background:#fff;color:var(--brown)}
+  .welcome-go{
+    background:var(--red);color:var(--cream-light);
+    border-color:var(--red-dark);box-shadow:3px 3px 0 var(--red-dark);
+  }
+  .welcome-go:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark)}
+  @media (max-width:400px){
+    .welcome-card{padding:18px 16px}
+    .welcome-card h2{font-size:18px}
+    .welcome-row{flex-direction:column;gap:6px}
+  }
+  @media (max-width:400px){
+    .layout{padding:10px;gap:10px}
+    header.hero{padding:14px 10px 12px}
+    .hero-tag{font-size:12px}
+    .hero-tag .sub{font-size:10px}
+    .tab-row{gap:6px;flex-wrap:wrap;overflow-x:visible;padding:2px 0 4px}
+    .chain-btn,.cat-btn{font-size:11px;padding:5px 10px;letter-spacing:.3px}
+    .reset,.auto-btn{font-size:12px;padding:6px 10px}
+    .controls{gap:6px}
+    .search{font-size:13px;padding:8px 12px}
+    .cat-btn img{width:14px;height:14px}
+    .category h2{font-size:18px;padding:6px 10px}
+    .category h2 img{width:26px;height:26px}
+    .mobile-bar{padding:8px 10px}
+    .mobile-bar-kcal{font-size:18px}
+    .mobile-bar button{padding:5px 8px;font-size:10px}
   }
 </style>
 </head>
@@ -663,7 +738,9 @@
     </div>
   </div>
 
-  <footer class="site-footer">
+</div><!-- /.layout 右カラムのstickyをここで終わらせ、フッター以降には追従させない -->
+
+<footer class="site-footer">
     <div class="footer-warn">
       ⚠ <b>本サイトは各社公式とは一切関係ありません。</b><br>
       栄養成分は各社公式サイト（<a href="https://www.mcdonalds.co.jp/quality/allergy_Nutrition/nutrient/" target="_blank" rel="noopener">マック</a> /
@@ -723,6 +800,42 @@
     </div>
   </footer>
 
+<div class="welcome-modal" id="welcomeModal" hidden>
+  <div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <h2 id="welcomeTitle">ようこそ BurgerCal へ 🍔</h2>
+    <p class="welcome-intro">基礎情報を入力すると、1日の推奨カロリーや「おまかせ提案」がぴったりに調整されます。</p>
+    <div class="welcome-row">
+      <label>性別
+        <select id="wGender">
+          <option value="M">男性</option>
+          <option value="F">女性</option>
+        </select>
+      </label>
+      <label>年齢
+        <input type="number" id="wAge" min="1" max="120" value="30">
+      </label>
+    </div>
+    <div class="welcome-row">
+      <label>身長 (cm)
+        <input type="number" id="wHeight" min="100" max="220" step="0.1" value="170">
+      </label>
+      <label>体重 (kg)
+        <input type="number" id="wWeight" min="20" max="200" step="0.1" value="60">
+      </label>
+    </div>
+    <label class="welcome-act">活動レベル
+      <select id="wAct">
+        <option value="low">低い（座り仕事中心）</option>
+        <option value="mid" selected>普通（軽い運動・通勤あり）</option>
+        <option value="high">高い（立ち仕事・運動習慣）</option>
+      </select>
+    </label>
+    <p class="welcome-disclaimer">⚠ 推奨カロリーは「日本人の食事摂取基準（2020年版）」に基づく参考値です。各メニューの栄養成分も公式サイト掲載値の概算で、本サイトは各社公式とは一切関係ありません。</p>
+    <div class="welcome-actions">
+      <button class="welcome-skip" id="welcomeSkip" type="button">あとで設定する</button>
+      <button class="welcome-go" id="welcomeStart" type="button">始める</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1021,6 +1134,14 @@ document.querySelectorAll(".cat-btn").forEach(b=>{
     document.querySelectorAll(".cat-btn").forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
     state.cat = b.dataset.cat;
+    // カテゴリを単独選択したらアコーディオン展開、「すべて」に戻したらバーガー以外を畳む
+    const cat = b.dataset.cat;
+    if(cat === "all"){
+      collapsedCats.clear();
+      ["サイド","ドリンク","デザート"].forEach(c=>collapsedCats.add(c));
+    }else{
+      collapsedCats.delete(cat);
+    }
     renderMenu();
     window.scrollTo({top:0, behavior:"smooth"});
   });
@@ -1070,28 +1191,25 @@ function generateCombos(){
           if(opts.sameChain && new Set(items.map(i=>i.chain)).size > 1) continue;
           const kcal = items.reduce((sum,i)=>sum+i.kcal,0);
           if(kcal > target) continue;
-          const p = items.reduce((sum,i)=>sum+i.p,0);
-          const f = items.reduce((sum,i)=>sum+i.f,0);
-          const c = items.reduce((sum,i)=>sum+i.c,0);
-          const s = items.reduce((sum,i)=>sum+i.s,0);
-          combos.push({items, kcal, p, f, c, s});
+          const tP = items.reduce((sum,i)=>sum+i.p,0);
+          const tF = items.reduce((sum,i)=>sum+i.f,0);
+          const tC = items.reduce((sum,i)=>sum+i.c,0);
+          const tS = items.reduce((sum,i)=>sum+i.s,0);
+          combos.push({items, kcal, p:tP, f:tF, c:tC, s:tS});
         }
       }
     }
   }
-  // 軸ごとの並び替え。kcalが極端に低い候補（上限の50%未満）は除外して「使い切ろうとしている感」を出す
-  const minKcal = target * 0.5;
-  const usable = combos.filter(c => c.kcal >= minKcal);
-  const list = usable.length ? usable : combos;
+  // 軸ごとの並び替え
   if(axis === "protein"){
-    list.sort((a,b)=> b.p - a.p);
+    combos.sort((a,b)=> b.p - a.p || b.kcal - a.kcal);
   }else if(axis === "lowsalt"){
-    list.sort((a,b)=> a.s - b.s || b.kcal - a.kcal);
+    combos.sort((a,b)=> a.s - b.s || b.kcal - a.kcal);
   }else if(axis === "lowfat"){
-    list.sort((a,b)=> a.f - b.f || b.kcal - a.kcal);
+    combos.sort((a,b)=> a.f - b.f || b.kcal - a.kcal);
   }else if(axis === "balance"){
     // 理想PFC比 P15% / F25% / C60% との差（kcalベース）が小さい順
-    list.sort((a,b)=>{
+    combos.sort((a,b)=>{
       const score = x => {
         const tot = x.p*4 + x.f*9 + x.c*4;
         if(!tot) return Infinity;
@@ -1100,21 +1218,25 @@ function generateCombos(){
       return score(a) - score(b);
     });
   }else{
-    // kcal: 目標に近い順（=上限内で大きい順）
-    list.sort((a,b)=> b.kcal - a.kcal);
+    // kcal: 目標に近い順（=上限内で大きい順）。極端に小さい候補（上限の50%未満）は後ろに回す
+    const minKcal = target * 0.5;
+    combos.sort((a,b)=>{
+      const ua = a.kcal >= minKcal ? 0 : 1;
+      const ub = b.kcal >= minKcal ? 0 : 1;
+      return ua - ub || b.kcal - a.kcal;
+    });
   }
-  const combos_sorted = list;
-  combos.length = 0;
-  combos.push(...combos_sorted);
-  // 多様性: 同じバーガーが続かないように上位5件選抜
+  // 上位5件選抜。完全重複は常に排除。同じバーガー名の連発は kcal 軸のみ抑制（他軸では純粋な上位を歪めない）
   const top = [];
   const seenKey = new Set();
   for(const c of combos){
     const key = c.items.map(i=>i.name).sort().join("|");
     if(seenKey.has(key)) continue;
     seenKey.add(key);
-    const burger = c.items.find(i=>i.cat==="バーガー");
-    if(burger && top.some(t => t.items.find(i=>i.cat==="バーガー")?.name === burger.name)) continue;
+    if(axis === "kcal"){
+      const burger = c.items.find(i=>i.cat==="バーガー");
+      if(burger && top.some(t => t.items.find(i=>i.cat==="バーガー")?.name === burger.name)) continue;
+    }
     top.push(c);
     if(top.length >= 5) break;
   }
@@ -1216,6 +1338,44 @@ function onProfileCommit(){
   el.addEventListener("input", onProfileInput);
   el.addEventListener("change", onProfileCommit);
 });
+
+// ===== 初回訪問時のウェルカムモーダル =====
+(function(){
+  const KEY_WELCOMED = "burger_welcomed";
+  // 壊れた burger_profile が入っていてもモーダルが死なないよう、parse 成功を有効条件とする
+  let validProfile = false;
+  let welcomed = null;
+  try {
+    const raw = localStorage.getItem("burger_profile");
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(parsed && typeof parsed === "object") validProfile = true;
+    }
+  } catch {}
+  try { welcomed = localStorage.getItem(KEY_WELCOMED); } catch {}
+  if(welcomed || validProfile) return;
+  const modal = document.getElementById("welcomeModal");
+  if(!modal) return;
+  modal.hidden = false;
+  const finish = (save) => {
+    if(save){
+      state.profile = normalizeProfile({
+        gender: document.getElementById("wGender").value,
+        age:    document.getElementById("wAge").value,
+        height: document.getElementById("wHeight").value,
+        weight: document.getElementById("wWeight").value,
+        act:    document.getElementById("wAct").value,
+      });
+      syncProfileInputs();
+      try { localStorage.setItem("burger_profile", JSON.stringify(state.profile)); } catch {}
+      recalc();
+    }
+    try { localStorage.setItem(KEY_WELCOMED, "1"); } catch {}
+    modal.hidden = true;
+  };
+  document.getElementById("welcomeStart").addEventListener("click", ()=>finish(true));
+  document.getElementById("welcomeSkip").addEventListener("click", ()=>finish(false));
+})();
 
 // カテゴリ見出しクリックでアコーディオン開閉（モバイルのみ）
 menuArea.addEventListener("click",e=>{

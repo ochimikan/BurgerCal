@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較</title>
-<meta name="description" content="いろんなバーガーチェーンのメニューを賢く比較。カロリー・栄養素を計算してかしこくカロリー管理。">
+<meta name="description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
 
 <!-- OGP -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="BurgerCal">
 <meta property="og:title" content="BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較">
-<meta property="og:description" content="いろんなバーガーチェーンのメニューを賢く比較。カロリー・栄養素を計算してかしこくカロリー管理。">
+<meta property="og:description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
 <meta property="og:url" content="https://burgercal.pages.dev/">
 <meta property="og:image" content="https://burgercal.pages.dev/assets/OGP_1x1.png">
 <meta property="og:image:width" content="1200">
@@ -25,7 +25,7 @@
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較">
-<meta name="twitter:description" content="いろんなバーガーチェーンのメニューを賢く比較。カロリー・栄養素を計算してかしこくカロリー管理。">
+<meta name="twitter:description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
 <meta name="twitter:image" content="https://burgercal.pages.dev/assets/ogp.png">
 
 <meta name="theme-color" content="#ca2722">
@@ -63,6 +63,14 @@
   }
   html,body{overflow-x:clip;max-width:100%}
   img{max-width:100%;height:auto}
+  /* 動的に変化する数値表示は等幅数字で桁ズレを防ぐ */
+  .total-kcal, .mobile-bar-kcal, .nutrient .value,
+  .item-kcal, .sel-row .kcal, .combo-kcal,
+  .profile-result b, .profile-bmr #pfBmr,
+  #targetPct, #targetKcalText{
+    font-variant-numeric:tabular-nums;
+    font-feature-settings:"tnum" 1;
+  }
   body{
     margin:0;
     font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic UI",-apple-system,sans-serif;
@@ -253,6 +261,10 @@
   .combo-kcal{
     font-family:"Anton",sans-serif;font-size:18px;color:var(--red-dark);
   }
+  .combo-kcal small{
+    font-size:11px;font-weight:400;margin-left:2px;opacity:.8;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.5px;
+  }
   .combo-card ul{margin:0;padding-left:0;list-style:none;font-size:12px}
   .combo-card li{padding:3px 0;display:flex;align-items:center;gap:5px;color:var(--brown)}
   .combo-card li em{font-style:normal;color:var(--brown);opacity:.6;font-size:10px;margin-left:auto;font-weight:600}
@@ -442,6 +454,10 @@
   }
   .sel-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
   .sel-row .kcal{color:var(--red);font-weight:700;margin-left:8px;font-family:"Bebas Neue",sans-serif;font-size:14px}
+  .sel-row .kcal small{
+    font-size:10px;font-weight:500;margin-left:2px;opacity:.75;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:.5px;
+  }
   .empty{text-align:center;color:var(--brown);opacity:.6;font-size:12px;padding:20px 0;font-style:italic}
 
   .site-footer{
@@ -669,7 +685,7 @@
     <img src="assets/mv-pc.png" alt="BurgerCal — いろんなバーガーチェーンのカロリー比較" class="hero-mv">
   </picture>
   <p class="hero-tag">
-    いろんなバーガーチェーンを賢く比較してカロリー管理。
+    いろんなバーガーチェーンのメニューを比較してカロリー管理。
     <span class="sub">Compare. Count. Customize.</span>
   </p>
   <p class="hero-updated">データ最終更新: <time datetime="2026-05-03">2026年5月3日</time></p>
@@ -820,7 +836,7 @@
       <li><span class="chain-tag mos">モス</span>2026年3月18日版「アレルギー・栄養成分情報」PDF</li>
       <li><span class="chain-tag bk">BK</span>2026年1月8日版「栄養成分表」PDF</li>
       <li><span class="chain-tag fr">フレッシュ</span>2026年4月22日版「栄養成分」PDF</li>
-      <li><span class="chain-tag wd">ウェンディ</span>2026年4月28日版「アレルギー・栄養成分」PDF</li>
+      <li><span class="chain-tag wd">ウェンディーズ</span>2026年4月28日版「アレルギー・栄養成分」PDF</li>
       <li><span class="chain-tag lt">ゼッテリア</span>2026年4月22日版「栄養成分」PDF</li>
       <li><span class="chain-tag kf">ケンタッキー</span>2026年4月8日版「栄養成分」PDF</li>
       <li class="data-source-checked">サイト最終確認: 2026年5月3日</li>
@@ -1326,7 +1342,7 @@ function renderMenu(){
   menuArea.innerHTML = html;
 }
 
-function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
+function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディーズ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
 
 // ===== 集計 =====
 function recalc(){
@@ -1391,7 +1407,7 @@ function recalc(){
   const sel = document.getElementById("selList");
   if(rows.length){
     sel.innerHTML = rows.sort((a,b)=>b.kcal-a.kcal).map(r=>
-      `<div class="sel-row"><span class="name"><span class="chain-tag ${r.chain}" style="font-size:9px;padding:1px 4px">${chainLabel(r.chain)}</span> ${r.name} ${r.qty>1?`×${r.qty}`:""}</span><span class="kcal">${Math.round(r.kcal)}kcal</span></div>`
+      `<div class="sel-row"><span class="name"><span class="chain-tag ${r.chain}" style="font-size:9px;padding:1px 4px">${chainLabel(r.chain)}</span> ${r.name} ${r.qty>1?`×${r.qty}`:""}</span><span class="kcal">${Math.round(r.kcal)}<small>kcal</small></span></div>`
     ).join("");
   } else {
     sel.innerHTML = `<div class="empty">まだ何も選んでいません</div>`;
@@ -1537,7 +1553,7 @@ function renderCombos(){
       <div class="combo-card">
         <div class="combo-head">
           <span class="combo-rank">#${idx+1}</span>
-          <span class="combo-kcal">${c.kcal}kcal</span>
+          <span class="combo-kcal">${c.kcal}<small>kcal</small></span>
         </div>
         <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
         <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>

@@ -219,6 +219,20 @@
     width:80px;padding:5px 8px;border:2px solid var(--brown);border-radius:6px;
     background:#fff;font-weight:700;color:var(--brown);
   }
+  .meal-target-btn{
+    background:var(--yellow);color:var(--red-dark);
+    border:2px solid var(--red);border-radius:20px;
+    padding:6px 13px;font-weight:700;cursor:pointer;
+    font-family:"Bebas Neue","Anton",sans-serif;font-size:13px;letter-spacing:1px;
+    box-shadow:2px 2px 0 var(--red-dark);white-space:nowrap;
+    transition:transform .12s, box-shadow .12s, opacity .12s;
+  }
+  .meal-target-btn:hover:not(:disabled){transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--red-dark)}
+  .meal-target-btn:disabled{
+    opacity:.5;cursor:not-allowed;
+    background:var(--cream-dark);color:var(--brown);
+    border-color:var(--brown);box-shadow:2px 2px 0 var(--brown);
+  }
   .sp-form .gen-btn{
     background:var(--red);color:#fff;border:2px solid var(--red-dark);
     padding:8px 18px;border-radius:30px;font-weight:700;cursor:pointer;
@@ -367,6 +381,11 @@
   .profile-result b{
     color:var(--red);font-size:18px;font-family:"Anton",sans-serif;letter-spacing:.5px;
   }
+  .profile-bmr{
+    display:inline-block;margin-top:4px;
+    font-size:12px;font-weight:600;color:var(--brown);
+  }
+  .profile-bmr #pfBmr{font-weight:700}
   #mealHint{font-size:11px;font-weight:700}
   .total-kcal{
     font-family:"Anton",sans-serif;font-size:54px;color:var(--red);
@@ -693,6 +712,7 @@
         <label>上限カロリー
           <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> kcal
         </label>
+        <button type="button" class="meal-target-btn" id="mealTargetBtn" title="プロフィールから1食分の目安カロリーを自動入力">🍽 一食の目安</button>
         <label>優先軸
           <select id="suggAxis">
             <option value="kcal" selected>カロリーいっぱいまで使う</option>
@@ -745,8 +765,8 @@
         </select>
       </label>
       <div class="profile-result">
-        基礎代謝: <b id="pfBmr">1,400</b> kcal/日<br>
-        1日の推奨カロリー: <b id="pfTarget">2,450</b> kcal
+        1日の推奨カロリー: <b id="pfTarget">2,450</b> kcal<br>
+        <span class="profile-bmr">基礎代謝: <span id="pfBmr">1,400</span> kcal/日</span>
       </div>
     </div>
 
@@ -1365,6 +1385,9 @@ function recalc(){
   pfcChart.data.datasets[0].data = [pK||0.001, fK||0.001, cK||0.001];
   pfcChart.update();
 
+  // おまかせ提案の「一食の目安」ボタン表示も更新
+  updateMealTargetBtn();
+
   const sel = document.getElementById("selList");
   if(rows.length){
     sel.innerHTML = rows.sort((a,b)=>b.kcal-a.kcal).map(r=>
@@ -1523,14 +1546,39 @@ function renderCombos(){
   }).join("");
 }
 
+function mealTargetKcal(){
+  const tgt = calcTargetKcal();
+  return tgt ? Math.round(tgt/3/50)*50 : null;
+}
+function updateMealTargetBtn(){
+  const btn = document.getElementById("mealTargetBtn");
+  if(!btn) return;
+  const v = mealTargetKcal();
+  if(v == null){
+    btn.disabled = true;
+    btn.textContent = "🍽 一食の目安（要プロフィール）";
+  } else {
+    btn.disabled = false;
+    btn.textContent = `🍽 一食の目安 ${v}kcal`;
+  }
+}
+document.getElementById("mealTargetBtn").addEventListener("click",()=>{
+  const v = mealTargetKcal();
+  if(v == null) return;
+  document.getElementById("suggTarget").value = v;
+});
+
 document.getElementById("autoBtn").addEventListener("click",()=>{
   const panel = document.getElementById("suggestPanel");
   panel.hidden = !panel.hidden;
-  if(!panel.hidden && !lastCombos.length){
-    // 推奨カロリーがあれば1食分を初期値に
-    const tgt = calcTargetKcal();
-    if(tgt) document.getElementById("suggTarget").value = Math.round(tgt/3/50)*50;
-    renderCombos();
+  if(!panel.hidden){
+    updateMealTargetBtn();
+    if(!lastCombos.length){
+      // 推奨カロリーがあれば1食分を初期値に
+      const v = mealTargetKcal();
+      if(v) document.getElementById("suggTarget").value = v;
+      renderCombos();
+    }
   }
 });
 document.getElementById("closeSuggest").addEventListener("click",()=>{

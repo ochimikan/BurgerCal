@@ -56,6 +56,10 @@
     --mc:#ffc72c;--mc-dark:#da291c;
     --mos:#1f7a3a;
     --bk:#d62300;
+    --fr:#2c8c4f;       /* フレッシュネス：深いグリーン */
+    --wd:#e2231a;       /* ウェンディーズ：赤 */
+    --lt:#003ca6;       /* ゼッテリア：ブルー */
+    --kf:#e4002b;       /* ケンタッキー：レッド */
   }
   html,body{overflow-x:clip;max-width:100%}
   img{max-width:100%;height:auto}
@@ -102,6 +106,11 @@
     display:block;margin-top:4px;font-weight:500;font-size:12px;
     color:var(--brown);opacity:.75;letter-spacing:.5px;
   }
+  .hero-updated{
+    margin:8px 0 0;font-size:11px;color:var(--brown);opacity:.7;
+    letter-spacing:.3px;text-align:center;
+  }
+  .hero-updated time{font-weight:700;color:var(--red-dark);opacity:1}
 
   /* ===== LAYOUT ===== */
   .layout{
@@ -151,6 +160,10 @@
   .chain-btn.active[data-chain="mc"]{background:var(--mc);color:var(--mc-dark);border-color:var(--mc-dark);box-shadow:1px 1px 0 var(--mc-dark)}
   .chain-btn.active[data-chain="mos"]{background:var(--mos);border-color:#0d4a20;box-shadow:1px 1px 0 #0d4a20}
   .chain-btn.active[data-chain="bk"]{background:var(--bk);border-color:#7a1500;box-shadow:1px 1px 0 #7a1500}
+  .chain-btn.active[data-chain="fr"]{background:var(--fr);border-color:#15532a;box-shadow:1px 1px 0 #15532a}
+  .chain-btn.active[data-chain="wd"]{background:var(--wd);border-color:#8a140e;box-shadow:1px 1px 0 #8a140e}
+  .chain-btn.active[data-chain="lt"]{background:var(--lt);border-color:#001f5c;box-shadow:1px 1px 0 #001f5c;color:#fff}
+  .chain-btn.active[data-chain="kf"]{background:var(--kf);border-color:#8a0019;box-shadow:1px 1px 0 #8a0019}
   .cat-btn img{width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:4px}
   .auto-btn{
     background:var(--yellow);color:var(--red-dark);border-color:var(--red);
@@ -280,6 +293,10 @@
   .chain-tag.mc{background:var(--mc-dark)}
   .chain-tag.mos{background:var(--mos)}
   .chain-tag.bk{background:var(--bk)}
+  .chain-tag.fr{background:var(--fr)}
+  .chain-tag.wd{background:var(--wd)}
+  .chain-tag.lt{background:var(--lt)}
+  .chain-tag.kf{background:var(--kf)}
   .item-stats{font-size:11px;color:var(--brown);display:flex;flex-wrap:wrap;gap:8px;font-weight:600}
   .item-stats span{white-space:nowrap}
   .item-kcal{
@@ -525,6 +542,8 @@
     .hero-tag .sub{font-size:10px}
     .total-kcal{font-size:38px}
     .nutrient .value{font-size:18px}
+    /* layout padding が 10px に縮んだので controls-sticky の負マージンも揃え、ヒーロー赤線を覆わないようにする */
+    .controls-sticky{margin-top:-10px}
     /* 横スクロール基調。折返ししない代わりにボタンを小さくして、見切れ／スクロール不能を解消 */
     .tab-row{gap:6px;padding:4px 0 6px;flex-wrap:nowrap;overflow-x:auto}
     .chain-btn,.cat-btn{font-size:11px;padding:5px 11px;letter-spacing:.3px;flex:0 0 auto}
@@ -595,6 +614,13 @@
     .welcome-card h2{font-size:18px}
     .welcome-row{flex-direction:column;gap:6px}
   }
+  @media (max-width:380px){
+    /* SE / 320px〜380px は横スクロールでは見落としやすいので折返しに切替えて選択肢を一望できるようにする */
+    .tab-row{flex-wrap:wrap;overflow-x:visible;gap:5px;padding:2px 0 4px}
+    .chain-btn,.cat-btn{font-size:10px;padding:4px 9px;letter-spacing:.2px}
+    .reset,.auto-btn{font-size:11px;padding:5px 10px}
+    .cat-btn img{width:12px;height:12px;margin-right:2px}
+  }
 </style>
 </head>
 <body>
@@ -608,6 +634,7 @@
     いろんなバーガーチェーンを賢く比較してカロリー管理。
     <span class="sub">Compare. Count. Customize.</span>
   </p>
+  <p class="hero-updated">データ最終更新: <time datetime="2026-05-03">2026年5月3日</time></p>
 </header>
 
 <div class="layout">
@@ -619,6 +646,10 @@
         <button class="chain-btn" data-chain="mc">マクドナルド</button>
         <button class="chain-btn" data-chain="mos">モスバーガー</button>
         <button class="chain-btn" data-chain="bk">バーガーキング</button>
+        <button class="chain-btn" data-chain="fr">フレッシュネス</button>
+        <button class="chain-btn" data-chain="wd">ウェンディーズ</button>
+        <button class="chain-btn" data-chain="lt">ゼッテリア</button>
+        <button class="chain-btn" data-chain="kf">ケンタッキー</button>
       </div>
       <div class="tab-row">
         <button class="cat-btn active" data-cat="all">すべて</button>
@@ -752,6 +783,10 @@
       <li><span class="chain-tag mc">マック</span>公式サイト掲載値（随時更新）</li>
       <li><span class="chain-tag mos">モス</span>2026年3月18日版「アレルギー・栄養成分情報」PDF</li>
       <li><span class="chain-tag bk">BK</span>2026年1月8日版「栄養成分表」PDF</li>
+      <li><span class="chain-tag fr">フレッシュ</span>2026年4月22日版「栄養成分」PDF</li>
+      <li><span class="chain-tag wd">ウェンディ</span>2026年4月28日版「アレルギー・栄養成分」PDF</li>
+      <li><span class="chain-tag lt">ゼッテリア</span>2026年4月22日版「栄養成分」PDF</li>
+      <li><span class="chain-tag kf">ケンタッキー</span>2026年4月8日版「栄養成分」PDF</li>
       <li class="data-source-checked">サイト最終確認: 2026年5月3日</li>
     </ul>
 
@@ -842,87 +877,291 @@
 // 各社公式栄養表（マック公式 / モス2026年3月18日版PDF / BK 2026年1月8日版PDF）に基づく
 const menu = [
   // ===== マクドナルド =====
-  {chain:"mc", cat:"バーガー", name:"ハンバーガー", kcal:259, p:13.0, f:9.5, c:30.3, s:1.4},
-  {chain:"mc", cat:"バーガー", name:"チーズバーガー", kcal:310, p:15.9, f:13.5, c:31.0, s:1.9},
-  {chain:"mc", cat:"バーガー", name:"ダブルチーズバーガー", kcal:459, p:26.4, f:25.1, c:31.8, s:2.9},
   {chain:"mc", cat:"バーガー", name:"ビッグマック", kcal:525, p:26.1, f:28.0, c:42.1, s:2.7},
+  {chain:"mc", cat:"バーガー", name:"炙り醤油風 ダブル肉厚ビーフ", kcal:620, p:38.1, f:35.6, c:37.6, s:3.8},
+  {chain:"mc", cat:"バーガー", name:"ダブルチーズバーガー", kcal:459, p:26.4, f:25.1, c:31.8, s:2.9},
   {chain:"mc", cat:"バーガー", name:"てりやきマックバーガー", kcal:477, p:14.5, f:30.2, c:37.5, s:2.1},
   {chain:"mc", cat:"バーガー", name:"フィレオフィッシュ", kcal:338, p:15.0, f:14.2, c:37.4, s:1.6},
-  {chain:"mc", cat:"バーガー", name:"えびフィレオ", kcal:408, p:11.4, f:18.6, c:49.5, s:2.2},
   {chain:"mc", cat:"バーガー", name:"チキンフィレオ", kcal:479, p:19.9, f:23.8, c:47.0, s:3.0},
+  {chain:"mc", cat:"バーガー", name:"てりやきチキンフィレオ", kcal:496, p:20.1, f:23.0, c:52.8, s:3.2},
   {chain:"mc", cat:"バーガー", name:"ベーコンレタスバーガー", kcal:362, p:17.4, f:19.4, c:30.1, s:2.2},
-  {chain:"mc", cat:"バーガー", name:"倍ダブルチーズバーガー", kcal:657, p:41.5, f:40.3, c:31.8, s:3.8},
+  {chain:"mc", cat:"バーガー", name:"えびフィレオ", kcal:408, p:11.4, f:18.6, c:49.5, s:2.2},
+  {chain:"mc", cat:"バーガー", name:"マックポーク", kcal:401, p:15.1, f:22.7, c:34.3, s:1.9},
+  {chain:"mc", cat:"バーガー", name:"マックチキン", kcal:383, p:13.5, f:19.2, c:39.5, s:2.2},
+  {chain:"mc", cat:"バーガー", name:"チキチー(マックチキン チーズ)", kcal:433, p:16.4, f:23.2, c:40.3, s:2.6},
+  {chain:"mc", cat:"バーガー", name:"エグチ(エッグチーズバーガー)", kcal:390, p:22.4, f:19.0, c:31.2, s:2.1},
+  {chain:"mc", cat:"バーガー", name:"チーズバーガー", kcal:310, p:15.9, f:13.5, c:31.0, s:1.9},
+  {chain:"mc", cat:"バーガー", name:"ハンバーガー", kcal:259, p:13.0, f:9.5, c:30.3, s:1.4},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト S", kcal:224, p:3.0, f:10.9, c:28.7, s:0.4},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト M", kcal:409, p:5.5, f:19.8, c:52.4, s:0.7},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト L", kcal:515, p:7.0, f:25.0, c:66.0, s:0.9},
   {chain:"mc", cat:"サイド",   name:"チキンマックナゲット 5ピース", kcal:262, p:15.3, f:15.9, c:14.4, s:1.2},
-  {chain:"mc", cat:"サイド",   name:"シャカチキ", kcal:246, p:14.7, f:13.3, c:16.9, s:1.7},
+  {chain:"mc", cat:"サイド",   name:"シャカチキ", kcal:246, p:14.7, f:13.3, c:16.9, s:2.0},
   {chain:"mc", cat:"サイド",   name:"えだまめコーン", kcal:83, p:5.2, f:3.0, c:9.6, s:0.2},
+  {chain:"mc", cat:"サイド",   name:"サイドサラダ", kcal:10, p:0.5, f:0.1, c:2.3, s:0.1},
   {chain:"mc", cat:"ドリンク", name:"コカ・コーラ M", kcal:145, p:0, f:0, c:36.5, s:0.0},
-  {chain:"mc", cat:"ドリンク", name:"コカ・コーラ L", kcal:188, p:0, f:0, c:47.2, s:0.0},
-  {chain:"mc", cat:"ドリンク", name:"プレミアムローストコーヒー S", kcal:7, p:0.4, f:0, c:1.2, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"コカ・コーラ ゼロ M", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"スプライト M", kcal:128, p:0, f:0, c:32.1, s:0.1},
+  {chain:"mc", cat:"ドリンク", name:"ファンタ グレープ M", kcal:164, p:0, f:0, c:40.9, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"ファンタ メロン M", kcal:164, p:0, f:0, c:40.9, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"Qoo 白ぶどう M", kcal:149, p:0, f:0, c:37.9, s:0.0},
   {chain:"mc", cat:"ドリンク", name:"爽健美茶 M", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"アールグレイ アイスティー(ストレート) M", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"アールグレイ アイスティー(レモン) M", kcal:1, p:0, f:0, c:0.3, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"アールグレイ アイスティー(ミルク) M", kcal:9, p:0.2, f:0.9, c:0.1, s:0.0},
+  {chain:"mc", cat:"ドリンク", name:"野菜生活100 M", kcal:121, p:0.8, f:0.5, c:28.3, s:0.2},
   {chain:"mc", cat:"ドリンク", name:"ミニッツメイド オレンジ S", kcal:102, p:1.5, f:0, c:24.0, s:0.0},
-  {chain:"mc", cat:"デザート", name:"マックシェイク バニラ M", kcal:367, p:6.8, f:5.7, c:72.2, s:0.4},
-  {chain:"mc", cat:"デザート", name:"ホットアップルパイ", kcal:211, p:2.1, f:10.9, c:26.2, s:0.6},
+  {chain:"mc", cat:"ドリンク", name:"プレミアムローストコーヒー S", kcal:7, p:0.4, f:0, c:1.2, s:0.0},
+  {chain:"mc", cat:"デザート", name:"マックシェイク バニラ S", kcal:222, p:4.2, f:3.6, c:43.2, s:0.3},
+  {chain:"mc", cat:"デザート", name:"マックシェイク ストロベリー S", kcal:226, p:4.2, f:3.6, c:44.3, s:0.3},
+  {chain:"mc", cat:"デザート", name:"マックシェイク チョコレート S", kcal:231, p:4.8, f:3.9, c:44.6, s:0.4},
+  {chain:"mc", cat:"デザート", name:"マックフルーリー オレオクッキー", kcal:233, p:5.9, f:6.7, c:37.4, s:0.4},
+  {chain:"mc", cat:"デザート", name:"マックフルーリー 超オレオクッキー", kcal:352, p:7.9, f:10.7, c:56.6, s:0.6},
   {chain:"mc", cat:"デザート", name:"ソフトツイスト", kcal:146, p:4.0, f:3.7, c:24.2, s:0.2},
+  {chain:"mc", cat:"デザート", name:"マックフロート コーク", kcal:199, p:2.9, f:2.9, c:40.4, s:0.1},
+  {chain:"mc", cat:"デザート", name:"マックフロート メロン", kcal:211, p:2.9, f:2.9, c:43.4, s:0.1},
+  {chain:"mc", cat:"デザート", name:"マックフロート コーヒー", kcal:111, p:3.2, f:2.9, c:17.9, s:0.1},
+  {chain:"mc", cat:"デザート", name:"ホットアップルパイ", kcal:211, p:2.1, f:10.9, c:26.2, s:0.6},
+  {chain:"mc", cat:"デザート", name:"プチパンケーキ", kcal:161, p:3.8, f:4.4, c:26.4, s:0.8},
 
   // ===== モスバーガー =====
   {chain:"mos", cat:"バーガー", name:"モスバーガー", kcal:372, p:15.2, f:17.0, c:40.0, s:2.3},
   {chain:"mos", cat:"バーガー", name:"モスチーズバーガー", kcal:425, p:18.2, f:21.4, c:40.4, s:2.8},
   {chain:"mos", cat:"バーガー", name:"テリヤキバーガー", kcal:385, p:14.3, f:18.2, c:41.2, s:2.6},
   {chain:"mos", cat:"バーガー", name:"テリヤキチキンバーガー", kcal:303, p:20.1, f:10.3, c:32.4, s:2.2},
-  {chain:"mos", cat:"バーガー", name:"スパイシーモスバーガー", kcal:374, p:15.3, f:17.0, c:40.4, s:2.5},
-  {chain:"mos", cat:"バーガー", name:"モス野菜バーガー", kcal:363, p:14.1, f:18.6, c:35.4, s:1.8},
   {chain:"mos", cat:"バーガー", name:"海老カツバーガー", kcal:397, p:14.5, f:19.3, c:42.2, s:2.1},
-  {chain:"mos", cat:"バーガー", name:"ロースカツバーガー", kcal:410, p:16.6, f:16.3, c:49.7, s:2.3},
   {chain:"mos", cat:"バーガー", name:"フィッシュバーガー", kcal:381, p:16.2, f:18.8, c:37.0, s:1.9},
+  {chain:"mos", cat:"バーガー", name:"ロースカツバーガー", kcal:410, p:16.6, f:16.3, c:49.7, s:2.3},
   {chain:"mos", cat:"バーガー", name:"チキンバーガー", kcal:386, p:15.0, f:18.5, c:40.0, s:1.5},
-  {chain:"mos", cat:"バーガー", name:"ハンバーガー", kcal:314, p:13.7, f:13.2, c:35.2, s:1.8},
-  {chain:"mos", cat:"バーガー", name:"チーズバーガー", kcal:367, p:16.7, f:17.6, c:35.6, s:2.3},
-  {chain:"mos", cat:"バーガー", name:"モスの菜摘 モス野菜", kcal:223, p:9.1, f:16.5, c:10.4, s:1.3},
+  {chain:"mos", cat:"バーガー", name:"モス野菜バーガー", kcal:363, p:14.1, f:18.6, c:35.4, s:1.8},
+  {chain:"mos", cat:"バーガー", name:"モスライスバーガー海鮮かきあげ(塩だれ)", kcal:372, p:8.5, f:10.5, c:61.3, s:1.9},
+  {chain:"mos", cat:"バーガー", name:"モスライスバーガー焼肉", kcal:353, p:9.5, f:11.6, c:52.8, s:1.1},
   {chain:"mos", cat:"バーガー", name:"ホットドッグ", kcal:358, p:11.6, f:23.4, c:25.4, s:2.1},
+  {chain:"mos", cat:"バーガー", name:"チリドッグ", kcal:373, p:13.0, f:24.0, c:26.5, s:2.6},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 モス野菜", kcal:223, p:9.1, f:16.5, c:10.4, s:1.3},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 テリヤキチキン", kcal:186, p:15.1, f:10.7, c:7.7, s:1.9},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト S", kcal:170, p:2.2, f:7.0, c:24.8, s:0.5},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト M", kcal:238, p:3.0, f:9.8, c:34.7, s:0.7},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト L", kcal:409, p:5.2, f:16.7, c:59.4, s:1.3},
   {chain:"mos", cat:"サイド",   name:"オニオンフライ", kcal:219, p:3.5, f:12.7, c:22.8, s:1.1},
   {chain:"mos", cat:"サイド",   name:"オニポテ", kcal:189, p:2.6, f:8.7, c:25.3, s:0.7},
+  {chain:"mos", cat:"サイド",   name:"こだわりサラダ 和風ドレッシング＜減塩タイプ＞", kcal:41, p:1.3, f:1.0, c:7.3, s:0.5},
   {chain:"mos", cat:"サイド",   name:"チキンナゲット 5コ入り", kcal:195, p:14.8, f:10.2, c:10.9, s:0.8},
   {chain:"mos", cat:"サイド",   name:"モスチキン", kcal:269, p:15.3, f:16.6, c:14.7, s:1.5},
-  {chain:"mos", cat:"ドリンク", name:"ペプシコーラ M", kcal:129, p:0, f:0, c:31.9, s:0.0},
-  {chain:"mos", cat:"ドリンク", name:"アイスコーヒー M", kcal:11, p:0.6, f:0, c:2.0, s:0.0},
-  {chain:"mos", cat:"ドリンク", name:"ブレンドコーヒー", kcal:9, p:0.4, f:0, c:1.5, s:0.0},
+  {chain:"mos", cat:"サイド",   name:"コーンスープ 北海道産コーン使用", kcal:140, p:3.6, f:7.2, c:15.3, s:1.3},
+  {chain:"mos", cat:"サイド",   name:"クラムチャウダー", kcal:119, p:4.1, f:4.3, c:15.8, s:1.3},
+  {chain:"mos", cat:"ドリンク", name:"オレンジブレンド100 S", kcal:92, p:1.0, f:0, c:22.1, s:0.2},
   {chain:"mos", cat:"ドリンク", name:"オレンジブレンド100 M", kcal:136, p:1.4, f:0, c:32.5, s:0.3},
-  {chain:"mos", cat:"デザート", name:"モスシェイク バニラ M", kcal:321, p:4.7, f:9.2, c:54.4, s:0.6},
-  {chain:"mos", cat:"デザート", name:"モスシェイク コーヒー M", kcal:293, p:4.5, f:8.3, c:49.7, s:0.5},
-  {chain:"mos", cat:"デザート", name:"ふんわりスフレパンケーキ メープル", kcal:333, p:5.6, f:16.7, c:39.9, s:0.3},
+  {chain:"mos", cat:"ドリンク", name:"オレンジブレンド100 L", kcal:208, p:2.2, f:0, c:50.0, s:0.5},
+  {chain:"mos", cat:"ドリンク", name:"ペプシコーラ S", kcal:87, p:0, f:0, c:21.7, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ペプシコーラ M", kcal:129, p:0, f:0, c:31.9, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ペプシコーラ L", kcal:198, p:0, f:0, c:49.0, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ジンジャーエール S", kcal:74, p:0, f:0, c:18.6, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ジンジャーエール M", kcal:109, p:0, f:0, c:27.4, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ジンジャーエール L", kcal:168, p:0, f:0, c:42.1, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"アイスコーヒー M", kcal:11, p:0.6, f:0, c:2.0, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"アイスティー M", kcal:2, p:0.2, f:0, c:0.2, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"ブレンドコーヒー", kcal:5, p:0.2, f:0.2, c:1.3, s:0.0},
+  {chain:"mos", cat:"ドリンク", name:"カフェラテ", kcal:87, p:4.7, f:5.3, c:7.1, s:0.1},
+  {chain:"mos", cat:"ドリンク", name:"モスシェイク バニラ S", kcal:201, p:3.0, f:5.8, c:34.1, s:0.4},
+  {chain:"mos", cat:"ドリンク", name:"モスシェイク コーヒー S", kcal:183, p:2.8, f:5.2, c:31.0, s:0.3},
+  {chain:"mos", cat:"デザート", name:"シングル ふんわりスフレパンケーキ メープル", kcal:333, p:5.6, f:16.7, c:39.9, s:0.3},
+  {chain:"mos", cat:"デザート", name:"ダブル ふんわりスフレパンケーキ メープル", kcal:639, p:11.2, f:33.4, c:73.3, s:0.6},
+  {chain:"mos", cat:"デザート", name:"＜冷凍＞ふんわりスフレパンケーキ", kcal:293, p:5.6, f:16.7, c:30.0, s:0.3},
+  {chain:"mos", cat:"デザート", name:"アイスドルチェ カップ ショコラ風ムースケーキ", kcal:199, p:2.1, f:10.4, c:24.3, s:0.1},
 
   // ===== バーガーキング =====
   {chain:"bk", cat:"バーガー", name:"ワッパー", kcal:672, p:28.2, f:39.9, c:50.8, s:3.0},
   {chain:"bk", cat:"バーガー", name:"ワッパーチーズ", kcal:750, p:32.7, f:46.3, c:51.4, s:3.7},
   {chain:"bk", cat:"バーガー", name:"ダブルワッパーチーズ", kcal:985, p:51.2, f:64.1, c:51.5, s:3.9},
-  {chain:"bk", cat:"バーガー", name:"アボカドワッパー", kcal:732, p:28.7, f:45.1, c:54.5, s:3.0},
-  {chain:"bk", cat:"バーガー", name:"クアトロチーズワッパー", kcal:823, p:37.5, f:53.7, c:48.0, s:3.8},
+  {chain:"bk", cat:"バーガー", name:"ワッパージュニア", kcal:333, p:13.8, f:18.6, c:27.9, s:1.3},
+  {chain:"bk", cat:"バーガー", name:"ワッパーチーズジュニア", kcal:372, p:16.1, f:21.8, c:28.2, s:1.7},
   {chain:"bk", cat:"バーガー", name:"スモーキーBBQワッパー", kcal:674, p:28.1, f:39.9, c:51.3, s:2.9},
   {chain:"bk", cat:"バーガー", name:"テリヤキワッパー", kcal:684, p:28.2, f:40.0, c:53.4, s:3.0},
-  {chain:"bk", cat:"バーガー", name:"ワッパージュニア", kcal:333, p:13.8, f:18.6, c:27.9, s:1.3},
-  {chain:"bk", cat:"バーガー", name:"チーズバーガー", kcal:291, p:15.9, f:13.3, c:27.3, s:1.6},
+  {chain:"bk", cat:"バーガー", name:"ベーコンチーズワッパー", kcal:818, p:37.1, f:51.8, c:51.7, s:4.3},
+  {chain:"bk", cat:"バーガー", name:"アボカドワッパー", kcal:732, p:28.7, f:45.1, c:54.5, s:3.0},
   {chain:"bk", cat:"バーガー", name:"ダブルチーズバーガー", kcal:425, p:26.7, f:23.2, c:27.6, s:2.1},
+  {chain:"bk", cat:"バーガー", name:"チーズバーガー", kcal:291, p:15.9, f:13.3, c:27.3, s:1.6},
+  {chain:"bk", cat:"バーガー", name:"ハンバーガー", kcal:252, p:13.7, f:10.1, c:27.0, s:1.2},
+  {chain:"bk", cat:"バーガー", name:"クラシック スモーキーフライドチキンバーガー", kcal:563, p:26.7, f:32.7, c:40.7, s:2.8},
+  {chain:"bk", cat:"バーガー", name:"タルタルチキンバーガー", kcal:425, p:14.4, f:25.8, c:34.7, s:2.0},
+  {chain:"bk", cat:"バーガー", name:"スモーキーテリヤキバーガー", kcal:342, p:13.5, f:18.1, c:31.4, s:1.6},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ S", kcal:216, p:3.0, f:9.8, c:29.0, s:0.9},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ M", kcal:306, p:4.3, f:13.9, c:41.1, s:1.3},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ L", kcal:438, p:6.1, f:19.9, c:58.8, s:1.8},
   {chain:"bk", cat:"サイド",   name:"チリチーズフライ", kcal:325, p:8.9, f:18.3, c:32.0, s:2.6},
   {chain:"bk", cat:"サイド",   name:"オニオンリング", kcal:218, p:2.5, f:10.9, c:27.5, s:1.5},
+  {chain:"bk", cat:"サイド",   name:"シーザーサラダ", kcal:111, p:2.7, f:9.7, c:3.7, s:0.6},
   {chain:"bk", cat:"サイド",   name:"チキンナゲット 5ピース", kcal:228, p:11.2, f:14.5, c:15.2, s:1.2},
   {chain:"bk", cat:"サイド",   name:"チキンナゲット 8ピース", kcal:364, p:17.9, f:23.2, c:24.4, s:1.9},
+  {chain:"bk", cat:"サイド",   name:"スナックチキン", kcal:137, p:8.0, f:7.6, c:9.2, s:1.0},
+  {chain:"bk", cat:"サイド",   name:"アメリカンスモーキーチキン 4ピース", kcal:220, p:23.8, f:13.0, c:2.0, s:1.7},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラ S", kcal:90, p:0, f:0, c:22.7, s:0.0},
   {chain:"bk", cat:"ドリンク", name:"コカ・コーラ M", kcal:129, p:0, f:0, c:32.4, s:0.0},
-  {chain:"bk", cat:"ドリンク", name:"アイスコーヒー M", kcal:8, p:0.4, f:0, c:1.3, s:0.0},
-  {chain:"bk", cat:"ドリンク", name:"アイスティー M", kcal:2, p:0.2, f:0, c:0.2, s:0.0},
-  {chain:"bk", cat:"ドリンク", name:"ブレンドコーヒー M", kcal:10, p:0.5, f:0, c:1.7, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラ L", kcal:181, p:0, f:0, c:45.4, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラゼロ S", kcal:0, p:0, f:0, c:0.2, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラゼロ M", kcal:0, p:0, f:0, c:0.3, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"コカ・コーラゼロ L", kcal:0, p:0, f:0, c:0.4, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ドクターペッパー S", kcal:76, p:0, f:0, c:18.9, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ドクターペッパー M", kcal:108, p:0, f:0, c:27.0, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ファンタメロンソーダ S", kcal:101, p:0, f:0, c:25.2, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ファンタメロンソーダ M", kcal:144, p:0, f:0, c:36.0, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ミニッツメイドオレンジ S", kcal:95, p:0.4, f:0.2, c:22.5, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ミニッツメイドオレンジ M", kcal:135, p:0.6, f:0.3, c:32.1, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"アイスコーヒー S", kcal:6, p:0.3, f:0, c:1.1, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"アイスティー S", kcal:2, p:0.2, f:0, c:0.2, s:0.0},
+  {chain:"bk", cat:"ドリンク", name:"ダージリンティー S", kcal:2, p:0.2, f:0, c:0.2, s:0.0},
   {chain:"bk", cat:"デザート", name:"アップルパイ", kcal:203, p:1.9, f:10.7, c:24.4, s:0.3},
   {chain:"bk", cat:"デザート", name:"キャラメルサンデー", kcal:129, p:1.5, f:3.2, c:23.8, s:0.2},
   {chain:"bk", cat:"デザート", name:"チョコレートサンデー", kcal:129, p:1.5, f:3.1, c:24.1, s:0.2},
   {chain:"bk", cat:"デザート", name:"ソフトクリーム プレーン", kcal:102, p:1.4, f:3.0, c:17.6, s:0.2},
+  {chain:"bk", cat:"デザート", name:"フロートドリンク コカ・コーラ", kcal:145, p:2.0, f:3.8, c:25.9, s:0.2},
+  {chain:"bk", cat:"デザート", name:"フロートドリンク コカ・コーラゼロ", kcal:91, p:2.0, f:3.8, c:12.5, s:0.2},
+  {chain:"bk", cat:"デザート", name:"フロートドリンク メロンソーダ", kcal:151, p:2.0, f:3.8, c:27.4, s:0.2},
+  {chain:"bk", cat:"デザート", name:"フロートドリンク アイスコーヒー", kcal:92, p:2.0, f:3.8, c:12.5, s:0.2},
+
+  // ===== フレッシュネスバーガー =====
+  {chain:"fr", cat:"バーガー", name:"フレッシュネスバーガー", kcal:408, p:13.5, f:22.5, c:37.7, s:2.0},
+  {chain:"fr", cat:"バーガー", name:"ガーデンサラダバーガー", kcal:341, p:12.3, f:16.0, c:36.9, s:1.8},
+  {chain:"fr", cat:"バーガー", name:"テリヤキバーガー", kcal:361, p:11.8, f:19.5, c:34.1, s:1.7},
+  {chain:"fr", cat:"バーガー", name:"サルサバーガー", kcal:305, p:11.9, f:11.8, c:37.8, s:2.4},
+  {chain:"fr", cat:"バーガー", name:"チーズバーガー", kcal:390, p:16.4, f:19.0, c:35.5, s:2.4},
+  {chain:"fr", cat:"バーガー", name:"クラシックバーガー", kcal:431, p:21.5, f:18.3, c:39.0, s:2.5},
+  {chain:"fr", cat:"バーガー", name:"クラシックチーズバーガー", kcal:512, p:26.3, f:24.9, c:39.6, s:2.9},
+  {chain:"fr", cat:"バーガー", name:"クラシックアボカドバーガー", kcal:548, p:22.8, f:30.6, c:43.1, s:2.5},
+  {chain:"fr", cat:"バーガー", name:"クラシックアボカドチーズバーガー", kcal:629, p:27.6, f:37.2, c:43.7, s:2.9},
+  {chain:"fr", cat:"バーガー", name:"クラシックWWバーガー", kcal:842, p:47.0, f:47.3, c:45.9, s:4.5},
+  {chain:"fr", cat:"バーガー", name:"塩レモンチキンバーガー", kcal:442, p:15.3, f:24.7, c:39.0, s:2.4},
+  {chain:"fr", cat:"バーガー", name:"ホットチリチキンバーガー", kcal:455, p:15.7, f:24.9, c:41.4, s:3.4},
+  {chain:"fr", cat:"バーガー", name:"サーモンバーガー", kcal:447, p:13.0, f:26.7, c:38.0, s:1.6},
+  {chain:"fr", cat:"バーガー", name:"ガーリックシュリンプバーガー", kcal:439, p:14.9, f:26.0, c:35.8, s:1.6},
+  {chain:"fr", cat:"バーガー", name:"黒毛和牛バーガー", kcal:541, p:19.0, f:34.4, c:37.7, s:2.5},
+  {chain:"fr", cat:"サイド", name:"フライドポテト S", kcal:178, p:1.4, f:12.9, c:14.7, s:0.7},
+  {chain:"fr", cat:"サイド", name:"フライドポテト R", kcal:208, p:1.8, f:13.8, c:19.6, s:1.4},
+  {chain:"fr", cat:"サイド", name:"フライドポテト L", kcal:267, p:2.7, f:15.8, c:29.4, s:2.1},
+  {chain:"fr", cat:"サイド", name:"フレンチフライ S", kcal:232, p:2.1, f:14.4, c:23.7, s:0.7},
+  {chain:"fr", cat:"サイド", name:"フレンチフライ R", kcal:280, p:2.8, f:15.9, c:31.6, s:1.5},
+  {chain:"fr", cat:"サイド", name:"フレンチフライ L", kcal:375, p:4.2, f:18.8, c:47.4, s:2.2},
+  {chain:"fr", cat:"サイド", name:"チキンナゲット", kcal:350, p:10.7, f:27.9, c:12.4, s:1.2},
+  {chain:"fr", cat:"サイド", name:"フライドチキン", kcal:237, p:10.1, f:18.2, c:8.4, s:1.1},
+  {chain:"fr", cat:"サイド", name:"れんこんフライ", kcal:168, p:1.6, f:10.1, c:19.4, s:1.5},
+  {chain:"fr", cat:"サイド", name:"コールスローサラダ", kcal:157, p:2.1, f:12.3, c:11.2, s:0.6},
+  {chain:"fr", cat:"サイド", name:"北海道コーンポタージュ", kcal:134, p:2.7, f:5.9, c:17.3, s:1.4},
+  {chain:"fr", cat:"ドリンク", name:"ドリップコーヒー T", kcal:1, p:0, f:0, c:0.1, s:0.0},
+  {chain:"fr", cat:"ドリンク", name:"ドリップコーヒー G", kcal:1, p:0, f:0, c:0.2, s:0.0},
+  {chain:"fr", cat:"ドリンク", name:"カフェラテ T", kcal:96, p:5.2, f:6.0, c:7.6, s:0.2},
+  {chain:"fr", cat:"ドリンク", name:"カフェラテ G", kcal:125, p:6.8, f:7.8, c:9.9, s:0.2},
+  {chain:"fr", cat:"ドリンク", name:"カプチーノ T", kcal:77, p:4.2, f:4.8, c:6.1, s:0.1},
+  {chain:"fr", cat:"ドリンク", name:"ロイヤルミルクティー T", kcal:206, p:8.3, f:9.3, c:23.8, s:0.2},
+  {chain:"fr", cat:"ドリンク", name:"ロイヤルミルクティー G", kcal:251, p:10.2, f:11.5, c:28.8, s:0.3},
+  {chain:"fr", cat:"ドリンク", name:"クリーミー宇治抹茶ミルク T", kcal:162, p:7.1, f:7.8, c:19.0, s:0.2},
+  {chain:"fr", cat:"ドリンク", name:"オーガニックティー T", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"fr", cat:"ドリンク", name:"フレッシュレモネード T", kcal:113, p:0.9, f:0.7, c:28.4, s:0.0},
+  {chain:"fr", cat:"デザート", name:"揚げたてチュロス プレーン", kcal:252, p:1.9, f:13.2, c:26.8, s:0.0},
+  {chain:"fr", cat:"デザート", name:"揚げたてチュロス チョコソース", kcal:308, p:2.3, f:13.4, c:44.8, s:0.0},
+  {chain:"fr", cat:"デザート", name:"スコーンサンド こしあんバター", kcal:324, p:4.4, f:9.4, c:43.5, s:0.8},
+
+  // ===== ウェンディーズ・ファーストキッチン =====
+  {chain:"wd", cat:"バーガー", name:"ワイルド☆ロック", kcal:856, p:57.3, f:76.2, c:4.7, s:4.2},
+  {chain:"wd", cat:"バーガー", name:"ウェンディーズバーガーUSA", kcal:613, p:34.4, f:43.8, c:30.3, s:3.8},
+  {chain:"wd", cat:"バーガー", name:"ウェンディーズバーガーUSA ダブル", kcal:914, p:59.7, f:70.0, c:31.3, s:5.2},
+  {chain:"wd", cat:"バーガー", name:"ウェンディーズバーガーUSA トリプル", kcal:1254, p:87.2, f:99.5, c:32.5, s:6.1},
+  {chain:"wd", cat:"バーガー", name:"ベーコネーターUSA シングル", kcal:671, p:38.1, f:49.3, c:28.3, s:3.8},
+  {chain:"wd", cat:"バーガー", name:"ベーコネーターUSA ダブル", kcal:1039, p:67.4, f:81.1, c:29.7, s:5.5},
+  {chain:"wd", cat:"バーガー", name:"ウェンディーズベーコンエッグバーガー", kcal:610, p:37.7, f:41.8, c:29.6, s:3.8},
+  {chain:"wd", cat:"バーガー", name:"ウェンディーズチーズベーコンエッグバーガー", kcal:649, p:39.9, f:45.1, c:29.8, s:4.1},
+  {chain:"wd", cat:"バーガー", name:"てりやきバーガー", kcal:537, p:29.8, f:37.4, c:30.1, s:3.2},
+  {chain:"wd", cat:"バーガー", name:"チキンクラブサンド", kcal:738, p:31.4, f:42.5, c:39.0, s:3.2},
+  {chain:"wd", cat:"バーガー", name:"てりやきチキンバーガー", kcal:659, p:26.4, f:35.7, c:39.4, s:3.0},
+  {chain:"wd", cat:"バーガー", name:"チキンフィレバーガーUSA", kcal:647, p:26.3, f:35.5, c:37.0, s:2.5},
+  {chain:"wd", cat:"バーガー", name:"スパイシーチキンフィレバーガーUSA", kcal:614, p:26.3, f:35.9, c:44.0, s:3.2},
+  {chain:"wd", cat:"バーガー", name:"クリスピーチキンバーガー", kcal:539, p:22.4, f:32.3, c:37.7, s:2.2},
+  {chain:"wd", cat:"バーガー", name:"てりやきクリスピーチキンバーガー", kcal:554, p:22.5, f:32.5, c:40.8, s:2.8},
+  {chain:"wd", cat:"バーガー", name:"Jr.チーズバーガーデラックス", kcal:414, p:20.2, f:26.6, c:28.3, s:2.7},
+  {chain:"wd", cat:"バーガー", name:"Jr.ベーコンエッグバーガー", kcal:452, p:25.8, f:27.9, c:28.5, s:3.2},
+  {chain:"wd", cat:"バーガー", name:"Jr.チーズベーコンエッグバーガー", kcal:491, p:28.0, f:31.2, c:28.6, s:3.5},
+  {chain:"wd", cat:"バーガー", name:"Jr.てりやきバーガー", kcal:379, p:13.1, f:23.5, c:28.7, s:2.6},
+  {chain:"wd", cat:"サイド", name:"フレンチフライポテト M", kcal:352, p:4.2, f:19.9, c:40.5, s:2.0},
+  {chain:"wd", cat:"サイド", name:"チキンナゲット 5個", kcal:384, p:13.0, f:32.0, c:9.0, s:1.9},
+  {chain:"wd", cat:"サイド", name:"チキンナゲット 10個", kcal:767, p:26.0, f:64.0, c:18.0, s:3.8},
+  {chain:"wd", cat:"サイド", name:"フライドチキン 1本", kcal:508, p:14.2, f:41.6, c:16.8, s:1.4},
+  {chain:"wd", cat:"サイド", name:"ウェンディーズ チリ M", kcal:210, p:15.2, f:12.6, c:14.5, s:2.2},
+  {chain:"wd", cat:"ドリンク", name:"アイスコーヒー M", kcal:12, p:0.6, f:0, c:2.0, s:0.0},
+  {chain:"wd", cat:"ドリンク", name:"ホットコーヒー M", kcal:10, p:0.5, f:0, c:1.6, s:0.0},
+  {chain:"wd", cat:"ドリンク", name:"アイスカフェラテ M", kcal:90, p:4.8, f:4.8, c:7.0, s:0.2},
+  {chain:"wd", cat:"ドリンク", name:"アイスティー", kcal:10, p:0.2, f:0, c:2.3, s:0.1},
+  {chain:"wd", cat:"ドリンク", name:"ペプシコーラ M", kcal:109, p:0, f:0, c:27.2, s:0.1},
+  {chain:"wd", cat:"ドリンク", name:"レモネード M", kcal:122, p:0.2, f:0, c:30.5, s:0.1},
+  {chain:"wd", cat:"デザート", name:"クラウンバニラ ソフトクリーム", kcal:231, p:4.5, f:9.4, c:32.3, s:0.4},
+  {chain:"wd", cat:"デザート", name:"クラウンバニラ サブレカップソフトクリーム", kcal:254, p:5.4, f:11.2, c:32.8, s:0.4},
+  {chain:"wd", cat:"デザート", name:"クラウンバニラ 白玉クリームぜんざい", kcal:434, p:9.8, f:14.6, c:66.0, s:0.6},
+  {chain:"wd", cat:"デザート", name:"クラウンバニラ ハッピーストロベリーパフェ", kcal:376, p:7.9, f:14.9, c:52.2, s:0.5},
+
+  // ===== ゼッテリア =====
+  {chain:"lt", cat:"バーガー", name:"絶品ビーフバーガー", kcal:550, p:18.2, f:35.6, c:36.9, s:2.5},
+  {chain:"lt", cat:"バーガー", name:"絶品チーズバーガー", kcal:637, p:23.3, f:43.3, c:35.9, s:3.0},
+  {chain:"lt", cat:"バーガー", name:"ダブル絶品ビーフバーガー", kcal:795, p:31.1, f:55.0, c:38.9, s:3.5},
+  {chain:"lt", cat:"バーガー", name:"ダブル絶品チーズバーガー", kcal:1005, p:41.2, f:73.2, c:40.1, s:4.6},
+  {chain:"lt", cat:"バーガー", name:"トリプル絶品ビーフバーガー", kcal:1041, p:44.1, f:74.5, c:41.0, s:4.4},
+  {chain:"lt", cat:"バーガー", name:"トリプル絶品チーズバーガー", kcal:1409, p:65.9, f:105.4, c:41.3, s:6.1},
+  {chain:"lt", cat:"バーガー", name:"4種のチーズバーガー", kcal:448, p:17.1, f:29.6, c:26.5, s:3.1},
+  {chain:"lt", cat:"バーガー", name:"てりやきビーフバーガー", kcal:429, p:13.0, f:25.4, c:35.3, s:3.0},
+  {chain:"lt", cat:"バーガー", name:"オレンジチキンバーガー", kcal:466, p:15.6, f:25.4, c:43.8, s:1.6},
+  {chain:"lt", cat:"バーガー", name:"ハニーマスタードチキンバーガー", kcal:503, p:15.9, f:31.0, c:40.2, s:1.9},
+  {chain:"lt", cat:"バーガー", name:"えびバーガー", kcal:396, p:10.6, f:21.2, c:40.2, s:2.5},
+  {chain:"lt", cat:"バーガー", name:"えびカレーバーガー", kcal:469, p:14.2, f:25.6, c:45.1, s:3.3},
+  {chain:"lt", cat:"バーガー", name:"てりやきチキンバーガー", kcal:471, p:15.9, f:30.0, c:34.3, s:2.1},
+  {chain:"lt", cat:"バーガー", name:"タルタルチキンバーガー", kcal:486, p:15.8, f:30.0, c:37.5, s:1.8},
+  {chain:"lt", cat:"バーガー", name:"チーズバーガー", kcal:364, p:13.8, f:20.3, c:31.7, s:2.6},
+  {chain:"lt", cat:"サイド", name:"フレンチフライポテト S", kcal:255, p:2.4, f:15.9, c:26.3, s:0.5},
+  {chain:"lt", cat:"サイド", name:"フレンチフライポテト M", kcal:357, p:3.4, f:22.3, c:36.8, s:0.7},
+  {chain:"lt", cat:"サイド", name:"フレンチフライポテト L", kcal:459, p:4.3, f:28.6, c:47.3, s:1.1},
+  {chain:"lt", cat:"サイド", name:"ふるポテ バター醤油風味", kcal:367, p:4.0, f:22.4, c:38.3, s:0.7},
+  {chain:"lt", cat:"サイド", name:"ふるポテ 明太子風味", kcal:368, p:3.9, f:22.4, c:38.8, s:0.5},
+  {chain:"lt", cat:"サイド", name:"バケツポテト", kcal:1020, p:9.6, f:63.6, c:105.2, s:2.0},
+  {chain:"lt", cat:"サイド", name:"チキンからあげっと 3個", kcal:212, p:5.9, f:16.1, c:10.9, s:1.3},
+  {chain:"lt", cat:"サイド", name:"チキンからあげっと 6個", kcal:425, p:11.9, f:32.2, c:21.8, s:2.5},
+  {chain:"lt", cat:"サイド", name:"チーズスティック", kcal:167, p:7.2, f:10.8, c:10.4, s:0.8},
+  {chain:"lt", cat:"サイド", name:"コーンスープ", kcal:104, p:2.4, f:2.8, c:17.3, s:2.0},
+  {chain:"lt", cat:"ドリンク", name:"ホットコーヒー M", kcal:1, p:0.1, f:0, c:0.2, s:0.0},
+  {chain:"lt", cat:"ドリンク", name:"ホットカフェオレ M", kcal:131, p:6.6, f:7.5, c:9.1, s:0.2},
+  {chain:"lt", cat:"ドリンク", name:"アイスコーヒー M", kcal:1, p:0, f:0, c:0.1, s:0.0},
+  {chain:"lt", cat:"ドリンク", name:"アイスカフェオレ M", kcal:136, p:6.8, f:7.8, c:9.4, s:0.2},
+  {chain:"lt", cat:"ドリンク", name:"ホットティー", kcal:0, p:0, f:0, c:0, s:0.0},
+  {chain:"lt", cat:"ドリンク", name:"アイスティー M", kcal:7, p:0.2, f:0, c:1.5, s:0.0},
+  {chain:"lt", cat:"ドリンク", name:"ペプシコーラ M", kcal:114, p:0.1, f:0, c:28.4, s:0.0},
+  {chain:"lt", cat:"デザート", name:"シェーキ バニラ S", kcal:195, p:3.9, f:7.1, c:29.0, s:0.3},
+  {chain:"lt", cat:"デザート", name:"シェーキ バニラ M", kcal:227, p:4.5, f:8.3, c:33.7, s:0.4},
+  {chain:"lt", cat:"デザート", name:"コーヒーゼリーシェーキ", kcal:243, p:4.2, f:7.4, c:41.3, s:0.4},
+  {chain:"lt", cat:"デザート", name:"チュロ ホワイトシュガー", kcal:218, p:1.9, f:11.0, c:28.1, s:0.4},
+  {chain:"lt", cat:"デザート", name:"チュロ シナモンシュガー", kcal:230, p:1.9, f:11.0, c:31.0, s:0.4},
+
+  // ===== ケンタッキーフライドチキン =====
+  {chain:"kf", cat:"バーガー", name:"チキンフィレバーガー", kcal:398, p:24.3, f:19.7, c:31.1, s:2.4},
+  {chain:"kf", cat:"バーガー", name:"辛口チキンフィレバーガー", kcal:384, p:24.4, f:17.8, c:31.9, s:2.6},
+  {chain:"kf", cat:"バーガー", name:"チーズチキンフィレバーガー", kcal:468, p:26.8, f:25.8, c:32.1, s:2.9},
+  {chain:"kf", cat:"バーガー", name:"ダブルチキンフィレバーガー", kcal:615, p:44.6, f:30.7, c:40.0, s:4.2},
+  {chain:"kf", cat:"バーガー", name:"和風チキンカツバーガー", kcal:426, p:16.0, f:22.3, c:40.5, s:2.0},
+  {chain:"kf", cat:"バーガー", name:"ペッパーマヨツイスター", kcal:301, p:11.3, f:14.5, c:31.7, s:1.8},
+  {chain:"kf", cat:"バーガー", name:"てりやきツイスター", kcal:360, p:11.6, f:18.8, c:35.0, s:2.0},
+  {chain:"kf", cat:"サイド", name:"オリジナルチキン", kcal:218, p:16.5, f:12.8, c:9.1, s:1.5},
+  {chain:"kf", cat:"サイド", name:"骨なしケンタッキー", kcal:191, p:20.3, f:8.5, c:8.3, s:1.7},
+  {chain:"kf", cat:"サイド", name:"カーネルクリスピー", kcal:119, p:6.8, f:6.6, c:8.2, s:0.6},
+  {chain:"kf", cat:"サイド", name:"ナゲット 5ピース", kcal:222, p:13.3, f:13.4, c:11.8, s:1.5},
+  {chain:"kf", cat:"サイド", name:"フライドポテト S", kcal:195, p:2.6, f:7.8, c:28.7, s:1.2},
+  {chain:"kf", cat:"サイド", name:"フライドポテト L", kcal:390, p:5.3, f:15.5, c:57.4, s:2.4},
+  {chain:"kf", cat:"サイド", name:"フライドポテトBOX", kcal:908, p:12.3, f:36.1, c:133.5, s:5.6},
+  {chain:"kf", cat:"サイド", name:"コールスロー S", kcal:85, p:1.0, f:6.3, c:6.3, s:0.6},
+  {chain:"kf", cat:"サイド", name:"コールスロー M", kcal:137, p:1.6, f:10.2, c:10.3, s:0.9},
+  {chain:"kf", cat:"ドリンク", name:"ペプシコーラ S", kcal:100, p:0.1, f:0, c:25.0, s:0.0},
+  {chain:"kf", cat:"ドリンク", name:"ペプシコーラ M", kcal:132, p:0.1, f:0, c:32.7, s:0.0},
+  {chain:"kf", cat:"ドリンク", name:"ペプシコーラ L", kcal:189, p:0.2, f:0, c:47.0, s:0.0},
+  {chain:"kf", cat:"ドリンク", name:"ジンジャーエール M", kcal:112, p:0, f:0, c:28.1, s:0.0},
+  {chain:"kf", cat:"ドリンク", name:"メロンソーダ M", kcal:133, p:0, f:0, c:33.2, s:0.0},
+  {chain:"kf", cat:"ドリンク", name:"アイスティー M", kcal:10, p:0.1, f:0, c:2.4, s:0.0},
+  {chain:"kf", cat:"デザート", name:"ビスケット", kcal:211, p:3.2, f:12.5, c:21.3, s:1.1},
+  {chain:"kf", cat:"デザート", name:"チョコパイ", kcal:270, p:3.1, f:15.8, c:29.0, s:0.3},
+  {chain:"kf", cat:"デザート", name:"ハニーメイプル", kcal:30, p:0, f:0, c:7.0, s:0.0},
 ];
 
 // ===== 状態 =====
@@ -1050,7 +1289,7 @@ function renderMenu(){
   menuArea.innerHTML = html;
 }
 
-function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK"}[c]||c}
+function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
 
 // ===== 集計 =====
 function recalc(){

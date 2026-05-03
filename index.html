@@ -112,7 +112,7 @@
   /* ===== CONTROLS ===== */
   .controls-sticky{
     position:sticky;top:0;z-index:50;background:var(--cream);
-    padding:12px 14px 8px;margin:-12px -14px 0;
+    padding:12px 0 8px;margin-top:-12px;
   }
   .controls-sticky::after{
     content:"";display:block;height:8px;
@@ -518,9 +518,25 @@
     .mobile-bar button{padding:6px 10px;font-size:11px}
   }
   @media (max-width:480px){
+    .layout{padding:10px;gap:10px}
+    header.hero{padding:14px 10px 12px}
     .hero-mv{max-width:200px}
+    .hero-tag{font-size:12px}
+    .hero-tag .sub{font-size:10px}
     .total-kcal{font-size:38px}
     .nutrient .value{font-size:18px}
+    /* 横スクロール基調。折返ししない代わりにボタンを小さくして、見切れ／スクロール不能を解消 */
+    .tab-row{gap:6px;padding:4px 0 6px;flex-wrap:nowrap;overflow-x:auto}
+    .chain-btn,.cat-btn{font-size:11px;padding:5px 11px;letter-spacing:.3px;flex:0 0 auto}
+    .reset,.auto-btn{font-size:12px;padding:6px 11px;flex:0 0 auto}
+    .controls{gap:6px;flex-wrap:wrap}
+    .search{font-size:13px;padding:8px 12px;flex:1 1 100%;min-width:0}
+    .cat-btn img{width:14px;height:14px;margin-right:3px}
+    .category h2{font-size:18px;padding:6px 10px}
+    .category h2 img{width:26px;height:26px}
+    .mobile-bar{padding:8px 10px}
+    .mobile-bar-kcal{font-size:18px}
+    .mobile-bar button{padding:5px 8px;font-size:10px}
   }
 
   /* ===== WELCOME MODAL ===== */
@@ -578,23 +594,6 @@
     .welcome-card{padding:18px 16px}
     .welcome-card h2{font-size:18px}
     .welcome-row{flex-direction:column;gap:6px}
-  }
-  @media (max-width:400px){
-    .layout{padding:10px;gap:10px}
-    header.hero{padding:14px 10px 12px}
-    .hero-tag{font-size:12px}
-    .hero-tag .sub{font-size:10px}
-    .tab-row{gap:6px;flex-wrap:wrap;overflow-x:visible;padding:2px 0 4px}
-    .chain-btn,.cat-btn{font-size:11px;padding:5px 10px;letter-spacing:.3px}
-    .reset,.auto-btn{font-size:12px;padding:6px 10px}
-    .controls{gap:6px}
-    .search{font-size:13px;padding:8px 12px}
-    .cat-btn img{width:14px;height:14px}
-    .category h2{font-size:18px;padding:6px 10px}
-    .category h2 img{width:26px;height:26px}
-    .mobile-bar{padding:8px 10px}
-    .mobile-bar-kcal{font-size:18px}
-    .mobile-bar button{padding:5px 8px;font-size:10px}
   }
 </style>
 </head>

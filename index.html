@@ -272,8 +272,8 @@
     font-family:"Anton",sans-serif;font-size:18px;color:var(--red-dark);
   }
   .combo-kcal small{
-    font-size:11px;font-weight:400;margin-left:2px;opacity:.8;
-    font-family:"Bebas Neue",sans-serif;letter-spacing:.5px;
+    font-size:12px;font-weight:400;margin-left:2px;opacity:.8;
+    font-family:"Anton",sans-serif;letter-spacing:.3px;
   }
   .combo-card ul{margin:0;padding-left:0;list-style:none;font-size:12px}
   .combo-card li{padding:3px 0;display:flex;align-items:center;gap:5px;color:var(--brown)}
@@ -349,16 +349,16 @@
   .item-stats span{white-space:nowrap}
   /* 1日推奨摂取量に対する栄養素バー（あすけん風） */
   .nutri-bars{
-    display:grid;grid-template-columns:repeat(4,1fr);
+    display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));
     gap:4px 12px;margin-top:8px;
   }
   .nb-row{
     display:flex;align-items:center;gap:5px;font-size:10px;
-    font-weight:600;color:var(--brown);
+    font-weight:600;color:var(--brown);min-width:0;
   }
   .nb-label{flex:0 0 auto;min-width:14px;font-weight:700;letter-spacing:.3px}
   .nb-bar{
-    flex:1;height:5px;background:var(--cream-dark);
+    flex:1 1 0;height:5px;background:var(--cream-dark);
     border-radius:2px;overflow:hidden;min-width:18px;
     border:1px solid rgba(74,40,20,.12);
     position:relative;
@@ -369,16 +369,12 @@
     font-variant-numeric:tabular-nums;font-weight:700;
   }
   .nb-row.nb-over .nb-bar{box-shadow:0 0 0 1.5px #dc2626}
-  /* スマホは2列に折返してコンパクトに */
-  @media (max-width:600px){
-    .nutri-bars{grid-template-columns:1fr 1fr;gap:3px 10px}
-  }
   @media (max-width:380px){
     .nutri-bars{gap:3px 8px}
     .nb-row{font-size:9px}
     .nb-pct{min-width:26px}
   }
-  /* おまかせカード内では少し大きめ */
+  /* おまかせカード内では少し大きめのバーで見せる（列数は2x2を継承） */
   .combo-card .nutri-bars{margin-top:6px}
   .combo-card .nb-row{font-size:11px}
   .combo-card .nb-bar{height:6px}
@@ -450,8 +446,8 @@
     text-shadow:3px 3px 0 var(--cream-dark);
   }
   .total-kcal small{
-    font-size:16px;color:var(--brown);font-weight:400;margin-left:4px;
-    font-family:"Bebas Neue",sans-serif;letter-spacing:1px;
+    font-size:18px;color:var(--brown);font-weight:400;margin-left:4px;
+    font-family:"Anton",sans-serif;letter-spacing:.5px;
   }
   .target-bar{
     height:14px;background:var(--cream);border:2px solid var(--brown);
@@ -475,7 +471,7 @@
     font-size:12px;font-weight:500;color:var(--brown);opacity:.7;font-family:"Bebas Neue",sans-serif;
   }
 
-  .pfc-chart{margin:14px 0 6px;position:relative;height:180px}
+  .pfc-chart{margin:14px 0 10px;position:relative;height:180px}
   .pfc-legend{
     display:flex;justify-content:center;gap:14px;font-size:11px;
     color:var(--brown);margin-bottom:8px;font-weight:600;
@@ -487,6 +483,56 @@
   .leg-p::before{background:#3b82f6}
   .leg-f::before{background:#f59e0b}
   .leg-c::before{background:#10b981}
+  /* 理想PFC比率との比較表 */
+  .pfc-compare{
+    margin:0 0 8px;padding:8px 10px;
+    background:#fff;border:1.5px dashed var(--cream-dark);border-radius:8px;
+    display:flex;flex-direction:column;gap:4px;
+  }
+  .pfcc-head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:11px;font-weight:700;color:var(--brown);
+    margin-bottom:2px;padding-bottom:4px;
+    border-bottom:1px dotted var(--cream-dark);
+  }
+  .pfcc-head .ideal-note{font-size:10px;font-weight:600;opacity:.65}
+  .pfcc-row{
+    display:grid;
+    grid-template-columns:auto 1fr auto auto auto;
+    gap:6px;align-items:center;
+    font-size:11px;font-variant-numeric:tabular-nums;
+  }
+  .pfcc-row .dot{
+    width:10px;height:10px;border-radius:2px;flex-shrink:0;
+  }
+  .pfcc-row .dot.p{background:#3b82f6}
+  .pfcc-row .dot.f{background:#f59e0b}
+  .pfcc-row .dot.c{background:#10b981}
+  .pfcc-row .name{font-weight:700;color:var(--brown);font-size:11px}
+  .pfcc-row .actual{
+    font-weight:700;color:var(--brown);
+    font-family:"Anton",sans-serif;font-size:14px;letter-spacing:.2px;
+    min-width:34px;text-align:right;
+  }
+  .pfcc-row .vs{font-size:10px;color:var(--brown);opacity:.6;font-weight:600}
+  .pfcc-row .delta{
+    font-weight:700;font-size:11px;text-align:right;
+    min-width:42px;letter-spacing:.2px;
+  }
+  .pfcc-row .delta.over{color:#dc2626}
+  .pfcc-row .delta.under{color:#1d4ed8}
+  .pfcc-row .delta.ok{color:#16a34a}
+  .pfcc-row .delta.empty{color:var(--brown);opacity:.4}
+  /* プロフィール未入力時の概算通知 */
+  .default-note{
+    margin:0 0 10px;padding:6px 10px;
+    font-size:10px;font-weight:600;color:#92400e;
+    background:#fff7ed;border:1.5px dashed #f59e0b;border-radius:6px;
+    text-align:center;line-height:1.5;
+  }
+  .default-note[hidden]{display:none}
+  /* 概算モード時のバー視覚マーカー（軽く透かして「個別計算ではない」ことを伝える） */
+  .nutri-bars[data-default="true"]{opacity:.78}
 
   .selected-list{margin:14px 0;border-top:2px dashed var(--red);padding-top:12px}
   .selected-list h3{
@@ -498,10 +544,10 @@
     padding:5px 0;border-bottom:1px dotted var(--cream-dark);color:var(--brown);
   }
   .sel-row .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
-  .sel-row .kcal{color:var(--red);font-weight:700;margin-left:8px;font-family:"Bebas Neue",sans-serif;font-size:14px}
+  .sel-row .kcal{color:var(--red);font-weight:700;margin-left:8px;font-family:"Anton",sans-serif;font-size:15px;letter-spacing:.3px}
   .sel-row .kcal small{
-    font-size:10px;font-weight:500;margin-left:2px;opacity:.75;
-    font-family:"Bebas Neue",sans-serif;letter-spacing:.5px;
+    font-size:11px;font-weight:400;margin-left:2px;opacity:.75;
+    font-family:"Anton",sans-serif;letter-spacing:.2px;
   }
   .empty{text-align:center;color:var(--brown);opacity:.6;font-size:12px;padding:20px 0;font-style:italic}
 
@@ -579,9 +625,8 @@
     .mobile-bar{
       display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;
       background:var(--red);color:var(--cream-light);
-      padding:10px 14px;
-      /* iOS のホームインジケータ／動的UIによる隙間を埋める */
-      padding-bottom:max(10px, env(safe-area-inset-bottom));
+      /* iOS のノッチ／ホームインジケータでバー内容が隠れないよう左右下に safe-area を確保 */
+      padding:10px max(14px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
       align-items:center;justify-content:space-between;gap:10px;
       box-shadow:0 -4px 0 var(--red-dark);border-top:3px solid var(--red-dark);
     }
@@ -601,7 +646,7 @@
 
   /* ===== MOBILE (≤768px) ===== */
   @media (max-width:768px){
-    body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+    /* body padding-bottom は ≤960px で既に設定済み */
     header.hero{padding:18px 14px 14px;border-bottom-width:5px}
     .hero-mv{max-width:340px}
     .hero-tag{font-size:13px;margin-top:10px}
@@ -767,7 +812,7 @@
       </div>
       <div class="controls">
         <input type="text" class="search" placeholder="メニュー名で検索...">
-        <button class="auto-btn" id="autoBtn"><img src="assets/omakase.png" alt="" aria-hidden="true">おまかせ提案</button>
+        <button class="auto-btn" id="autoBtn" aria-expanded="false" aria-controls="suggestPanel"><img src="assets/omakase.png" alt="" aria-hidden="true">おまかせ提案</button>
         <button class="reset" id="resetBtn">クリア</button>
       </div>
     </div>
@@ -856,13 +901,23 @@
       <div class="nutrient"><div class="label">食塩相当量</div><div class="value" id="totalS">0<small>g</small></div></div>
     </div>
 
-    <div class="pfc-legend">
-      <span class="leg-p">P タンパク質</span>
-      <span class="leg-f">F 脂質</span>
-      <span class="leg-c">C 炭水化物</span>
-    </div>
     <div class="pfc-chart"><canvas id="pfcChart"></canvas></div>
-    <div class="target-info">理想的なPFC比率: P 15% / F 25% / C 60%</div>
+    <p class="default-note" id="defaultNote" hidden>💡 プロフィール未入力時の概算（2,200kcal想定）。プロフィール入力で個別化されます。</p>
+    <div class="pfc-compare" id="pfcCompare">
+      <div class="pfcc-head"><span>PFC比率</span><span class="ideal-note" id="pfccIdealNote">vs 理想 (13/25/60)</span></div>
+      <div class="pfcc-row" data-macro="p">
+        <span class="dot p"></span><span class="name">P タンパク質</span>
+        <span class="actual">—</span><span class="vs" id="pfccVsP">理想 13%</span><span class="delta"></span>
+      </div>
+      <div class="pfcc-row" data-macro="f">
+        <span class="dot f"></span><span class="name">F 脂質</span>
+        <span class="actual">—</span><span class="vs">理想 25%</span><span class="delta"></span>
+      </div>
+      <div class="pfcc-row" data-macro="c">
+        <span class="dot c"></span><span class="name">C 炭水化物</span>
+        <span class="actual">—</span><span class="vs">理想 60%</span><span class="delta"></span>
+      </div>
+    </div>
   </aside>
 
   <div class="mobile-bar">
@@ -1279,7 +1334,7 @@ const state = {
 // ===== 基礎代謝量（国立健康・栄養研究所の式 / Ganpule式）=====
 // BMR (kcal/日) = (0.0481×W + 0.0234×H − 0.0138×age − 性別係数) × 1000 / 4.186
 // 性別係数: 男性 0.4235 / 女性 0.9708
-// 適用対象: 20〜74歳（範囲外は推定不可として null を返す）
+// 適用対象: 18〜74歳（厚労省「日本人の食事摂取基準2025年版」の参考表が15-17歳以降を区別する区分に概ね対応）
 const VALID_GENDERS = new Set(["M","F"]);
 const VALID_ACTS = new Set(["low","mid","high"]);
 function clamp(v, min, max, fallback){
@@ -1298,7 +1353,7 @@ function normalizeProfile(raw = {}){
 }
 function calcBmr(){
   const {gender, age, height, weight} = state.profile;
-  if(age < 20 || age > 74) return null;
+  if(age < 18 || age > 74) return null;
   const sx = gender === "M" ? 0.4235 : 0.9708;
   const mj = 0.0481*weight + 0.0234*height - 0.0138*age - sx;
   return Math.max(0, mj * 1000 / 4.186);
@@ -1351,6 +1406,8 @@ const collapsedCats = new Set(["サイド","ドリンク","デザート"]);
 const isMobileViewport = () => window.matchMedia("(max-width:768px)").matches;
 
 function renderMenu(){
+  // 1日推奨値は1回だけ計算して各バーで使い回す（273アイテム×4バー＝1092回計算を1回に）
+  const targets = dailyTargets();
   const filtered = menu.filter(i=>{
     if(state.chain!=="all" && i.chain!==state.chain) return false;
     if(state.cat!=="all" && i.cat!==state.cat) return false;
@@ -1364,24 +1421,28 @@ function renderMenu(){
     const list = filtered.filter(i=>i.cat===cat);
     if(!list.length) continue;
     const collapsed = collapsedCats.has(cat) ? "true" : "false";
-    html += `<section class="category" data-cat="${cat}" data-collapsed="${collapsed}"><h2><img src="${CAT_ICONS[cat]}" alt="" aria-hidden="true">${cat}<span class="count">${list.length} ITEMS</span></h2><div class="items">`;
+    const expanded = collapsed === "true" ? "false" : "true";
+    const itemsId = `cat-items-${cat}`;
+    html += `<section class="category" data-cat="${cat}" data-collapsed="${collapsed}"><h2 role="button" tabindex="0" aria-expanded="${expanded}" aria-controls="${itemsId}"><img src="${CAT_ICONS[cat]}" alt="" aria-hidden="true">${cat}<span class="count">${list.length} ITEMS</span></h2><div class="items" id="${itemsId}">`;
     for(const i of list){
       const k = key(i);
       const sel = state.selected[k];
       const checked = sel ? "checked" : "";
       const qty = sel ? sel.qty : 1;
+      // ASCII外を含むメニュー名でも一意なIDを生成（base64で衝突回避）
+      const nameId = `item-name-${i.chain}-${btoa(unescape(encodeURIComponent(i.name))).replace(/[^A-Za-z0-9]/g,'')}`;
       html += `
         <div class="item ${sel?"selected "+i.chain:""}" data-key="${k}">
           <div class="item-head">
-            <input type="checkbox" ${checked} data-key="${k}">
-            <span class="item-name">${i.name}</span>
+            <input type="checkbox" ${checked} data-key="${k}" aria-labelledby="${nameId}">
+            <span class="item-name" id="${nameId}">${i.name}</span>
             <span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span>
           </div>
           <div class="item-stats">
             <span class="item-kcal">${i.kcal}kcal</span>
             <span>P ${i.p}g</span><span>F ${i.f}g</span><span>C ${i.c}g</span><span>塩 ${i.s}g</span>
           </div>
-          ${nutriBarsHTML(i.p,i.f,i.c,i.s)}
+          ${nutriBarsHTML(i.p,i.f,i.c,i.s,targets)}
           ${sel?`<div class="qty" data-key="${k}">
             <span style="font-size:11px;color:#888">個数:</span>
             <button data-act="dec">−</button>
@@ -1398,17 +1459,27 @@ function renderMenu(){
 
 function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディーズ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
 
-// 1日の推奨摂取量（g）。プロフィール未設定時は2,200kcal想定で概算
+// たんぱく質目標％（食事摂取基準2025年版・目標量レンジの下限）
+// 18〜49歳: 13% / 50〜64歳: 14% / 65歳以上: 15%
+function proteinIdealPct(age){
+  if(age >= 65) return 15;
+  if(age >= 50) return 14;
+  return 13;
+}
+// 1日の推奨摂取量（g）。プロフィール未設定時は2,200kcal想定で概算（30代男性目安）
 function dailyTargets(){
   const tgt = calcTargetKcal();
   const kcal = tgt || 2200;
   const isFemale = state.profile && state.profile.gender === 'F';
+  const age = state.profile && state.profile.age ? state.profile.age : 30;
+  const pPct = proteinIdealPct(age);
   return {
     kcal,
-    p: kcal * 0.15 / 4,         // P: 15% of kcal
-    f: kcal * 0.25 / 9,         // F: 25% of kcal
-    c: kcal * 0.60 / 4,         // C: 60% of kcal
-    s: isFemale ? 6.5 : 7.5,    // 食塩相当量（食事摂取基準2020）
+    pPct,                       // 表示用に％も保持
+    p: kcal * (pPct/100) / 4,   // P: 年齢別目標％
+    f: kcal * 0.25 / 9,         // F: 25%（食事摂取基準 20-30% の中央付近）
+    c: kcal * 0.60 / 4,         // C: 60%（食事摂取基準 50-65% の中央付近）
+    s: isFemale ? 6.5 : 7.5,    // 食塩相当量（食事摂取基準2025・成人目標量）
     isDefault: tgt == null
   };
 }
@@ -1425,8 +1496,9 @@ function nutriColor(pct, isSalt){
   if(pct <= 100) return "#f97316";
   return "#dc2626";
 }
-function nutriBarsHTML(p,f,c,s){
-  const t = dailyTargets();
+// targets を渡せば再計算をスキップ（renderMenu/renderCombos で使い回し）
+function nutriBarsHTML(p,f,c,s,targets){
+  const t = targets || dailyTargets();
   const items = [
     {label:"P", val:p, target:t.p, isSalt:false},
     {label:"F", val:f, target:t.f, isSalt:false},
@@ -1442,7 +1514,8 @@ function nutriBarsHTML(p,f,c,s){
     return `<div class="nb-row${overCls}" title="${it.label} ${it.val.toFixed ? it.val.toFixed(1) : it.val}g / 1日推奨 ${it.target.toFixed(1)}g (${pct}%)"><span class="nb-label">${it.label}</span><div class="nb-bar"><span class="nb-fill" style="width:${w}%;background:${color}"></span></div><span class="nb-pct" style="color:${color}">${pct}%</span></div>`;
   }).join("");
   const note = t.isDefault ? "（プロフィール未入力時は2,200kcal想定の概算）" : "（あなたの推奨値ベース）";
-  return `<div class="nutri-bars" aria-label="1日推奨に対する栄養割合${note}">${rows}</div>`;
+  const defaultAttr = t.isDefault ? ' data-default="true"' : "";
+  return `<div class="nutri-bars"${defaultAttr} aria-label="1日推奨に対する栄養割合${note}">${rows}</div>`;
 }
 
 // ===== 集計 =====
@@ -1501,6 +1574,55 @@ function recalc(){
   const pK = p*4, fK = f*9, cK = c*4;
   pfcChart.data.datasets[0].data = [pK||0.001, fK||0.001, cK||0.001];
   pfcChart.update();
+
+  // 概算モード（プロフィール未入力 or 対象外）の通知表示
+  const dt = dailyTargets();
+  const noteEl = document.getElementById("defaultNote");
+  if(noteEl) noteEl.hidden = !dt.isDefault;
+
+  // PFC比率と理想（年齢別 P / F25 / C60）との差分を更新
+  const totalK = pK+fK+cK;
+  const idealP = dt.pPct;
+  const ideal = {p:idealP, f:25, c:60};
+  // 表示の理想値も年齢に応じて更新
+  const vsPEl = document.getElementById("pfccVsP");
+  if(vsPEl) vsPEl.textContent = `理想 ${idealP}%`;
+  const idealNoteEl = document.getElementById("pfccIdealNote");
+  if(idealNoteEl) idealNoteEl.textContent = `vs 理想 (${idealP}/25/60)`;
+  const updatePfcRow = (macro, actualPct, idealPct)=>{
+    const row = document.querySelector(`.pfcc-row[data-macro="${macro}"]`);
+    if(!row) return;
+    const actEl = row.querySelector(".actual");
+    const dEl = row.querySelector(".delta");
+    if(totalK === 0){
+      actEl.textContent = "—";
+      dEl.textContent = "未選択";
+      dEl.className = "delta empty";
+      return;
+    }
+    const round = Math.round(actualPct);
+    actEl.textContent = `${round}%`;
+    const diff = round - idealPct;
+    if(Math.abs(diff) <= 3){
+      dEl.textContent = "✓ 理想";
+      dEl.className = "delta ok";
+    } else if(diff > 0){
+      dEl.textContent = `+${diff}%`;
+      dEl.className = "delta over";
+    } else {
+      dEl.textContent = `${diff}%`;
+      dEl.className = "delta under";
+    }
+  };
+  if(totalK > 0){
+    updatePfcRow("p", pK/totalK*100, ideal.p);
+    updatePfcRow("f", fK/totalK*100, ideal.f);
+    updatePfcRow("c", cK/totalK*100, ideal.c);
+  } else {
+    updatePfcRow("p", 0, 0);
+    updatePfcRow("f", 0, 0);
+    updatePfcRow("c", 0, 0);
+  }
 
   // おまかせ提案の「一食の目安」ボタン表示も更新
   updateMealTargetBtn();
@@ -1645,6 +1767,7 @@ function renderCombos(){
     container.innerHTML = `<div class="sp-empty">条件に合う組み合わせが見つかりません。上限カロリーを上げるか、条件を緩めてください。</div>`;
     return;
   }
+  const targets = dailyTargets();
   container.innerHTML = lastCombos.map((c,idx) => {
     const tP = c.items.reduce((s,i)=>s+i.p,0);
     const tF = c.items.reduce((s,i)=>s+i.f,0);
@@ -1658,7 +1781,7 @@ function renderCombos(){
         </div>
         <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
         <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>
-        ${nutriBarsHTML(tP,tF,tC,tS)}
+        ${nutriBarsHTML(tP,tF,tC,tS,targets)}
         <button class="apply-btn" data-idx="${idx}">この組み合わせを選択</button>
       </div>`;
   }).join("");
@@ -1686,9 +1809,10 @@ document.getElementById("mealTargetBtn").addEventListener("click",()=>{
   document.getElementById("suggTarget").value = v;
 });
 
-document.getElementById("autoBtn").addEventListener("click",()=>{
+document.getElementById("autoBtn").addEventListener("click",(e)=>{
   const panel = document.getElementById("suggestPanel");
   panel.hidden = !panel.hidden;
+  e.currentTarget.setAttribute("aria-expanded", String(!panel.hidden));
   if(!panel.hidden){
     updateMealTargetBtn();
     if(!lastCombos.length){
@@ -1705,6 +1829,7 @@ document.getElementById("autoBtn").addEventListener("click",()=>{
 });
 document.getElementById("closeSuggest").addEventListener("click",()=>{
   document.getElementById("suggestPanel").hidden = true;
+  document.getElementById("autoBtn").setAttribute("aria-expanded","false");
 });
 document.getElementById("genSuggest").addEventListener("click", renderCombos);
 document.getElementById("suggestResults").addEventListener("click",e=>{
@@ -1787,6 +1912,17 @@ function onProfileCommit(){
   const modal = document.getElementById("welcomeModal");
   if(!modal) return;
   modal.hidden = false;
+
+  // 背面（メイン/サイド/フッター）をスクリーンリーダーから隠す
+  const backgroundEls = [document.querySelector("header.hero"), document.querySelector(".layout"), document.querySelector(".site-footer"), document.querySelector(".mobile-bar")].filter(Boolean);
+  backgroundEls.forEach(el=>{ el.setAttribute("inert",""); el.setAttribute("aria-hidden","true"); });
+
+  // 初期フォーカスは年齢入力（性別はデフォルト値あり）
+  setTimeout(()=>{
+    const ageEl = document.getElementById("wAge");
+    if(ageEl) ageEl.focus();
+  }, 30);
+
   const finish = (save) => {
     if(save){
       state.profile = normalizeProfile({
@@ -1803,24 +1939,62 @@ function onProfileCommit(){
     }
     try { localStorage.setItem(KEY_WELCOMED, "1"); } catch {}
     modal.hidden = true;
+    backgroundEls.forEach(el=>{ el.removeAttribute("inert"); el.removeAttribute("aria-hidden"); });
+    modal.removeEventListener("keydown", onModalKey);
   };
+
+  // フォーカストラップ（Tab/Shift+Tab で内部循環）と Esc 閉じ
+  function getFocusable(){
+    return [...modal.querySelectorAll('input, select, button')].filter(el=>!el.disabled && el.offsetParent !== null);
+  }
+  function onModalKey(e){
+    if(e.key === "Escape"){
+      e.preventDefault();
+      finish(false);
+      return;
+    }
+    if(e.key !== "Tab") return;
+    const focusables = getFocusable();
+    if(!focusables.length) return;
+    const first = focusables[0], last = focusables[focusables.length-1];
+    if(e.shiftKey && document.activeElement === first){
+      e.preventDefault(); last.focus();
+    } else if(!e.shiftKey && document.activeElement === last){
+      e.preventDefault(); first.focus();
+    }
+  }
+  modal.addEventListener("keydown", onModalKey);
+
   document.getElementById("welcomeStart").addEventListener("click", ()=>finish(true));
   document.getElementById("welcomeSkip").addEventListener("click", ()=>finish(false));
 })();
 
-// カテゴリ見出しクリックでアコーディオン開閉（モバイルのみ）
-menuArea.addEventListener("click",e=>{
-  const h2 = e.target.closest(".category > h2");
-  if(!h2) return;
+// カテゴリ見出しクリック／キー操作でアコーディオン開閉（モバイルのみ）
+function toggleCategoryHeading(h2){
   if(!isMobileViewport()) return;
   const sec = h2.parentElement;
   const cat = sec.dataset.cat;
   if(collapsedCats.has(cat)){
     collapsedCats.delete(cat);
     sec.dataset.collapsed = "false";
+    h2.setAttribute("aria-expanded","true");
   }else{
     collapsedCats.add(cat);
     sec.dataset.collapsed = "true";
+    h2.setAttribute("aria-expanded","false");
+  }
+}
+menuArea.addEventListener("click",e=>{
+  const h2 = e.target.closest(".category > h2");
+  if(!h2) return;
+  toggleCategoryHeading(h2);
+});
+menuArea.addEventListener("keydown",e=>{
+  const h2 = e.target.closest(".category > h2");
+  if(!h2) return;
+  if(e.key === "Enter" || e.key === " "){
+    e.preventDefault();
+    toggleCategoryHeading(h2);
   }
 });
 

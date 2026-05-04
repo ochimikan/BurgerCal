@@ -128,20 +128,23 @@
   }
 
   /* ===== CONTROLS ===== */
+  /* sticky 時に親 .layout の左右 padding 内側に収まると両サイドが透けるため、
+     負のマージンで全幅化 + 内側 padding で見た目位置を維持。下端は赤線で明確に区切り、下層コンテンツの覗きを抑える。 */
   .controls-sticky{
     position:sticky;top:0;z-index:50;background:var(--cream);
-    padding:12px 0 8px;margin-top:-12px;
+    padding:12px 24px 10px;
+    margin:-12px -24px 0;
+    border-bottom:3px solid var(--red);
+    /* レトロな赤ドットの薄い柄を維持（body と同じ） */
+    background-image:radial-gradient(circle at 1px 1px, rgba(202,39,34,.07) 1px, transparent 0);
+    background-size:14px 14px;
   }
-  .controls-sticky::after{
-    content:"";display:block;height:8px;
-    background:linear-gradient(180deg,var(--cream),transparent);
-    position:absolute;left:0;right:0;bottom:-8px;pointer-events:none;
-  }
+  .controls-sticky::after{display:none}
   .controls{
     display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px;
   }
   .tab-row{
-    display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:8px;
+    display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:8px;
     -webkit-overflow-scrolling:touch;
     scrollbar-width:thin;
     scrollbar-color:var(--red) var(--cream-dark);
@@ -188,6 +191,14 @@
   /* 未選択時のカテゴリ絵文字は彩度を落とす */
   .cat-btn:not(.active) img{opacity:.65;filter:saturate(.7)}
   .cat-btn.active img{opacity:1;filter:none}
+  /* CATEGORYは絵文字主体でコンパクトに（ラベルはツールチップ&スクリーンリーダー用に保持） */
+  .cat-btn{padding:5px 11px}
+  .cat-btn img{width:22px;height:22px;margin-right:0;vertical-align:middle}
+  .cat-btn .cat-label{display:none}
+  .cat-btn[data-cat="all"]{padding:6px 14px}
+  /* タブ列の高さ圧縮 */
+  .tab-row{padding:2px 2px 6px;margin-bottom:4px;gap:6px}
+  .tab-row-label{font-size:12px;letter-spacing:1.5px;padding:4px 10px 4px 2px;margin-right:2px}
   .chain-btn.active[data-chain="mc"]{background:var(--mc);color:var(--mc-dark);border-color:var(--mc-dark);box-shadow:1px 1px 0 var(--mc-dark)}
   .chain-btn.active[data-chain="mos"]{background:var(--mos);border-color:#0d4a20;box-shadow:1px 1px 0 #0d4a20}
   .chain-btn.active[data-chain="bk"]{background:var(--bk);border-color:#7a1500;box-shadow:1px 1px 0 #7a1500}
@@ -354,6 +365,11 @@
     background:var(--cream-dark);color:var(--brown);
     border-color:var(--brown);box-shadow:2px 2px 0 var(--brown);
   }
+  .sp-hint{
+    margin:6px 0 0;font-size:11px;color:var(--brown);opacity:.85;
+    line-height:1.5;width:100%;
+  }
+  .sp-hint b{color:var(--red-dark);font-weight:700}
   .sp-form .gen-btn{
     background:var(--red);color:#fff;border:2px solid var(--red-dark);
     padding:8px 18px;border-radius:30px;font-weight:700;cursor:pointer;
@@ -714,6 +730,7 @@
     .layout{grid-template-columns:minmax(0,1fr);padding:16px;gap:16px}
     .panel{position:static;max-height:none}
     body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+    .controls-sticky{padding:10px 16px;margin:-12px -16px 0}
   }
   @media (min-width:769px) and (max-width:960px){
     .items{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -745,6 +762,50 @@
       box-shadow:2px 2px 0 var(--red-dark);
     }
     .mobile-bar button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--red-dark)}
+    .mobile-bar button[aria-expanded="true"]{
+      background:var(--yellow);color:var(--red-dark);border-color:var(--red-dark);
+      transform:translate(2px,2px);box-shadow:1px 1px 0 var(--red-dark);
+    }
+    /* SP/タブレット用 検索ドロワー（mobile-bar の上にスライドイン） */
+    .mobile-search-panel{
+      position:fixed;left:0;right:0;z-index:99;
+      bottom:calc(56px + env(safe-area-inset-bottom));
+      background:var(--cream-light);
+      border-top:3px solid var(--red);border-bottom:3px solid var(--red-dark);
+      padding:10px 14px;
+      display:flex;align-items:center;gap:8px;
+      box-shadow:0 -4px 0 var(--red-dark);
+      animation:mobileSearchSlideIn .18s ease-out;
+    }
+    .mobile-search-panel[hidden]{display:none}
+    @keyframes mobileSearchSlideIn{
+      from{transform:translateY(100%);opacity:.6}
+      to{transform:translateY(0);opacity:1}
+    }
+    .mobile-search-input{
+      flex:1 1 auto;font-size:15px;padding:9px 14px;
+      border:2.5px solid var(--red);border-radius:24px;
+      background:#fff;color:var(--brown);
+      font-family:inherit;
+      box-shadow:inset 1px 1px 0 rgba(0,0,0,.08);
+    }
+    .mobile-search-input:focus{outline:none;border-color:var(--red-dark);box-shadow:0 0 0 2px rgba(202,39,34,.18)}
+    .mobile-search-close{
+      flex:0 0 auto;cursor:pointer;
+      width:36px;height:36px;border-radius:50%;
+      border:2.5px solid var(--red-dark);background:var(--cream-light);
+      color:var(--red-dark);font-size:20px;line-height:1;
+      font-weight:700;font-family:"Bebas Neue",sans-serif;
+      box-shadow:2px 2px 0 var(--red-dark);
+    }
+    .mobile-search-close:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--red-dark)}
+  }
+  /* SP では上部controls内の検索inputを非表示にして上部固定エリアを縮める */
+  @media (max-width:768px){
+    .controls > .search{display:none}
+  }
+  @media (min-width:769px){
+    .mobile-search-panel{display:none !important}
   }
 
   /* ===== MOBILE (≤768px) ===== */
@@ -756,6 +817,7 @@
     .hero-tag{font-size:13px;margin-top:10px}
     .hero-tag .sub{font-size:11px}
     .layout{padding:12px;gap:14px}
+    .controls-sticky{padding:8px 12px;margin:-12px -12px 0}
     .items{grid-template-columns:1fr;gap:8px}
     .item{padding:10px 12px}
     .item-name{font-size:13px}
@@ -789,7 +851,7 @@
     .total-kcal{font-size:38px}
     .nutrient .value{font-size:18px}
     /* layout padding が 10px に縮んだので controls-sticky の負マージンも揃え、ヒーロー赤線を覆わないようにする */
-    .controls-sticky{margin-top:-10px}
+    .controls-sticky{padding:8px 10px;margin:-10px -10px 0}
     /* 横スクロール基調。折返ししない代わりにボタンを小さくして、見切れ／スクロール不能を解消 */
     .tab-row{gap:6px;padding:4px 0 6px;flex-wrap:nowrap;overflow-x:auto}
     .chain-btn,.cat-btn{font-size:11px;padding:5px 11px;letter-spacing:.3px;flex:0 0 auto}
@@ -870,8 +932,8 @@
     .welcome-row{flex-direction:column;gap:6px}
   }
   @media (max-width:380px){
-    /* SE / 320px〜380px は横スクロールでは見落としやすいので折返しに切替えて選択肢を一望できるようにする */
-    .tab-row{flex-wrap:wrap;overflow-x:visible;gap:5px;padding:2px 0 4px}
+    /* PC版と同じ横スクロール表示で統一（折返ししないことで縦の圧迫感を抑える） */
+    .tab-row{gap:5px;padding:2px 0 6px}
     .chain-btn,.cat-btn{font-size:10px;padding:4px 9px;letter-spacing:.2px}
     .reset,.auto-btn{font-size:11px;padding:5px 10px}
     .auto-btn{font-size:13px;padding:8px 14px}
@@ -903,21 +965,21 @@
       <div class="tab-row">
         <span class="tab-row-label">CHAIN</span>
         <button class="chain-btn active" data-chain="all">すべて</button>
-        <button class="chain-btn" data-chain="mc">マクドナルド</button>
-        <button class="chain-btn" data-chain="mos">モスバーガー</button>
-        <button class="chain-btn" data-chain="bk">バーガーキング</button>
-        <button class="chain-btn" data-chain="fr">フレッシュネス</button>
-        <button class="chain-btn" data-chain="wd">ウェンディーズ</button>
-        <button class="chain-btn" data-chain="lt">ゼッテリア</button>
-        <button class="chain-btn" data-chain="kf">ケンタッキー</button>
+        <button class="chain-btn" data-chain="mc" title="マクドナルド">マック</button>
+        <button class="chain-btn" data-chain="mos" title="モスバーガー">モス</button>
+        <button class="chain-btn" data-chain="bk" title="バーガーキング">バーキン</button>
+        <button class="chain-btn" data-chain="fr" title="フレッシュネスバーガー">フレネス</button>
+        <button class="chain-btn" data-chain="wd" title="ウェンディーズ・ファーストキッチン">WFK</button>
+        <button class="chain-btn" data-chain="lt" title="ゼッテリア">ゼッテリア</button>
+        <button class="chain-btn" data-chain="kf" title="ケンタッキーフライドチキン">KFC</button>
       </div>
       <div class="tab-row">
         <span class="tab-row-label">CATEGORY</span>
         <button class="cat-btn active" data-cat="all">すべて</button>
-        <button class="cat-btn" data-cat="バーガー"><img src="assets/burger.png" alt="" aria-hidden="true">バーガー</button>
-        <button class="cat-btn" data-cat="サイド"><img src="assets/side.png" alt="" aria-hidden="true">サイド</button>
-        <button class="cat-btn" data-cat="ドリンク"><img src="assets/drink.png" alt="" aria-hidden="true">ドリンク</button>
-        <button class="cat-btn" data-cat="デザート"><img src="assets/dessert.png" alt="" aria-hidden="true">デザート</button>
+        <button class="cat-btn" data-cat="バーガー" title="バーガー" aria-label="バーガー"><img src="assets/burger.png" alt="" aria-hidden="true"><span class="cat-label">バーガー</span></button>
+        <button class="cat-btn" data-cat="サイド" title="サイド" aria-label="サイド"><img src="assets/side.png" alt="" aria-hidden="true"><span class="cat-label">サイド</span></button>
+        <button class="cat-btn" data-cat="ドリンク" title="ドリンク" aria-label="ドリンク"><img src="assets/drink.png" alt="" aria-hidden="true"><span class="cat-label">ドリンク</span></button>
+        <button class="cat-btn" data-cat="デザート" title="デザート" aria-label="デザート"><img src="assets/dessert.png" alt="" aria-hidden="true"><span class="cat-label">デザート</span></button>
       </div>
       <div class="controls">
         <input type="text" class="search" placeholder="メニュー名で検索...">
@@ -951,21 +1013,13 @@
           <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> kcal
         </label>
         <button type="button" class="meal-target-btn" id="mealTargetBtn" title="プロフィールから1食分の目安カロリーを自動入力">🍽 一食の目安</button>
-        <label>優先軸
-          <select id="suggAxis">
-            <option value="kcal" selected>カロリーいっぱいまで使う</option>
-            <option value="protein">タンパク質を多めに</option>
-            <option value="lowsalt">塩分控えめ</option>
-            <option value="lowfat">脂質控えめ</option>
-            <option value="balance">PFCバランス重視</option>
-          </select>
-        </label>
         <label><input type="checkbox" id="suggBurger" checked> バーガー</label>
         <label><input type="checkbox" id="suggSide" checked> サイド</label>
         <label><input type="checkbox" id="suggDrink"> ドリンク</label>
         <label><input type="checkbox" id="suggDessert"> デザート</label>
         <label><input type="checkbox" id="suggSameChain" checked> 同じチェーンで揃える</label>
-        <button class="gen-btn" id="genSuggest">提案する</button>
+        <button class="gen-btn" id="genSuggest">🎲 提案する</button>
+        <p class="sp-hint">※ 上限カロリー内で <b>PFCバランスが理想に近い組み合わせ</b>からランダム提案。押すたびに入れ替わります。</p>
       </div>
       <div class="sp-results" id="suggestResults"></div>
     </div>
@@ -1050,9 +1104,16 @@
       <span class="mobile-bar-pct" id="mobilePct"></span>
     </div>
     <div class="mobile-bar-actions">
+      <button id="mobileShowSearch" type="button" aria-expanded="false" aria-controls="mobileSearchPanel">🔍 検索</button>
       <button id="mobileShowProfile" type="button">👤 プロフ</button>
       <button id="mobileShowPanel" type="button">📊 詳細</button>
     </div>
+  </div>
+
+  <!-- SP用 検索ドロワー（mobile-barの上にスライドインする） -->
+  <div class="mobile-search-panel" id="mobileSearchPanel" hidden role="dialog" aria-label="メニュー検索">
+    <input type="text" class="mobile-search-input" id="mobileSearchInput" placeholder="メニュー名で検索…" autocomplete="off">
+    <button type="button" class="mobile-search-close" id="mobileSearchClose" aria-label="検索を閉じる">×</button>
   </div>
 
 </div><!-- /.layout 右カラムのstickyをここで終わらせ、フッター以降には追従させない -->
@@ -1775,7 +1836,7 @@ function renderMenu(){
   menuArea.innerHTML = html;
 }
 
-function chainLabel(c){return {mc:"マック",mos:"モス",bk:"BK",fr:"フレッシュ",wd:"ウェンディーズ",lt:"ゼッテリア",kf:"ケンタッキー"}[c]||c}
+function chainLabel(c){return {mc:"マック",mos:"モス",bk:"バーキン",fr:"フレネス",wd:"WFK",lt:"ゼッテリア",kf:"KFC"}[c]||c}
 
 // たんぱく質目標％（食事摂取基準2025年版・目標量レンジの下限）
 // 18〜49歳: 13% / 50〜64歳: 14% / 65歳以上: 15%
@@ -1990,10 +2051,35 @@ document.getElementById("mobileShowPanel").addEventListener("click",()=>{
 document.getElementById("mobileShowProfile").addEventListener("click",()=>{
   document.getElementById("profileSection").scrollIntoView({behavior:"smooth", block:"start"});
 });
-document.querySelector(".search").addEventListener("input",e=>{
-  state.q = e.target.value;
+// 検索入力：上部のPC用inputとSP用ドロワーinputで state.q を双方向同期
+const desktopSearch = document.querySelector(".controls > .search");
+const mobileSearchInput = document.getElementById("mobileSearchInput");
+function applySearchQuery(value, source){
+  state.q = value;
+  if(source !== desktopSearch && desktopSearch.value !== value) desktopSearch.value = value;
+  if(source !== mobileSearchInput && mobileSearchInput.value !== value) mobileSearchInput.value = value;
   renderMenu();
-});
+}
+desktopSearch.addEventListener("input", e => applySearchQuery(e.target.value, desktopSearch));
+mobileSearchInput.addEventListener("input", e => applySearchQuery(e.target.value, mobileSearchInput));
+
+// SP用 検索ドロワーの開閉
+(()=>{
+  const btn = document.getElementById("mobileShowSearch");
+  const panel = document.getElementById("mobileSearchPanel");
+  const closeBtn = document.getElementById("mobileSearchClose");
+  function setOpen(open){
+    panel.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+    if(open) setTimeout(()=>mobileSearchInput.focus(), 50);
+  }
+  // 開く専用（閉じるは × ボタンか Escape）。プロフ・詳細ボタンと挙動を揃える
+  btn.addEventListener("click", () => setOpen(true));
+  closeBtn.addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && !panel.hidden){ setOpen(false); btn.focus(); }
+  });
+})();
 document.getElementById("variantToggle").addEventListener("change",e=>{
   state.showVariants = e.target.checked;
   renderMenu();
@@ -2033,7 +2119,6 @@ document.getElementById("resetBtn").addEventListener("click",()=>{
 let lastCombos = [];
 function generateCombos(){
   const target = parseInt(document.getElementById("suggTarget").value)||800;
-  const axis = document.getElementById("suggAxis").value;
   const opts = {
     burger:  document.getElementById("suggBurger").checked,
     side:    document.getElementById("suggSide").checked,
@@ -2092,35 +2177,18 @@ function generateCombos(){
       }
     }
   }
-  // 軸ごとの並び替え
-  if(axis === "protein"){
-    combos.sort((a,b)=> b.p - a.p || b.kcal - a.kcal);
-  }else if(axis === "lowsalt"){
-    combos.sort((a,b)=> a.s - b.s || b.kcal - a.kcal);
-  }else if(axis === "lowfat"){
-    combos.sort((a,b)=> a.f - b.f || b.kcal - a.kcal);
-  }else if(axis === "balance"){
-    // 理想PFC比 P15% / F25% / C60% との差（kcalベース）が小さい順
-    combos.sort((a,b)=>{
-      const score = x => {
-        const tot = x.p*4 + x.f*9 + x.c*4;
-        if(!tot) return Infinity;
-        return Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60);
-      };
-      return score(a) - score(b);
-    });
-  }else{
-    // kcal: 目標に近い順（=上限内で大きい順）。極端に小さい候補（上限の50%未満）は後ろに回す
-    const minKcal = target * 0.5;
-    combos.sort((a,b)=>{
-      const ua = a.kcal >= minKcal ? 0 : 1;
-      const ub = b.kcal >= minKcal ? 0 : 1;
-      return ua - ub || b.kcal - a.kcal;
-    });
-  }
-  // 軸スコア上位 POOL_SIZE 件を Fisher-Yates でシャッフルして「提案する」連打で別の組合せが出るようにする。
-  // 並び順は維持しつつ多様性確保のため、シャッフル後にバーガー/デザート被りを段階的に緩めて埋める。
-  const POOL_SIZE = 40;
+  // PFC比を理想（P15% / F25% / C60% = 「日本人の食事摂取基準」中央値）との偏差最小スコアでソート。
+  // 1食内のバランスが良いセットほどスコアが小さい。
+  combos.sort((a,b)=>{
+    const score = x => {
+      const tot = x.p*4 + x.f*9 + x.c*4;
+      if(!tot) return Infinity;
+      return Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60);
+    };
+    return score(a) - score(b);
+  });
+  // バランス上位プールから Fisher-Yates でシャッフル抽出。「提案する」連打で別の組合せが出るが質は保つ。
+  const POOL_SIZE = 80;
   const headSize = Math.min(POOL_SIZE, combos.length);
   for(let i = headSize - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));

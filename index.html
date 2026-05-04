@@ -103,7 +103,8 @@
     position:relative;
   }
   .hero-mv{
-    display:block;width:100%;max-width:760px;height:auto;
+    /* PC用 mv-pc.png は横長レイアウト。SP用 mv-sp.png は縦長で <picture> により切替 */
+    display:block;width:100%;max-width:880px;height:auto;
     margin:0 auto;
   }
   .hero-tag{
@@ -170,13 +171,23 @@
     box-shadow:3px 3px 0 var(--red-dark);
     transition:transform .12s, box-shadow .12s, background .12s;
   }
+  /* 未選択タブはトーンを落として視覚ノイズを下げる（Codexアドバイス） */
+  .chain-btn:not(.active),.cat-btn:not(.active){
+    border-color:#d68a86;color:var(--red-dark);
+    box-shadow:1.5px 1.5px 0 #c89893;
+    background:transparent;
+  }
   .chain-btn:hover,.cat-btn:hover,.auto-btn:hover{
     transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark);
+    border-color:var(--red);
   }
   .chain-btn.active,.cat-btn.active{
     background:var(--red);color:var(--cream-light);
     transform:translate(2px,2px);box-shadow:1px 1px 0 var(--red-dark);
   }
+  /* 未選択時のカテゴリ絵文字は彩度を落とす */
+  .cat-btn:not(.active) img{opacity:.65;filter:saturate(.7)}
+  .cat-btn.active img{opacity:1;filter:none}
   .chain-btn.active[data-chain="mc"]{background:var(--mc);color:var(--mc-dark);border-color:var(--mc-dark);box-shadow:1px 1px 0 var(--mc-dark)}
   .chain-btn.active[data-chain="mos"]{background:var(--mos);border-color:#0d4a20;box-shadow:1px 1px 0 #0d4a20}
   .chain-btn.active[data-chain="bk"]{background:var(--bk);border-color:#7a1500;box-shadow:1px 1px 0 #7a1500}
@@ -203,6 +214,98 @@
     font-size:12px;padding:6px 14px;
   }
   .reset:hover{background:#fde2dc;color:var(--red);border-color:var(--red);box-shadow:3px 3px 0 var(--red)}
+  .variant-toggle{
+    display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    font-family:"Bebas Neue","Anton",sans-serif;letter-spacing:1px;
+    font-size:13px;font-weight:700;color:var(--red);
+    background:var(--cream-light);border:2.5px solid var(--red);
+    padding:7px 14px;border-radius:30px;
+    box-shadow:3px 3px 0 var(--red-dark);
+    transition:transform .12s, box-shadow .12s, background .12s, color .12s;
+    user-select:none;flex:0 0 auto;white-space:nowrap;
+  }
+  .variant-toggle:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark)}
+  .variant-toggle:has(input:checked){background:var(--red);color:var(--cream-light);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--red-dark)}
+  .variant-toggle input{accent-color:var(--red);width:13px;height:13px;margin:0;cursor:pointer}
+  .sort-axis{
+    display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    background:var(--cream-light);border:2.5px solid var(--red);
+    padding:5px 8px 5px 14px;border-radius:30px;
+    box-shadow:3px 3px 0 var(--red-dark);
+    transition:transform .12s, box-shadow .12s;
+    flex:0 0 auto;white-space:nowrap;
+  }
+  .sort-axis:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--red-dark)}
+  .sort-axis>span{
+    font-family:"Bebas Neue","Anton",sans-serif;letter-spacing:1px;
+    font-size:13px;font-weight:700;color:var(--red);
+  }
+  .sort-axis select{
+    appearance:none;-webkit-appearance:none;
+    border:2px solid var(--red);background:#fff;color:var(--brown);
+    font-size:12px;font-weight:700;
+    padding:5px 26px 5px 10px;border-radius:20px;cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,var(--red) 50%),linear-gradient(135deg,var(--red) 50%,transparent 50%);
+    background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  }
+  .sort-axis select:focus{outline:none;border-color:var(--red-dark)}
+  /* CHAIN / CATEGORY 見出しラベル（メニュー札風） */
+  .tab-row-label{
+    font-family:"Bebas Neue","Anton",sans-serif;
+    font-size:13px;font-weight:700;letter-spacing:2px;
+    color:var(--red-deep);
+    padding:6px 12px 6px 4px;
+    margin-right:4px;
+    display:inline-flex;align-items:center;
+    flex-shrink:0;
+    border-right:2px dashed rgba(140,26,22,.35);
+    user-select:none;
+  }
+  /* オプションボタン（並び順・派生をまとめる） */
+  .options-wrap{position:relative;flex:0 0 auto}
+  .options-btn{
+    flex:0 0 auto;cursor:pointer;white-space:nowrap;
+    font-family:"Bebas Neue","Anton",sans-serif;letter-spacing:1px;
+    border:2.5px solid #d68a86;background:transparent;color:var(--red-dark);
+    padding:7px 14px;border-radius:30px;font-size:13px;font-weight:700;
+    box-shadow:1.5px 1.5px 0 #c89893;
+    transition:transform .12s, box-shadow .12s, background .12s, color .12s, border-color .12s;
+  }
+  .options-btn:hover{
+    transform:translate(-1px,-1px);
+    box-shadow:3px 3px 0 var(--red-dark);
+    border-color:var(--red);color:var(--red);
+  }
+  .options-btn[aria-expanded="true"]{
+    background:var(--red);color:var(--cream-light);
+    border-color:var(--red-dark);
+    box-shadow:1px 1px 0 var(--red-dark);
+    transform:translate(2px,2px);
+  }
+  .options-pop{
+    position:absolute;top:calc(100% + 8px);left:0;
+    background:var(--cream-light);
+    border:2.5px solid var(--red);border-radius:14px;
+    box-shadow:4px 4px 0 var(--red-dark);
+    padding:14px;display:flex;flex-direction:column;gap:10px;
+    z-index:100;min-width:260px;max-width:calc(100vw - 32px);
+    background-image:radial-gradient(circle at 1px 1px, rgba(202,39,34,.05) 1px, transparent 0);
+    background-size:14px 14px;
+  }
+  .options-pop[hidden]{display:none}
+  .options-pop .sort-axis,
+  .options-pop .variant-toggle{
+    flex:1 1 auto;justify-content:space-between;
+    box-shadow:2px 2px 0 var(--red-dark);
+  }
+  /* ポップオーバー内では枠を控えめに */
+  .options-pop .sort-axis{padding:5px 8px 5px 12px}
+  /* 未選択クリアは hidden 属性で消えるが、再表示時のスタイルも未選択トーンへ */
+  .reset{border-color:#d68a86;color:var(--red-dark);box-shadow:1.5px 1.5px 0 #c89893;background:transparent}
+  .reset:hover{border-color:var(--red);color:var(--red);box-shadow:3px 3px 0 var(--red-dark);transform:translate(-1px,-1px);background:var(--cream-light)}
+  /* タブ列の上下余白を圧縮（Codexアドバイス） */
+  .tab-row{padding:2px 2px 8px}
   .search{
     flex:1;min-width:160px;padding:9px 14px;
     border:2.5px solid var(--brown);border-radius:30px;
@@ -616,7 +719,7 @@
     .items{grid-template-columns:repeat(2,minmax(0,1fr))}
     .item-name{font-size:13px}
     .category h2{font-size:22px}
-    .hero-mv{max-width:580px}
+    .hero-mv{max-width:760px}
   }
 
   /* ===== MOBILE BAR (タブレット+モバイル共通で表示) ===== */
@@ -648,7 +751,8 @@
   @media (max-width:768px){
     /* body padding-bottom は ≤960px で既に設定済み */
     header.hero{padding:18px 14px 14px;border-bottom-width:5px}
-    .hero-mv{max-width:340px}
+    /* SP は縦長の mv-sp.png に切替済み。max-width を絞って縦長になりすぎないよう調整 */
+    .hero-mv{max-width:300px}
     .hero-tag{font-size:13px;margin-top:10px}
     .hero-tag .sub{font-size:11px}
     .layout{padding:12px;gap:14px}
@@ -679,7 +783,7 @@
   @media (max-width:480px){
     .layout{padding:10px;gap:10px}
     header.hero{padding:14px 10px 12px}
-    .hero-mv{max-width:280px}
+    .hero-mv{max-width:240px}
     .hero-tag{font-size:12px}
     .hero-tag .sub{font-size:10px}
     .total-kcal{font-size:38px}
@@ -780,7 +884,10 @@
 <header class="hero">
   <picture>
     <source media="(max-width:768px)" srcset="assets/mv-sp.png">
-    <img src="assets/mv-pc.png" alt="BurgerCal — いろんなバーガーチェーンのカロリー比較" class="hero-mv">
+    <picture>
+      <source media="(min-width:769px)" srcset="assets/mv-pc.png">
+      <img src="assets/mv-sp.png" alt="BurgerCal — いろんなバーガーチェーンのカロリー比較" class="hero-mv">
+    </picture>
   </picture>
   <p class="hero-tag">
     いろんなバーガーチェーンのメニューを比較してカロリー管理。
@@ -794,6 +901,7 @@
   <main>
     <div class="controls-sticky">
       <div class="tab-row">
+        <span class="tab-row-label">CHAIN</span>
         <button class="chain-btn active" data-chain="all">すべて</button>
         <button class="chain-btn" data-chain="mc">マクドナルド</button>
         <button class="chain-btn" data-chain="mos">モスバーガー</button>
@@ -804,6 +912,7 @@
         <button class="chain-btn" data-chain="kf">ケンタッキー</button>
       </div>
       <div class="tab-row">
+        <span class="tab-row-label">CATEGORY</span>
         <button class="cat-btn active" data-cat="all">すべて</button>
         <button class="cat-btn" data-cat="バーガー"><img src="assets/burger.png" alt="" aria-hidden="true">バーガー</button>
         <button class="cat-btn" data-cat="サイド"><img src="assets/side.png" alt="" aria-hidden="true">サイド</button>
@@ -812,8 +921,23 @@
       </div>
       <div class="controls">
         <input type="text" class="search" placeholder="メニュー名で検索...">
+        <div class="options-wrap">
+          <button class="options-btn" id="optionsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="optionsPop">⚙ オプション</button>
+          <div class="options-pop" id="optionsPop" hidden role="dialog" aria-label="表示オプション">
+            <label class="sort-axis" title="メニュー一覧の並び順を変更"><span>並び順</span><select id="sortAxis">
+              <option value="default">標準（公式掲載順）</option>
+              <option value="kcalDesc">カロリー高い順</option>
+              <option value="kcalAsc">カロリー低い順</option>
+              <option value="proteinDesc">タンパク質多い順</option>
+              <option value="fatAsc">脂質少ない順</option>
+              <option value="saltAsc">塩分少ない順</option>
+              <option value="balance">PFCバランス重視</option>
+            </select></label>
+            <label class="variant-toggle" title="ダブル / Jr. / ソイ / スパイシー等の派生バリエーションを表示"><input type="checkbox" id="variantToggle">派生も表示</label>
+          </div>
+        </div>
         <button class="auto-btn" id="autoBtn" aria-expanded="false" aria-controls="suggestPanel"><img src="assets/omakase.png" alt="" aria-hidden="true">おまかせ提案</button>
-        <button class="reset" id="resetBtn">クリア</button>
+        <button class="reset" id="resetBtn" hidden>クリア</button>
       </div>
     </div>
 
@@ -1053,6 +1177,8 @@ const menu = [
   {chain:"mc", cat:"バーガー", name:"エグチ(エッグチーズバーガー)", kcal:390, p:22.4, f:19.0, c:31.2, s:2.1},
   {chain:"mc", cat:"バーガー", name:"チーズバーガー", kcal:310, p:15.9, f:13.5, c:31.0, s:1.9},
   {chain:"mc", cat:"バーガー", name:"ハンバーガー", kcal:259, p:13.0, f:9.5, c:30.3, s:1.4},
+  {chain:"mc", cat:"バーガー", name:"チキンタツタ", kcal:373, p:17.6, f:16.2, c:39.9, s:2.3},
+  {chain:"mc", cat:"バーガー", name:"チーズチキンタツタ", kcal:423, p:20.5, f:20.3, c:40.7, s:2.8},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト S", kcal:224, p:3.0, f:10.9, c:28.7, s:0.4},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト M", kcal:409, p:5.5, f:19.8, c:52.4, s:0.7},
   {chain:"mc", cat:"サイド",   name:"マックフライポテト L", kcal:515, p:7.0, f:25.0, c:66.0, s:0.9},
@@ -1101,6 +1227,39 @@ const menu = [
   {chain:"mos", cat:"バーガー", name:"チリドッグ", kcal:373, p:13.0, f:24.0, c:26.5, s:2.6},
   {chain:"mos", cat:"バーガー", name:"モスの菜摘 モス野菜", kcal:223, p:9.1, f:16.5, c:10.4, s:1.3},
   {chain:"mos", cat:"バーガー", name:"モスの菜摘 テリヤキチキン", kcal:186, p:15.1, f:10.7, c:7.7, s:1.9},
+  {chain:"mos", cat:"バーガー", name:"とびきりチーズ ～北海道チーズ～", kcal:478, p:21.9, f:24.7, c:42.2, s:3.0},
+  {chain:"mos", cat:"バーガー", name:"ダブルとびきりチーズ ～北海道チーズ～", kcal:706, p:35.6, f:40.2, c:50.4, s:4.3},
+  {chain:"mos", cat:"バーガー", name:"とろったまベーコン テリヤキバーガー", kcal:450, p:18.4, f:23.7, c:41.0, s:2.8},
+  {chain:"mos", cat:"バーガー", name:"チーズベーコン テリヤキバーガー", kcal:471, p:20.2, f:26.2, c:38.9, s:3.1},
+  {chain:"mos", cat:"バーガー", name:"ダブルとろったまベーコン テリヤキバーガー", kcal:625, p:26.8, f:34.7, c:51.1, s:4.2},
+  {chain:"mos", cat:"バーガー", name:"ダブルチーズベーコン テリヤキバーガー", kcal:646, p:28.6, f:37.2, c:49.0, s:4.5},
+  {chain:"mos", cat:"バーガー", name:"ハンバーガー", kcal:314, p:13.7, f:13.2, c:35.2, s:1.8},
+  {chain:"mos", cat:"バーガー", name:"チーズバーガー", kcal:367, p:16.7, f:17.6, c:35.6, s:2.3},
+  {chain:"mos", cat:"バーガー", name:"ダブルモスバーガー", kcal:532, p:23.7, f:28.4, c:45.7, s:3.4},
+  {chain:"mos", cat:"バーガー", name:"ダブルモスチーズバーガー", kcal:585, p:26.7, f:32.8, c:46.1, s:3.9},
+  {chain:"mos", cat:"バーガー", name:"ダブルテリヤキバーガー", kcal:560, p:22.8, f:29.3, c:51.4, s:4.0},
+  {chain:"mos", cat:"バーガー", name:"ダブルモス野菜バーガー", kcal:511, p:22.2, f:29.5, c:39.7, s:2.7},
+  {chain:"mos", cat:"バーガー", name:"ダブルハンバーガー", kcal:462, p:21.8, f:24.1, c:39.5, s:2.7},
+  {chain:"mos", cat:"バーガー", name:"ダブルチーズバーガー", kcal:515, p:24.8, f:28.5, c:39.9, s:3.2},
+  {chain:"mos", cat:"バーガー", name:"スパイシーモスバーガー", kcal:374, p:15.3, f:17.0, c:40.4, s:2.5},
+  {chain:"mos", cat:"バーガー", name:"スパイシーモスチーズバーガー", kcal:427, p:18.3, f:21.4, c:40.8, s:3.0},
+  {chain:"mos", cat:"バーガー", name:"スパイシーダブルモスバーガー", kcal:534, p:23.8, f:28.4, c:46.1, s:3.6},
+  {chain:"mos", cat:"バーガー", name:"スパイシーダブルモスチーズバーガー", kcal:587, p:26.8, f:32.8, c:46.5, s:4.1},
+  {chain:"mos", cat:"バーガー", name:"スパイシーチリドッグ", kcal:374, p:13.1, f:24.0, c:26.6, s:2.7},
+  {chain:"mos", cat:"バーガー", name:"グリーンバーガー〈テリヤキ〉", kcal:351, p:11.0, f:15.7, c:41.8, s:2.0},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 フィッシュ", kcal:238, p:11.1, f:16.5, c:11.5, s:1.3},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 海老カツ", kcal:254, p:9.4, f:17.0, c:16.7, s:1.5},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 ロースカツ", kcal:265, p:11.3, f:14.0, c:23.6, s:1.7},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 チキン", kcal:243, p:9.9, f:16.3, c:14.6, s:1.0},
+  {chain:"mos", cat:"バーガー", name:"モスの菜摘 ソイモス野菜", kcal:202, p:6.8, f:13.8, c:13.7, s:1.1},
+  {chain:"mos", cat:"バーガー", name:"ソイモスバーガー", kcal:351, p:12.9, f:14.3, c:43.3, s:2.1},
+  {chain:"mos", cat:"バーガー", name:"ソイモスチーズバーガー", kcal:404, p:15.9, f:18.7, c:43.7, s:2.6},
+  {chain:"mos", cat:"バーガー", name:"ソイスパイシーモスバーガー", kcal:353, p:13.0, f:14.3, c:43.7, s:2.3},
+  {chain:"mos", cat:"バーガー", name:"ソイスパイシーモスチーズバーガー", kcal:406, p:16.0, f:18.7, c:44.1, s:2.8},
+  {chain:"mos", cat:"バーガー", name:"ソイテリヤキバーガー", kcal:364, p:12.0, f:15.5, c:44.5, s:2.4},
+  {chain:"mos", cat:"バーガー", name:"ソイモス野菜バーガー", kcal:342, p:11.8, f:15.9, c:38.7, s:1.6},
+  {chain:"mos", cat:"バーガー", name:"ソイハンバーガー", kcal:293, p:11.4, f:10.5, c:38.5, s:1.6},
+  {chain:"mos", cat:"バーガー", name:"ソイチーズバーガー", kcal:346, p:14.4, f:14.9, c:38.9, s:2.1},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト S", kcal:170, p:2.2, f:7.0, c:24.8, s:0.5},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト M", kcal:238, p:3.0, f:9.8, c:34.7, s:0.7},
   {chain:"mos", cat:"サイド",   name:"フレンチフライポテト L", kcal:409, p:5.2, f:16.7, c:59.4, s:1.3},
@@ -1147,6 +1306,39 @@ const menu = [
   {chain:"bk", cat:"バーガー", name:"クラシック スモーキーフライドチキンバーガー", kcal:563, p:26.7, f:32.7, c:40.7, s:2.8},
   {chain:"bk", cat:"バーガー", name:"タルタルチキンバーガー", kcal:425, p:14.4, f:25.8, c:34.7, s:2.0},
   {chain:"bk", cat:"バーガー", name:"スモーキーテリヤキバーガー", kcal:342, p:13.5, f:18.1, c:31.4, s:1.6},
+  {chain:"bk", cat:"バーガー", name:"トリプルワッパーチーズ", kcal:1219, p:69.7, f:81.9, c:51.6, s:4.1},
+  {chain:"bk", cat:"バーガー", name:"ダブルワッパーチーズジュニア", kcal:467, p:24.6, f:28.6, c:28.2, s:1.8},
+  {chain:"bk", cat:"バーガー", name:"アボカドワッパージュニア", kcal:370, p:14.2, f:21.9, c:30.2, s:1.4},
+  {chain:"bk", cat:"バーガー", name:"クアトロチーズワッパー", kcal:823, p:37.5, f:53.7, c:48.0, s:3.8},
+  {chain:"bk", cat:"バーガー", name:"クアトロチーズワッパージュニア", kcal:409, p:18.5, f:25.5, c:26.5, s:1.7},
+  {chain:"bk", cat:"バーガー", name:"ダブルクアトロチーズワッパー", kcal:1057, p:56.0, f:71.4, c:48.1, s:3.9},
+  {chain:"bk", cat:"バーガー", name:"ダブルクアトロチーズワッパージュニア", kcal:503, p:27.0, f:32.2, c:26.5, s:1.8},
+  {chain:"bk", cat:"バーガー", name:"トリプルクアトロチーズワッパー", kcal:1292, p:74.6, f:89.2, c:48.2, s:4.1},
+  {chain:"bk", cat:"バーガー", name:"スモーキーBBQワッパージュニア", kcal:334, p:13.8, f:18.6, c:28.1, s:1.3},
+  {chain:"bk", cat:"バーガー", name:"テリヤキワッパージュニア", kcal:339, p:13.9, f:18.7, c:29.2, s:1.4},
+  {chain:"bk", cat:"バーガー", name:"スパイシーワッパー", kcal:686, p:28.2, f:40.0, c:54.1, s:3.5},
+  {chain:"bk", cat:"バーガー", name:"スパイシーワッパージュニア", kcal:341, p:13.9, f:18.7, c:29.7, s:1.6},
+  {chain:"bk", cat:"バーガー", name:"ベーコンチーズワッパージュニア", kcal:406, p:18.3, f:24.6, c:28.3, s:2.0},
+  {chain:"bk", cat:"バーガー", name:"マッシュルームワッパー", kcal:799, p:29.3, f:53.3, c:51.0, s:3.2},
+  {chain:"bk", cat:"バーガー", name:"マッシュルームワッパージュニア", kcal:405, p:15.0, f:26.1, c:28.0, s:1.4},
+  {chain:"bk", cat:"バーガー", name:"ダブルマッシュルームワッパー", kcal:1033, p:47.9, f:71.1, c:51.1, s:3.3},
+  {chain:"bk", cat:"バーガー", name:"ベーコンダブルチーズバーガー", kcal:494, p:31.1, f:28.7, c:27.9, s:2.6},
+  {chain:"bk", cat:"バーガー", name:"チーズダブルチーズバーガー", kcal:471, p:29.2, f:26.9, c:28.1, s:2.4},
+  {chain:"bk", cat:"バーガー", name:"チーズアグリーバーガー", kcal:675, p:32.4, f:44.7, c:36.7, s:3.6},
+  {chain:"bk", cat:"バーガー", name:"ダブルチーズアグリーバーガー", kcal:910, p:50.9, f:62.5, c:36.8, s:3.8},
+  {chain:"bk", cat:"バーガー", name:"トリプルチーズアグリーバーガー", kcal:1145, p:69.4, f:80.3, c:36.9, s:3.9},
+  {chain:"bk", cat:"バーガー", name:"にんにく・ガーリック バーガー", kcal:731, p:32.7, f:44.3, c:50.8, s:3.6},
+  {chain:"bk", cat:"バーガー", name:"ダブルにんにく・ガーリック バーガー", kcal:1044, p:55.8, f:68.5, c:51.5, s:4.5},
+  {chain:"bk", cat:"バーガー", name:"スパイシーにんにく・ガーリック バーガー", kcal:759, p:33.4, f:45.5, c:54.4, s:3.7},
+  {chain:"bk", cat:"バーガー", name:"スパイシーダブルにんにく・ガーリック バーガー", kcal:1072, p:56.4, f:69.7, c:55.1, s:4.7},
+  {chain:"bk", cat:"バーガー", name:"にんにく・ガーリック ザ・ワンパウンダー", kcal:1638, p:92.7, f:118.1, c:51.2, s:5.3},
+  {chain:"bk", cat:"バーガー", name:"チーズ・クラシック スモーキーフライドチキンバーガー", kcal:523, p:28.9, f:27.2, c:40.7, s:3.1},
+  {chain:"bk", cat:"バーガー", name:"スパイシーマヨ スモーキーフライドチキンバーガー", kcal:538, p:26.8, f:29.3, c:42.0, s:3.2},
+  {chain:"bk", cat:"バーガー", name:"ハッシュ＆BBQバーガー", kcal:488, p:14.9, f:27.8, c:44.3, s:2.0},
+  {chain:"bk", cat:"バーガー", name:"BBQレタスバーガー", kcal:332, p:13.4, f:17.9, c:29.3, s:1.4},
+  {chain:"bk", cat:"バーガー", name:"フィッシュバーガー", kcal:374, p:14.4, f:18.4, c:37.9, s:2.1},
+  {chain:"bk", cat:"バーガー", name:"クラシック ホットドッグ", kcal:302, p:12.3, f:19.0, c:20.5, s:1.9},
+  {chain:"bk", cat:"バーガー", name:"BBQ＆チーズ ホットドッグ", kcal:343, p:13.8, f:22.2, c:22.0, s:2.4},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ S", kcal:216, p:3.0, f:9.8, c:29.0, s:0.9},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ M", kcal:306, p:4.3, f:13.9, c:41.1, s:1.3},
   {chain:"bk", cat:"サイド",   name:"フレンチフライ L", kcal:438, p:6.1, f:19.9, c:58.8, s:1.8},
@@ -1242,6 +1434,12 @@ const menu = [
   {chain:"wd", cat:"バーガー", name:"Jr.ベーコンエッグバーガー", kcal:452, p:25.8, f:27.9, c:28.5, s:3.2},
   {chain:"wd", cat:"バーガー", name:"Jr.チーズベーコンエッグバーガー", kcal:491, p:28.0, f:31.2, c:28.6, s:3.5},
   {chain:"wd", cat:"バーガー", name:"Jr.てりやきバーガー", kcal:379, p:13.1, f:23.5, c:28.7, s:2.6},
+  {chain:"wd", cat:"バーガー", name:"カリフォルニアバーガー", kcal:620, p:30.6, f:43.6, c:36.7, s:2.8},
+  {chain:"wd", cat:"バーガー", name:"カリフォルニアバーガーダブル", kcal:941, p:56.0, f:71.2, c:39.6, s:3.4},
+  {chain:"wd", cat:"バーガー", name:"カリフォルニアチキンフィレバーガー", kcal:742, p:27.2, f:41.9, c:46.1, s:2.7},
+  {chain:"wd", cat:"バーガー", name:"Jr.カリフォルニアバーガー", kcal:441, p:18.5, f:28.4, c:33.4, s:2.7},
+  {chain:"wd", cat:"バーガー", name:"クリスピーチキンバーガー (チキン代替)", kcal:636, p:26.9, f:34.7, c:35.5, s:1.5},
+  {chain:"wd", cat:"バーガー", name:"てりやきクリスピーチキンバーガー (チキン代替)", kcal:651, p:27.1, f:34.9, c:38.5, s:1.5},
   {chain:"wd", cat:"サイド", name:"フレンチフライポテト M", kcal:352, p:4.2, f:19.9, c:40.5, s:2.0},
   {chain:"wd", cat:"サイド", name:"チキンナゲット 5個", kcal:384, p:13.0, f:32.0, c:9.0, s:1.9},
   {chain:"wd", cat:"サイド", name:"チキンナゲット 10個", kcal:767, p:26.0, f:64.0, c:18.0, s:3.8},
@@ -1274,6 +1472,13 @@ const menu = [
   {chain:"lt", cat:"バーガー", name:"てりやきチキンバーガー", kcal:471, p:15.9, f:30.0, c:34.3, s:2.1},
   {chain:"lt", cat:"バーガー", name:"タルタルチキンバーガー", kcal:486, p:15.8, f:30.0, c:37.5, s:1.8},
   {chain:"lt", cat:"バーガー", name:"チーズバーガー", kcal:364, p:13.8, f:20.3, c:31.7, s:2.6},
+  {chain:"lt", cat:"バーガー", name:"ハンバーガー", kcal:313, p:10.6, f:16.2, c:31.2, s:2.1},
+  {chain:"lt", cat:"バーガー", name:"お好み焼きバーガー", kcal:481, p:20.9, f:32.3, c:24.6, s:3.5},
+  {chain:"lt", cat:"バーガー", name:"アボカドビーフバーガー", kcal:512, p:13.4, f:34.6, c:35.8, s:2.3},
+  {chain:"lt", cat:"バーガー", name:"アボカドチーズバーガー", kcal:563, p:16.6, f:38.7, c:36.2, s:2.8},
+  {chain:"lt", cat:"バーガー", name:"アボカドえびバーガー", kcal:475, p:11.3, f:27.8, c:45.1, s:2.7},
+  {chain:"lt", cat:"バーガー", name:"キッズチーズバーガー", kcal:313, p:13.5, f:15.5, c:29.9, s:2.4},
+  {chain:"lt", cat:"バーガー", name:"キッズてりやきバーガー", kcal:384, p:12.9, f:20.8, c:34.7, s:2.8},
   {chain:"lt", cat:"サイド", name:"フレンチフライポテト S", kcal:255, p:2.4, f:15.9, c:26.3, s:0.5},
   {chain:"lt", cat:"サイド", name:"フレンチフライポテト M", kcal:357, p:3.4, f:22.3, c:36.8, s:0.7},
   {chain:"lt", cat:"サイド", name:"フレンチフライポテト L", kcal:459, p:4.3, f:28.6, c:47.3, s:1.1},
@@ -1305,6 +1510,8 @@ const menu = [
   {chain:"kf", cat:"バーガー", name:"和風チキンカツバーガー", kcal:426, p:16.0, f:22.3, c:40.5, s:2.0},
   {chain:"kf", cat:"バーガー", name:"ペッパーマヨツイスター", kcal:301, p:11.3, f:14.5, c:31.7, s:1.8},
   {chain:"kf", cat:"バーガー", name:"てりやきツイスター", kcal:360, p:11.6, f:18.8, c:35.0, s:2.0},
+  {chain:"kf", cat:"バーガー", name:"ケンタの鶏竜田バーガー", kcal:473, p:18.0, f:27.5, c:38.8, s:2.5},
+  {chain:"kf", cat:"バーガー", name:"ケンタの鶏竜田バーガー 香味ネギソース", kcal:501, p:18.3, f:28.2, c:43.7, s:3.1},
   {chain:"kf", cat:"サイド", name:"オリジナルチキン", kcal:218, p:16.5, f:12.8, c:9.1, s:1.5},
   {chain:"kf", cat:"サイド", name:"骨なしケンタッキー", kcal:191, p:20.3, f:8.5, c:8.3, s:1.7},
   {chain:"kf", cat:"サイド", name:"カーネルクリスピー", kcal:119, p:6.8, f:6.6, c:8.2, s:0.6},
@@ -1325,11 +1532,120 @@ const menu = [
   {chain:"kf", cat:"デザート", name:"ハニーメイプル", kcal:30, p:0, f:0, c:7.0, s:0.0},
 ];
 
+// ===== 派生バリエーション（ダブル/トリプル/Jr./ソイ/スパイシー/キッズ等） =====
+// デフォルトでは非表示。「派生も表示」トグルでON。各社公式PDFから網羅追加した派生品。
+const VARIANT_BURGERS = {
+  mc: [],
+  mos: [
+    "ダブルとびきりチーズ ～北海道チーズ～",
+    "とろったまベーコン テリヤキバーガー",
+    "チーズベーコン テリヤキバーガー",
+    "ダブルとろったまベーコン テリヤキバーガー",
+    "ダブルチーズベーコン テリヤキバーガー",
+    "ハンバーガー",
+    "チーズバーガー",
+    "ダブルモスバーガー",
+    "ダブルモスチーズバーガー",
+    "ダブルテリヤキバーガー",
+    "ダブルモス野菜バーガー",
+    "ダブルハンバーガー",
+    "ダブルチーズバーガー",
+    "スパイシーモスバーガー",
+    "スパイシーモスチーズバーガー",
+    "スパイシーダブルモスバーガー",
+    "スパイシーダブルモスチーズバーガー",
+    "スパイシーチリドッグ",
+    "モスの菜摘 フィッシュ",
+    "モスの菜摘 海老カツ",
+    "モスの菜摘 ロースカツ",
+    "モスの菜摘 チキン",
+    "モスの菜摘 ソイモス野菜",
+    "ソイモスバーガー",
+    "ソイモスチーズバーガー",
+    "ソイスパイシーモスバーガー",
+    "ソイスパイシーモスチーズバーガー",
+    "ソイテリヤキバーガー",
+    "ソイモス野菜バーガー",
+    "ソイハンバーガー",
+    "ソイチーズバーガー",
+  ],
+  bk: [
+    "トリプルワッパーチーズ",
+    "ダブルワッパーチーズジュニア",
+    "アボカドワッパージュニア",
+    "クアトロチーズワッパー",
+    "クアトロチーズワッパージュニア",
+    "ダブルクアトロチーズワッパー",
+    "ダブルクアトロチーズワッパージュニア",
+    "トリプルクアトロチーズワッパー",
+    "スモーキーBBQワッパージュニア",
+    "テリヤキワッパージュニア",
+    "スパイシーワッパー",
+    "スパイシーワッパージュニア",
+    "ベーコンチーズワッパージュニア",
+    "マッシュルームワッパージュニア",
+    "ダブルマッシュルームワッパー",
+    "ベーコンダブルチーズバーガー",
+    "チーズダブルチーズバーガー",
+    "チーズアグリーバーガー",
+    "ダブルチーズアグリーバーガー",
+    "トリプルチーズアグリーバーガー",
+    "にんにく・ガーリック バーガー",
+    "ダブルにんにく・ガーリック バーガー",
+    "スパイシーにんにく・ガーリック バーガー",
+    "スパイシーダブルにんにく・ガーリック バーガー",
+    "にんにく・ガーリック ザ・ワンパウンダー",
+    "チーズ・クラシック スモーキーフライドチキンバーガー",
+    "スパイシーマヨ スモーキーフライドチキンバーガー",
+    "ハッシュ＆BBQバーガー",
+    "BBQレタスバーガー",
+    "BBQ＆チーズ ホットドッグ",
+  ],
+  fr: [],
+  wd: [
+    "クリスピーチキンバーガー (チキン代替)",
+    "てりやきクリスピーチキンバーガー (チキン代替)",
+  ],
+  lt: [
+    "キッズチーズバーガー",
+    "キッズてりやきバーガー",
+  ],
+  kf: [],
+};
+function isVariantItem(item){
+  if(item.cat !== "バーガー") return false;
+  const list = VARIANT_BURGERS[item.chain];
+  return !!list && list.includes(item.name);
+}
+
 // ===== 状態 =====
 const state = {
-  chain:"all", cat:"all", q:"", selected:{},
+  chain:"all", cat:"all", q:"", selected:{}, showVariants:false, sort:"default",
   profile:{gender:"M", age:1, height:100, weight:20, act:"mid"}
 };
+
+// ===== メニュー一覧の並び替え軸 =====
+function sortMenuItems(list, sortKey){
+  if(sortKey === "default" || !sortKey) return list;
+  const arr = list.slice();
+  const cmp = {
+    kcalDesc:    (a,b)=> b.kcal - a.kcal,
+    kcalAsc:     (a,b)=> a.kcal - b.kcal,
+    proteinDesc: (a,b)=> b.p - a.p,
+    fatAsc:      (a,b)=> a.f - b.f,
+    saltAsc:     (a,b)=> a.s - b.s,
+    balance:     (a,b)=>{
+      const score = x => {
+        const tot = x.p*4 + x.f*9 + x.c*4;
+        if(!tot) return Infinity;
+        return Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60);
+      };
+      return score(a) - score(b);
+    },
+  }[sortKey];
+  if(cmp) arr.sort(cmp);
+  return arr;
+}
 
 // ===== 基礎代謝量（国立健康・栄養研究所の式 / Ganpule式）=====
 // BMR (kcal/日) = (0.0481×W + 0.0234×H − 0.0138×age − 性別係数) × 1000 / 4.186
@@ -1412,13 +1728,15 @@ function renderMenu(){
     if(state.chain!=="all" && i.chain!==state.chain) return false;
     if(state.cat!=="all" && i.cat!==state.cat) return false;
     if(state.q && !i.name.toLowerCase().includes(state.q.toLowerCase())) return false;
+    // 検索クエリが入っている時は派生も検索対象に含める（探したい人が見つけられるように）
+    if(!state.showVariants && !state.q && isVariantItem(i)) return false;
     return true;
   });
   // group by category
   const cats = state.cat==="all" ? ["バーガー","サイド","ドリンク","デザート"] : [state.cat];
   let html = "";
   for(const cat of cats){
-    const list = filtered.filter(i=>i.cat===cat);
+    const list = sortMenuItems(filtered.filter(i=>i.cat===cat), state.sort);
     if(!list.length) continue;
     const collapsed = collapsedCats.has(cat) ? "true" : "false";
     const expanded = collapsed === "true" ? "false" : "true";
@@ -1527,6 +1845,9 @@ function recalc(){
     kcal += item.kcal*qty; p += item.p*qty; f += item.f*qty; c += item.c*qty; s += item.s*qty;
     rows.push({name:item.name,chain:item.chain,kcal:item.kcal*qty,qty});
   }
+  // クリアボタンは何か選択されている時だけ表示（Codexアドバイス）
+  const resetBtn = document.getElementById("resetBtn");
+  if(resetBtn) resetBtn.hidden = rows.length === 0;
   document.getElementById("totalKcal").innerHTML = Math.round(kcal)+`<small>kcal</small>`;
   document.getElementById("mobileKcal").innerHTML = Math.round(kcal)+`<small>kcal</small>`;
   document.getElementById("totalP").innerHTML = p.toFixed(1)+`<small>g</small>`;
@@ -1673,10 +1994,40 @@ document.querySelector(".search").addEventListener("input",e=>{
   state.q = e.target.value;
   renderMenu();
 });
+document.getElementById("variantToggle").addEventListener("change",e=>{
+  state.showVariants = e.target.checked;
+  renderMenu();
+});
+document.getElementById("sortAxis").addEventListener("change",e=>{
+  state.sort = e.target.value;
+  renderMenu();
+});
 document.getElementById("resetBtn").addEventListener("click",()=>{
   state.selected = {};
   renderMenu(); recalc();
 });
+
+// ===== オプションポップオーバーの開閉 =====
+(()=>{
+  const btn = document.getElementById("optionsBtn");
+  const pop = document.getElementById("optionsPop");
+  function setOpen(open){
+    pop.hidden = !open;
+    btn.setAttribute("aria-expanded", String(open));
+  }
+  btn.addEventListener("click", e => {
+    e.stopPropagation();
+    setOpen(pop.hidden);
+  });
+  document.addEventListener("click", e => {
+    if(pop.hidden) return;
+    if(pop.contains(e.target) || e.target === btn) return;
+    setOpen(false);
+  });
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && !pop.hidden){ setOpen(false); btn.focus(); }
+  });
+})();
 
 // ===== おまかせ提案 =====
 let lastCombos = [];
@@ -1690,7 +2041,13 @@ function generateCombos(){
     dessert: document.getElementById("suggDessert").checked,
     sameChain: document.getElementById("suggSameChain").checked,
   };
-  const pool = menu.filter(i => state.chain==="all" || i.chain===state.chain);
+  // 派生バリエーション(ダブル/Jr./ソイ等)はメインUI側のトグルに準じて除外。
+  // 全件で組み合わせるとカテゴリ4重ループが数千万通りに膨らみUIがフリーズするため。
+  const pool = menu.filter(i => {
+    if(state.chain!=="all" && i.chain!==state.chain) return false;
+    if(!state.showVariants && isVariantItem(i)) return false;
+    return true;
+  });
   const byCat = {
     "バーガー": opts.burger  ? pool.filter(i=>i.cat==="バーガー") : [null],
     "サイド":   opts.side    ? [null, ...pool.filter(i=>i.cat==="サイド")]   : [null],
@@ -1698,21 +2055,39 @@ function generateCombos(){
     "デザート": opts.dessert ? [null, ...pool.filter(i=>i.cat==="デザート")] : [null],
   };
   // 必須カテゴリは null を含めない（バーガーが必須なら null なし）
+  // 累積 kcal が target を超えた時点で内側ループに入らない早期枝刈りで計算量を圧縮。
+  // さらに「バーガー単位の上限」と「全体上限」で早期打ち切り（多様性を確保しつつ計算爆発を防ぐ）。
+  const MAX_COMBOS = 50000;
+  const PER_BURGER_LIMIT = 400; // 1つのバーガーで生成する組合せ数の上限
   const combos = [];
+  burgerLoop:
   for(const b of byCat["バーガー"]){
+    const bKcal = b ? b.kcal : 0;
+    if(bKcal > target) continue;
+    const bChain = b ? b.chain : null;
+    let perBurger = 0;
     for(const s of byCat["サイド"]){
+      const sKcal = bKcal + (s ? s.kcal : 0);
+      if(sKcal > target) continue;
+      if(opts.sameChain && bChain && s && s.chain !== bChain) continue;
+      const sChain = bChain || (s ? s.chain : null);
       for(const d of byCat["ドリンク"]){
+        const dKcal = sKcal + (d ? d.kcal : 0);
+        if(dKcal > target) continue;
+        if(opts.sameChain && sChain && d && d.chain !== sChain) continue;
+        const dChain = sChain || (d ? d.chain : null);
         for(const dz of byCat["デザート"]){
+          if(opts.sameChain && dChain && dz && dz.chain !== dChain) continue;
           const items = [b,s,d,dz].filter(Boolean);
           if(!items.length) continue;
-          if(opts.sameChain && new Set(items.map(i=>i.chain)).size > 1) continue;
-          const kcal = items.reduce((sum,i)=>sum+i.kcal,0);
+          const kcal = dKcal + (dz ? dz.kcal : 0);
           if(kcal > target) continue;
-          const tP = items.reduce((sum,i)=>sum+i.p,0);
-          const tF = items.reduce((sum,i)=>sum+i.f,0);
-          const tC = items.reduce((sum,i)=>sum+i.c,0);
-          const tS = items.reduce((sum,i)=>sum+i.s,0);
+          let tP=0,tF=0,tC=0,tS=0;
+          for(const it of items){ tP+=it.p; tF+=it.f; tC+=it.c; tS+=it.s; }
           combos.push({items, kcal, p:tP, f:tF, c:tC, s:tS});
+          perBurger++;
+          if(combos.length >= MAX_COMBOS) break burgerLoop;
+          if(perBurger >= PER_BURGER_LIMIT) continue burgerLoop;
         }
       }
     }
@@ -1743,20 +2118,43 @@ function generateCombos(){
       return ua - ub || b.kcal - a.kcal;
     });
   }
-  // 上位5件選抜。完全重複は常に排除。同じバーガー名の連発は kcal 軸のみ抑制（他軸では純粋な上位を歪めない）
+  // 軸スコア上位 POOL_SIZE 件を Fisher-Yates でシャッフルして「提案する」連打で別の組合せが出るようにする。
+  // 並び順は維持しつつ多様性確保のため、シャッフル後にバーガー/デザート被りを段階的に緩めて埋める。
+  const POOL_SIZE = 40;
+  const headSize = Math.min(POOL_SIZE, combos.length);
+  for(let i = headSize - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [combos[i], combos[j]] = [combos[j], combos[i]];
+  }
+
   const top = [];
   const seenKey = new Set();
-  for(const c of combos){
-    const key = c.items.map(i=>i.name).sort().join("|");
-    if(seenKey.has(key)) continue;
-    seenKey.add(key);
-    if(axis === "kcal"){
-      const burger = c.items.find(i=>i.cat==="バーガー");
-      if(burger && top.some(t => t.items.find(i=>i.cat==="バーガー")?.name === burger.name)) continue;
+  function fillTop(strictBurger, strictDessert){
+    const usedBurgers = new Set();
+    const usedDesserts = new Set();
+    for(const c of top){
+      const b = c.items.find(i=>i.cat==="バーガー");
+      const d = c.items.find(i=>i.cat==="デザート");
+      if(b) usedBurgers.add(b.name);
+      if(d) usedDesserts.add(d.name);
     }
-    top.push(c);
-    if(top.length >= 5) break;
+    for(const c of combos){
+      if(top.length >= 5) return;
+      const key = c.items.map(i=>i.name).sort().join("|");
+      if(seenKey.has(key)) continue;
+      const burger = c.items.find(i=>i.cat==="バーガー");
+      const dessert = c.items.find(i=>i.cat==="デザート");
+      if(strictBurger && burger && usedBurgers.has(burger.name)) continue;
+      if(strictDessert && dessert && usedDesserts.has(dessert.name)) continue;
+      seenKey.add(key);
+      if(burger) usedBurgers.add(burger.name);
+      if(dessert) usedDesserts.add(dessert.name);
+      top.push(c);
+    }
   }
+  fillTop(true, true);    // バーガー＋デザート両方を多様化
+  if(top.length < 5) fillTop(true, false);  // チェーン側面でデザート選択肢が少ない場合は緩和
+  if(top.length < 5) fillTop(false, false); // それでも足りなければ純粋な上位で埋める
   return top;
 }
 

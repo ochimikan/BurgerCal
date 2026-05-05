@@ -2244,6 +2244,49 @@
   .kcal-pair small,
   .kcal-unit{font-size:.62em !important;margin-left:2px}
 
+  /* Suggest category choices stay in one horizontal row on every viewport. */
+  .suggest-panel .sugg-category-row{
+    display:flex !important;
+    flex:1 0 100% !important;
+    flex-wrap:nowrap !important;
+    align-items:center !important;
+    gap:12px !important;
+    min-width:0;
+    overflow-x:auto;
+    padding:0 2px 4px;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--comic-red) var(--cream-dark);
+  }
+  .suggest-panel .sugg-category-row::-webkit-scrollbar{height:7px}
+  .suggest-panel .sugg-category-row::-webkit-scrollbar-track{
+    background:var(--cream-dark);
+    border-radius:999px;
+  }
+  .suggest-panel .sugg-category-row::-webkit-scrollbar-thumb{
+    background:var(--comic-red);
+    border:1px solid var(--comic-black);
+    border-radius:999px;
+  }
+  .suggest-panel .sugg-category-row > .sugg-cat-choice{
+    flex:1 1 0 !important;
+    min-width:112px !important;
+    max-width:none !important;
+    justify-content:center !important;
+    white-space:nowrap !important;
+  }
+  @media (max-width:560px){
+    .suggest-panel .sugg-category-row{
+      gap:8px !important;
+      padding-bottom:6px;
+    }
+    .suggest-panel .sugg-category-row > .sugg-cat-choice{
+      flex:0 0 auto !important;
+      min-width:96px !important;
+      padding-inline:12px !important;
+    }
+  }
+
   /* PC full-width suggestion panel: prevent equal grid columns from stretching controls. */
   .suggest-panel .sp-form{
     display:flex !important;
@@ -2302,6 +2345,88 @@
     }
     .suggest-panel .sp-form label:has(input[type=checkbox]){
       justify-content:flex-start !important;
+    }
+  }
+
+  /* Final override: the four category chips must never stack vertically. */
+  .suggest-panel .sugg-category-row{
+    flex:1 0 100% !important;
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+  }
+  .suggest-panel .sugg-category-row > label.sugg-cat-choice{
+    flex:0 0 112px !important;
+    width:112px !important;
+    min-width:112px !important;
+    max-width:112px !important;
+    justify-content:center !important;
+  }
+  @media (max-width:560px){
+    .suggest-panel .sugg-category-row > label.sugg-cat-choice{
+      flex:0 0 96px !important;
+      width:96px !important;
+      min-width:96px !important;
+      max-width:96px !important;
+      justify-content:center !important;
+    }
+  }
+  .suggest-panel .sp-form .sugg-category-row > label:has(#suggBurger),
+  .suggest-panel .sp-form .sugg-category-row > label:has(#suggSide),
+  .suggest-panel .sp-form .sugg-category-row > label:has(#suggDrink),
+  .suggest-panel .sp-form .sugg-category-row > label:has(#suggDessert){
+    flex:0 0 112px !important;
+    width:112px !important;
+    min-width:112px !important;
+    max-width:112px !important;
+    justify-content:center !important;
+  }
+  @media (max-width:560px){
+    .suggest-panel .sp-form .sugg-category-row > label:has(#suggBurger),
+    .suggest-panel .sp-form .sugg-category-row > label:has(#suggSide),
+    .suggest-panel .sp-form .sugg-category-row > label:has(#suggDrink),
+  .suggest-panel .sp-form .sugg-category-row > label:has(#suggDessert){
+      flex:0 0 96px !important;
+      width:96px !important;
+      min-width:96px !important;
+      max-width:96px !important;
+    }
+  }
+
+  /* Replay the food pop when suggestion conditions change. */
+  .gen-float-label{display:inline-block}
+  .gen-float.is-nudging .gen-float-label{
+    animation:genFloatLabelCue .54s ease-out both !important;
+  }
+  .gen-float.is-nudging .gen-float-icons-left img{
+    animation:floatFoodCueLeft .62s cubic-bezier(.16,1.35,.36,1) both !important;
+  }
+  .gen-float.is-nudging .gen-float-icons-right img{
+    animation:floatFoodCueRight .62s cubic-bezier(.16,1.35,.36,1) both !important;
+  }
+  .gen-float.is-nudging .gen-float-icons-left img:nth-child(1){animation-delay:.02s !important}
+  .gen-float.is-nudging .gen-float-icons-left img:nth-child(2){animation-delay:.12s !important}
+  .gen-float.is-nudging .gen-float-icons-right img:nth-child(1){animation-delay:.07s !important}
+  .gen-float.is-nudging .gen-float-icons-right img:nth-child(2){animation-delay:.18s !important}
+  @keyframes floatFoodCueLeft{
+    0%{opacity:.18;transform:translate(18px,18px) scale(.55) rotate(12deg)}
+    62%{opacity:1;transform:translate(-7px,-8px) scale(1.15) rotate(-10deg)}
+    100%{opacity:1;transform:translate(0,0) scale(1) rotate(-4deg)}
+  }
+  @keyframes floatFoodCueRight{
+    0%{opacity:.18;transform:translate(-18px,18px) scale(.55) rotate(-12deg)}
+    62%{opacity:1;transform:translate(7px,-8px) scale(1.15) rotate(10deg)}
+    100%{opacity:1;transform:translate(0,0) scale(1) rotate(4deg)}
+  }
+  @keyframes genFloatLabelCue{
+    0%,100%{transform:translateY(0)}
+    38%{transform:translateY(-2px)}
+    68%{transform:translateY(1px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .gen-float.is-nudging .gen-float-label,
+    .gen-float.is-nudging .gen-float-icons img{
+      animation:none !important;
     }
   }
 </style>
@@ -2392,10 +2517,12 @@
           <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> <small class="kcal-unit">kcal</small>
         </label>
         <button type="button" class="meal-target-btn" id="mealTargetBtn" title="プロフィールから1食分の目安カロリーを自動入力">🍽 一食の目安</button>
-        <label><input type="checkbox" id="suggBurger" checked> バーガー</label>
-        <label><input type="checkbox" id="suggSide" checked> サイド</label>
-        <label><input type="checkbox" id="suggDrink"> ドリンク</label>
-        <label><input type="checkbox" id="suggDessert"> デザート</label>
+        <div class="sugg-category-row" aria-label="提案に含めるカテゴリー">
+          <label class="sugg-cat-choice"><input type="checkbox" id="suggBurger" checked> バーガー</label>
+          <label class="sugg-cat-choice"><input type="checkbox" id="suggSide" checked> サイド</label>
+          <label class="sugg-cat-choice"><input type="checkbox" id="suggDrink"> ドリンク</label>
+          <label class="sugg-cat-choice"><input type="checkbox" id="suggDessert"> デザート</label>
+        </div>
         <label><input type="checkbox" id="suggSameChain" checked> 同じチェーンで揃える</label>
         <button class="gen-btn" id="genSuggest">提案する</button>
         <p class="sp-hint">※ 上限カロリー内で <b>PFCバランスが理想に近い組み合わせ</b>からランダム提案。押すたびに入れ替わります。</p>
@@ -3721,6 +3848,31 @@ function scrollToSuggestResults(){
   });
 }
 
+let generateCueTimer = null;
+let generateCueCleanupTimer = null;
+function clearGenerateButtonCue(){
+  const btn = document.getElementById("genSuggestFloat");
+  if(btn) btn.classList.remove("is-nudging");
+  if(generateCueTimer) clearTimeout(generateCueTimer);
+  if(generateCueCleanupTimer) clearTimeout(generateCueCleanupTimer);
+  generateCueTimer = null;
+  generateCueCleanupTimer = null;
+}
+function playGenerateButtonCue(){
+  const panel = document.getElementById("suggestPanel");
+  const btn = document.getElementById("genSuggestFloat");
+  if(!panel || panel.hidden || !btn || btn.hidden) return;
+  btn.classList.remove("is-nudging");
+  void btn.offsetWidth;
+  btn.classList.add("is-nudging");
+  if(generateCueCleanupTimer) clearTimeout(generateCueCleanupTimer);
+  generateCueCleanupTimer = setTimeout(()=>btn.classList.remove("is-nudging"), 900);
+}
+function queueGenerateButtonCue(){
+  if(generateCueTimer) clearTimeout(generateCueTimer);
+  generateCueTimer = setTimeout(playGenerateButtonCue, 90);
+}
+
 function mealTargetKcal(){
   const tgt = calcTargetKcal();
   return tgt ? Math.round(tgt/3/50)*50 : null;
@@ -3741,6 +3893,15 @@ document.getElementById("mealTargetBtn").addEventListener("click",()=>{
   const v = mealTargetKcal();
   if(v == null) return;
   document.getElementById("suggTarget").value = v;
+  queueGenerateButtonCue();
+});
+
+["suggTarget","suggBurger","suggSide","suggDrink","suggDessert","suggSameChain"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(!el) return;
+  const eventName = el.type === "number" ? "input" : "change";
+  el.addEventListener(eventName, queueGenerateButtonCue);
+  if(el.type === "number") el.addEventListener("change", queueGenerateButtonCue);
 });
 
 document.getElementById("autoBtn").addEventListener("click",(e)=>{
@@ -3770,9 +3931,11 @@ document.getElementById("closeSuggest").addEventListener("click",()=>{
   document.getElementById("autoBtn").setAttribute("aria-expanded","false");
   const floatBtn = document.getElementById("genSuggestFloat");
   if(floatBtn) floatBtn.hidden = true;
+  clearGenerateButtonCue();
 });
 document.getElementById("genSuggest").addEventListener("click", renderCombos);
 document.getElementById("genSuggestFloat")?.addEventListener("click",()=>{
+  clearGenerateButtonCue();
   renderCombos();
   scrollToSuggestResults();
 });

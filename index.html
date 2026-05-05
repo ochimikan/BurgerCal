@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較</title>
-<meta name="description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
+<title>BurgerCal - Burger Calories and PFC Checker</title>
+<meta name="description" content="Compare burger chain menus, calories, and PFC balance with a playful retro poster style.">
 
 <!-- OGP -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="BurgerCal">
-<meta property="og:title" content="BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較">
-<meta property="og:description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
+<meta property="og:title" content="BurgerCal - Burger Calories and PFC Checker">
+<meta property="og:description" content="Compare burger chain menus, calories, and PFC balance with a playful retro poster style.">
 <meta property="og:url" content="https://burgercal.pages.dev/">
 <meta property="og:image" content="https://burgercal.pages.dev/assets/OGP_1x1.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="1200">
-<meta property="og:image:alt" content="BurgerCal — いろんなバーガーチェーンのカロリー比較">
+<meta property="og:image:alt" content="BurgerCal burger calorie comparison">
 <meta property="og:image" content="https://burgercal.pages.dev/assets/ogp.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="BurgerCal — いろんなバーガーチェーンのカロリー比較">
+<meta property="og:image:alt" content="BurgerCal burger calorie comparison">
 <meta property="og:locale" content="ja_JP">
 
 <!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="BurgerCal — いろんなバーガーチェーンのカロリー＆栄養比較">
-<meta name="twitter:description" content="いろんなバーガーチェーンのメニューを比較してカロリー管理。">
+<meta name="twitter:title" content="BurgerCal - Burger Calories and PFC Checker">
+<meta name="twitter:description" content="Compare burger chain menus, calories, and PFC balance with a playful retro poster style.">
 <meta name="twitter:image" content="https://burgercal.pages.dev/assets/ogp.png">
 
 <meta name="theme-color" content="#ca2722">
@@ -38,7 +38,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=M+PLUS+1p:wght@700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   *,*::before,*::after{box-sizing:border-box}
@@ -277,12 +277,22 @@
   .options-wrap{position:relative;flex:0 0 auto}
   .options-btn{
     flex:0 0 auto;cursor:pointer;white-space:nowrap;
+    display:inline-flex;align-items:center;gap:6px;
     font-family:"Bebas Neue","Anton",sans-serif;letter-spacing:1px;
     border:2.5px solid #d68a86;background:transparent;color:var(--red-dark);
     padding:7px 14px;border-radius:30px;font-size:13px;font-weight:700;
     box-shadow:1.5px 1.5px 0 #c89893;
     transition:transform .12s, box-shadow .12s, background .12s, color .12s, border-color .12s;
   }
+  .options-badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:20px;height:20px;padding:0 6px;
+    border:2px solid var(--comic-black);border-radius:999px;
+    background:var(--comic-yellow);color:var(--comic-black);
+    font-size:11px;line-height:1;box-shadow:1px 1px 0 var(--comic-black);
+    -webkit-text-stroke:0;
+  }
+  .options-badge[hidden]{display:none}
   .options-btn:hover{
     transform:translate(-1px,-1px);
     box-shadow:3px 3px 0 var(--red-dark);
@@ -521,7 +531,21 @@
     background:var(--cream-light);border:3px solid var(--red);border-radius:14px;
     padding:18px;box-shadow:6px 6px 0 var(--red-dark);
     max-height:calc(100vh - 36px);overflow-y:auto;
+    scrollbar-width:thin;
+    scrollbar-color:var(--red) var(--cream-dark);
   }
+  .panel::-webkit-scrollbar{width:8px}
+  .panel::-webkit-scrollbar-track{
+    background:var(--cream-dark);
+    border-radius:4px;
+    box-shadow:inset 1px 0 0 rgba(74,40,20,.15);
+  }
+  .panel::-webkit-scrollbar-thumb{
+    background:var(--red);
+    border-radius:4px;
+    border:1.5px solid var(--red-dark);
+  }
+  .panel::-webkit-scrollbar-thumb:hover{background:var(--red-dark)}
   .panel h2{
     margin:0 0 12px;font-family:"Anton",sans-serif;font-size:24px;
     color:var(--red);letter-spacing:2px;text-align:center;
@@ -939,17 +963,1372 @@
     .auto-btn{font-size:13px;padding:8px 14px}
     .cat-btn img{width:12px;height:12px;margin-right:2px}
   }
+
+  /* ===== RETRO POP POSTER PASS ===== */
+  :root{
+    --pop-red:#cf2b22;
+    --pop-red-dark:#842019;
+    --pop-cream:#fff0c9;
+    --pop-paper:#fff8e6;
+    --pop-brown:#4a2814;
+    --pop-yellow:#f2bf32;
+    --pop-green:#146b3a;
+  }
+  body{
+    background-color:var(--cream);
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.10) 1px, transparent 0);
+    background-size:13px 13px;
+  }
+  header.hero{
+    overflow:hidden;background:var(--pop-cream);
+    border-bottom:8px solid var(--pop-red);
+  }
+  header.hero::before,
+  header.hero::after{
+    content:"";position:absolute;pointer-events:none;background-repeat:no-repeat;background-size:contain;
+    opacity:.45;filter:sepia(.25) saturate(.9);
+  }
+  header.hero::before{left:max(14px,5vw);top:20px;width:58px;height:58px;background-image:url("assets/sparkle1.png");animation:stickerWiggle 5s ease-in-out infinite}
+  header.hero::after{right:max(16px,6vw);bottom:18px;width:46px;height:46px;background-image:url("assets/sparkle2.png");animation:stickerWiggle 5.8s ease-in-out .5s infinite reverse}
+  .hero-mv{position:relative;z-index:1;filter:none}
+  .hero-tag,.hero-updated{position:relative;z-index:1}
+
+  .controls-sticky{
+    background:var(--pop-cream);
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.10) 1px, transparent 0);
+    background-size:13px 13px;
+    border-bottom:5px solid var(--pop-red);
+  }
+  .tab-row-label{
+    color:var(--pop-red-dark);border-right:3px dotted rgba(132,32,25,.35);
+  }
+  .chain-btn,.cat-btn,.reset,.options-btn,.auto-btn,.meal-target-btn,.sp-form .gen-btn,.apply-btn{
+    transition:transform .12s ease, box-shadow .12s ease, background-color .12s ease, color .12s ease;
+  }
+  .chain-btn:hover,.cat-btn:hover,.reset:hover,.options-btn:hover,.auto-btn:hover,.meal-target-btn:hover:not(:disabled),.sp-form .gen-btn:hover,.apply-btn:hover{
+    transform:translate(-1px,-1px);
+  }
+  .chain-btn:active,.cat-btn:active,.reset:active,.options-btn:active,.auto-btn:active,.meal-target-btn:active,.sp-form .gen-btn:active,.apply-btn:active{
+    transform:translate(1px,1px);box-shadow:1px 1px 0 var(--pop-red-dark);
+  }
+  .auto-btn{
+    position:relative;background:var(--pop-red);color:var(--cream-light);
+    border-color:var(--pop-red-dark);border-radius:999px;
+    box-shadow:4px 4px 0 var(--pop-red-dark), 0 0 0 5px var(--pop-yellow);
+  }
+  .auto-btn[aria-expanded="true"]{
+    background:var(--pop-red);color:var(--cream-light);border-color:var(--pop-red-dark);
+    box-shadow:2px 2px 0 var(--pop-red-dark), 0 0 0 5px var(--pop-yellow);
+  }
+  .auto-btn img{filter:none !important}
+  .item{transition:transform .12s ease, box-shadow .12s ease, background-color .12s ease}
+  .item.selected{animation:pressPop .18s ease-out}
+
+  .suggest-panel{
+    position:relative;overflow:hidden;background:var(--pop-paper);
+    border:4px solid var(--pop-red);border-radius:0;
+    padding:0;margin-bottom:22px;box-shadow:7px 7px 0 var(--pop-red-dark);
+    scroll-margin-top:240px;animation:posterOpen .18s ease-out;
+  }
+  .suggest-panel::before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.42;
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.08) 1px, transparent 0);
+    background-size:12px 12px;
+  }
+  .suggest-panel::after{
+    content:"";position:absolute;left:18px;right:18px;top:70px;height:12px;pointer-events:none;
+    background:var(--pop-yellow);border:2px solid var(--pop-red-dark);box-shadow:0 14px 0 var(--pop-red),0 28px 0 var(--pop-yellow);
+    opacity:.14;
+  }
+  .suggest-panel > *{position:relative;z-index:1}
+  .sp-head{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    margin:0;padding:15px 18px 13px;background:var(--pop-red);color:var(--cream-light);
+    border-bottom:5px solid var(--pop-red-dark);
+  }
+  .sp-head h3{
+    margin:0;color:var(--cream-light);font-family:"Bebas Neue","Anton",sans-serif;
+    font-size:26px;line-height:1.05;letter-spacing:1.8px;text-shadow:2px 2px 0 var(--pop-red-dark);
+  }
+  .sp-close{
+    flex:0 0 auto;background:var(--pop-paper);color:var(--pop-red-dark);
+    border:2.5px solid var(--pop-red-dark);box-shadow:3px 3px 0 var(--pop-red-dark);
+  }
+  .sp-close:hover{background:var(--pop-yellow);box-shadow:4px 4px 0 var(--pop-red-dark)}
+
+  .sp-form{
+    display:grid;grid-template-columns:minmax(220px,1.05fr) auto repeat(4,minmax(88px,auto));
+    gap:12px;align-items:center;margin:0;padding:18px;
+    color:var(--pop-brown);font-size:13px;font-weight:900;
+    border-bottom:3px dashed rgba(74,40,20,.30);
+  }
+  .sp-form > label:first-child{
+    position:relative;display:grid;grid-template-columns:auto minmax(96px,1fr) auto;gap:9px;align-items:center;
+    min-height:58px;padding:10px 12px 10px 16px;background:#fff;border:3px solid var(--pop-brown);border-radius:0;
+    box-shadow:4px 4px 0 rgba(74,40,20,.28);font-size:13px;letter-spacing:.2px;
+  }
+  .sp-form > label:first-child::before{
+    content:"LIMIT";position:absolute;left:12px;top:-12px;background:var(--pop-yellow);color:var(--pop-red-dark);
+    border:2px solid var(--pop-red-dark);padding:1px 8px;font-family:"Bebas Neue",sans-serif;font-size:12px;letter-spacing:1px;
+  }
+  .sp-form > label:first-child input[type=number]{
+    width:100%;min-width:96px;text-align:right;font-family:"Anton",sans-serif;font-size:24px;line-height:1;
+    border:3px solid var(--pop-red);border-radius:0;color:var(--pop-red-dark);background:#fffdf7;
+  }
+  .meal-target-btn{
+    min-height:44px;border-radius:0;background:var(--pop-cream);color:var(--pop-red-dark);
+    border:3px solid var(--pop-brown);box-shadow:3px 3px 0 var(--pop-brown);
+  }
+  .meal-target-btn:disabled{
+    background:#ead9b5;color:rgba(74,40,20,.55);border-color:#a68b64;box-shadow:3px 3px 0 #a68b64;
+  }
+  .sp-form label:has(input[type=checkbox]){
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    min-height:40px;padding:8px 13px;background:#fff;border:2.5px solid #d98b84;border-radius:999px;
+    color:var(--pop-brown);box-shadow:2px 2px 0 #c8928d;cursor:pointer;white-space:nowrap;
+  }
+  .sp-form label:has(input[type=checkbox]:checked){
+    background:var(--pop-red);color:var(--cream-light);border-color:var(--pop-red-dark);box-shadow:3px 3px 0 var(--pop-red-dark);
+  }
+  .sp-form input[type=checkbox]{accent-color:var(--pop-yellow);width:15px;height:15px;margin:0}
+  .sp-form label:has(#suggSameChain){grid-column:auto / span 2;background:var(--pop-red);color:var(--cream-light);border-color:var(--pop-red-dark);box-shadow:3px 3px 0 var(--pop-red-dark)}
+  .sp-form .gen-btn{
+    min-height:46px;padding:9px 22px;border-radius:0;background:var(--pop-red);color:var(--cream-light);
+    border:3px solid var(--pop-red-dark);box-shadow:4px 4px 0 var(--pop-red-dark);
+    font-size:18px;white-space:nowrap;
+  }
+  .sp-form .gen-btn:hover{background:var(--pop-red-dark);box-shadow:5px 5px 0 var(--pop-brown)}
+  .sp-hint{
+    grid-column:1/-1;margin:0;padding:10px 12px;background:#fff;border:2px dashed rgba(74,40,20,.28);border-radius:0;
+    color:var(--pop-brown);opacity:.92;font-size:11px;line-height:1.55;
+  }
+
+  .sp-results{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:14px;padding:16px 18px 18px;
+  }
+  .combo-card{
+    position:relative;overflow:hidden;background:#fff;border:3px solid var(--pop-brown);border-radius:0;
+    padding:12px;display:flex;flex-direction:column;gap:9px;box-shadow:4px 4px 0 var(--pop-brown);
+    animation:cardIn .18s ease-out both;
+  }
+  .combo-card::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:var(--pop-red)}
+  .combo-card:nth-child(2){animation-delay:.03s}.combo-card:nth-child(3){animation-delay:.06s}.combo-card:nth-child(4){animation-delay:.09s}
+  .combo-card:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--pop-red-dark);border-color:var(--pop-red-dark)}
+  .combo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 0 6px;border-bottom:3px solid var(--pop-red)}
+  .combo-rank{
+    display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:34px;
+    background:var(--pop-red);color:var(--cream-light);border:2px solid var(--pop-red-dark);border-radius:50%;
+    font-family:"Bebas Neue",sans-serif;font-size:18px;letter-spacing:1px;box-shadow:2px 2px 0 var(--pop-red-dark);
+  }
+  .combo-kcal{
+    display:inline-flex;align-items:baseline;gap:2px;background:transparent;border:0;box-shadow:none;
+    padding:0;font-family:"Anton",sans-serif;font-size:25px;line-height:1;color:var(--pop-red);transform:none;
+  }
+  .combo-kcal small{font-size:12px;color:var(--pop-brown);margin-left:2px}
+  .combo-card ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:12px}
+  .combo-card li{
+    padding:7px 8px;display:flex;align-items:center;gap:7px;background:var(--pop-paper);
+    border:1.5px solid rgba(74,40,20,.18);border-radius:0;color:var(--pop-brown);font-weight:700;
+  }
+  .combo-card li em{font-style:normal;color:var(--pop-red-dark);font-size:11px;margin-left:auto;font-weight:900;opacity:.9}
+  .combo-stats{
+    font-size:11px;color:var(--pop-brown);opacity:1;border-top:2px dashed var(--cream-dark);padding-top:8px;font-weight:900;text-align:center;
+  }
+  .combo-card .nutri-bars{margin-top:2px}
+  .apply-btn{
+    margin-top:auto;background:var(--pop-red);color:#fff;border:3px solid var(--pop-red-dark);
+    padding:9px 10px;border-radius:0;font-size:13px;font-weight:900;cursor:pointer;
+    font-family:"Bebas Neue",sans-serif;letter-spacing:1.2px;box-shadow:3px 3px 0 var(--pop-red-dark);
+  }
+  .apply-btn:hover{background:var(--pop-red-dark);box-shadow:4px 4px 0 var(--pop-brown)}
+  .sp-empty{text-align:center;color:var(--pop-brown);opacity:.75;font-size:13px;padding:24px;background:#fff;border:2px dashed var(--cream-dark);border-radius:0;grid-column:1/-1}
+
+  @keyframes stickerWiggle{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  @keyframes pressPop{0%{transform:translate(0,0) scale(.99)}100%{transform:translate(-2px,-2px) rotate(-.3deg) scale(1)}}
+  @keyframes posterOpen{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  @media (max-width:1100px){
+    .sp-form{grid-template-columns:minmax(210px,1fr) auto repeat(3,minmax(88px,auto))}
+    .sp-form .gen-btn{grid-column:auto / span 2}
+  }
+  @media (max-width:960px){
+    .suggest-panel{scroll-margin-top:280px}
+    .sp-form{grid-template-columns:1fr 1fr;padding:16px;gap:10px}
+    .sp-form > label:first-child,.meal-target-btn,.sp-form .gen-btn,.sp-hint,.sp-form label:has(#suggSameChain){grid-column:1/-1}
+    .sp-form label:has(input[type=checkbox]){min-height:38px}
+    .sp-results{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  }
+  @media (max-width:768px){
+    header.hero::before{width:42px;height:42px;left:8px;top:16px}header.hero::after{width:34px;height:34px;right:10px;bottom:16px}
+    .sp-head{align-items:flex-start;padding:13px 14px 11px}.sp-head h3{font-size:16px;letter-spacing:.3px;line-height:1.22}.sp-close{width:34px;height:34px}
+    .sp-results{grid-template-columns:1fr;padding:14px}
+  }
+  @media (max-width:420px){
+    .sp-form{grid-template-columns:1fr}.sp-form label:has(input[type=checkbox]){grid-column:1/-1;justify-content:flex-start}
+    .sp-form > label:first-child{grid-template-columns:1fr auto}.sp-form > label:first-child input[type=number]{grid-column:1/-1;text-align:left}
+  }
+
+  /* The main column is narrow while the sidebar is still visible around 1042px. */
+  @media (max-width:1280px){
+    .sp-form{grid-template-columns:1fr 1fr;padding:16px;gap:10px}
+    .sp-form > label:first-child,.meal-target-btn,.sp-form .gen-btn,.sp-hint,.sp-form label:has(#suggSameChain){grid-column:1/-1}
+    .sp-form label:has(input[type=checkbox]){min-height:38px}
+  }
+
+  /* Restored original main visual image treatment. */
+  header.hero{
+    padding:24px 20px 20px;
+    background:var(--cream-light);
+    border-bottom:6px solid var(--red);
+    overflow:hidden;
+  }
+  header.hero::before,
+  header.hero::after{display:none !important}
+  .hero-mv{
+    display:block;width:100%;max-width:880px;height:auto;margin:0 auto;
+    filter:none !important;box-shadow:none !important;
+  }
+  .hero-tag{margin:12px 0 0}
+  @media (max-width:768px){
+    header.hero{padding:18px 14px 14px;border-bottom-width:5px}
+    .hero-mv{max-width:300px}
+  }
+  @media (max-width:480px){
+    header.hero{padding:14px 10px 12px}
+    .hero-mv{max-width:240px}
+  }
+
+  /* Main visual uses the approved composed artwork. */
+  header.hero{
+    padding:0 0 18px;
+    background:var(--pop-cream);
+    border-bottom:8px solid var(--pop-red);
+    overflow:hidden;
+  }
+  header.hero::before,
+  header.hero::after{display:none !important}
+  .hero-reference{
+    display:block;width:min(100%,750px);height:auto;margin:0 auto;
+    filter:none !important;box-shadow:none !important;
+  }
+  .hero-mv{display:none !important}
+  .hero-tag{margin:12px 0 0}
+  @media (max-width:768px){
+    header.hero{padding-bottom:14px;border-bottom-width:6px}
+    .hero-reference{width:100%;max-width:750px}
+  }
+
+  /* Final cleanup: original MV assets, rounded controls, stable suggestion layout. */
+  header.hero{
+    padding:24px 20px 20px !important;
+    background:var(--cream-light) !important;
+    border-bottom:6px solid var(--red) !important;
+    overflow:hidden;
+  }
+  header.hero::before,
+  header.hero::after{display:none !important}
+  .hero-reference{display:none !important}
+  .hero-mv{
+    display:block !important;width:100%;max-width:880px;height:auto;margin:0 auto;
+    filter:none !important;box-shadow:none !important;
+  }
+  .hero-tag{margin:12px 0 0 !important}
+  @media (max-width:768px){
+    header.hero{padding:18px 14px 14px !important;border-bottom-width:5px !important}
+    .hero-mv{max-width:300px}
+  }
+  @media (max-width:480px){
+    header.hero{padding:14px 10px 12px !important}
+    .hero-mv{max-width:240px}
+  }
+
+  .suggest-panel{border-radius:18px !important;overflow:hidden}
+  .sp-head{border-radius:14px 14px 0 0}
+  .sp-close{border-radius:50% !important}
+  .sp-form{
+    display:grid !important;
+    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+    gap:12px !important;align-items:stretch !important;
+  }
+  .sp-form > label:first-child,
+  .meal-target-btn,
+  .sp-form label:has(input[type=checkbox]),
+  .sp-form .gen-btn,
+  .sp-hint{min-width:0}
+  .sp-form > label:first-child{
+    grid-column:span 1;border-radius:14px !important;
+  }
+  .sp-form > label:first-child::before{border-radius:8px !important}
+  .sp-form > label:first-child input[type=number]{border-radius:10px !important;min-width:0}
+  .meal-target-btn{grid-column:span 1;border-radius:14px !important;white-space:normal;line-height:1.35}
+  .sp-form label:has(input[type=checkbox]){grid-column:span 1;border-radius:999px !important}
+  .sp-form label:has(#suggSameChain){grid-column:span 2;border-radius:999px !important}
+  .sp-form .gen-btn{
+    grid-column:span 2;width:100%;min-height:50px;border-radius:14px !important;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    white-space:nowrap;overflow:visible;text-align:center;
+  }
+  .sp-hint{grid-column:1/-1;border-radius:12px !important}
+  @media (max-width:1280px){
+    .sp-form{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+    .sp-form > label:first-child,
+    .meal-target-btn,
+    .sp-form label:has(#suggSameChain),
+    .sp-form .gen-btn,
+    .sp-hint{grid-column:1/-1 !important}
+  }
+  @media (max-width:560px){
+    .sp-form{grid-template-columns:1fr !important}
+    .sp-form > *{grid-column:1/-1 !important}
+  }
+
+  .category h2,
+  .category h2 .count,
+  .item,
+  .item-kcal,
+  .qty button,
+  .qty input,
+  .panel,
+  .profile,
+  .profile-result,
+  .profile select,
+  .profile input,
+  .nutrient,
+  .pfc-compare,
+  .total-kcal,
+  .target-bar,
+  .combo-card,
+  .combo-card li,
+  .combo-kcal,
+  .apply-btn,
+  .sp-empty,
+  .footer-warn,
+  .data-source,
+  .options-pop,
+  .mobile-search-input{
+    border-radius:12px !important;
+  }
+  .chain-tag{border-radius:6px !important}
+  .panel h2{border-radius:12px 12px 0 0 !important}
+  .auto-btn,.chain-btn,.cat-btn,.reset,.options-btn,.mobile-bar button{border-radius:999px !important}
+
+  /* Suggest panel UX cleanup: fewer lines, sticky action, no accidental close. */
+  .suggest-panel{
+    border:2px solid var(--pop-red) !important;
+    border-radius:18px !important;
+    box-shadow:0 8px 0 rgba(132,32,25,.16) !important;
+    background:var(--pop-paper) !important;
+  }
+  .suggest-panel::after{display:none !important}
+  .sp-head{
+    border-bottom:0 !important;
+    box-shadow:none !important;
+    padding:15px 18px !important;
+  }
+  .sp-form{
+    border-bottom:0 !important;
+    background:rgba(255,248,230,.82) !important;
+    padding:16px 18px 10px !important;
+  }
+  .sp-form > label:first-child,
+  .meal-target-btn,
+  .sp-form label:has(input[type=checkbox]){
+    border-width:2px !important;
+    box-shadow:none !important;
+  }
+  .sp-form > label:first-child::before{box-shadow:none !important}
+  .sp-hint{
+    border:0 !important;
+    background:rgba(255,255,255,.72) !important;
+    box-shadow:none !important;
+    color:rgba(74,40,20,.82) !important;
+  }
+  .sp-actionbar{
+    position:sticky;
+    bottom:14px;
+    z-index:40;
+    display:flex;
+    justify-content:center;
+    padding:10px 18px 12px;
+    background:linear-gradient(180deg, rgba(255,248,230,0), var(--pop-paper) 34%, var(--pop-paper));
+  }
+  .sp-actionbar .gen-btn{
+    width:min(100%,420px);
+    min-height:52px;
+    border-radius:999px !important;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    background:var(--pop-red);
+    color:var(--cream-light);
+    border:2px solid var(--pop-red-dark) !important;
+    box-shadow:0 4px 0 var(--pop-red-dark) !important;
+    font-size:18px;
+    font-weight:900;
+    white-space:nowrap;
+  }
+  .sp-actionbar .gen-btn:hover{background:var(--pop-red-dark)}
+  .sp-results{
+    padding-top:8px !important;
+  }
+  .combo-card{
+    border-width:2px !important;
+    box-shadow:0 4px 0 rgba(74,40,20,.18) !important;
+  }
+  .combo-card::before{height:6px !important}
+  .combo-head{border-bottom:1px solid rgba(207,43,34,.34) !important}
+  .combo-card li{border:0 !important;background:rgba(255,240,201,.72) !important}
+  .combo-stats{border-top:0 !important;background:rgba(255,240,201,.72);border-radius:10px;padding:8px !important}
+  @media (max-width:960px){
+    .sp-actionbar{bottom:calc(70px + env(safe-area-inset-bottom));padding-left:14px;padding-right:14px}
+  }
+
+  /* Floating generate action stays available while the suggestion panel is open. */
+  .gen-float{
+    position:fixed;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%);
+    z-index:160;
+    width:min(420px,calc(100vw - 32px));
+    min-height:52px;
+    border-radius:999px;
+    background:var(--pop-red);
+    color:var(--cream-light);
+    border:2px solid var(--pop-red-dark);
+    box-shadow:0 5px 0 var(--pop-red-dark), 0 10px 24px rgba(74,40,20,.18);
+    font-family:"Bebas Neue","Anton",sans-serif;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:1.2px;
+    cursor:pointer;
+  }
+  .gen-float[hidden]{display:none}
+  .gen-float:hover{background:var(--pop-red-dark)}
+  @media (max-width:960px){
+    .gen-float{bottom:calc(72px + env(safe-area-inset-bottom));width:min(360px,calc(100vw - 28px))}
+  }
+
+  /* Final fixed generate bar: full-width, attached above the calorie bar. */
+  .sp-form .gen-btn,
+  .sp-actionbar{display:none !important}
+  .gen-float{
+    position:fixed !important;
+    left:0 !important;
+    right:0 !important;
+    bottom:0 !important;
+    transform:none !important;
+    z-index:160 !important;
+    width:100% !important;
+    min-height:58px !important;
+    border-radius:0 !important;
+    border:0 !important;
+    background:var(--pop-red) !important;
+    color:var(--cream-light) !important;
+    box-shadow:0 -6px 18px rgba(74,40,20,.24) !important;
+    font-family:"Bebas Neue","Anton",sans-serif;
+    font-size:18px !important;
+    font-weight:900;
+    letter-spacing:1.2px;
+  }
+  .gen-float[hidden]{display:none !important}
+  .gen-float:hover{background:var(--pop-red-dark) !important}
+  .auto-btn[aria-expanded="true"]{
+    opacity:.52;
+    background:var(--cream-light) !important;
+    color:var(--pop-red-dark) !important;
+    border-color:#d98b84 !important;
+    box-shadow:1px 1px 0 #c8928d !important;
+    transform:none !important;
+  }
+  .auto-btn[aria-expanded="true"] img{opacity:.7;filter:none !important}
+  body.suggest-active{padding-bottom:78px}
+  @media (max-width:960px){
+    .gen-float{
+      bottom:calc(56px + env(safe-area-inset-bottom)) !important;
+      min-height:56px !important;
+      padding-bottom:0 !important;
+    }
+    body.suggest-active{padding-bottom:calc(132px + env(safe-area-inset-bottom)) !important}
+  }
+
+  /* Align fixed generate bar flush with the calorie bar and match select buttons. */
+  .gen-float{
+    bottom:0 !important;
+    min-height:58px !important;
+    border-top:3px solid var(--pop-red-dark) !important;
+    border-bottom:3px solid var(--pop-red-dark) !important;
+    box-shadow:0 -4px 0 var(--pop-red-dark), 0 -10px 18px rgba(74,40,20,.16) !important;
+    background:var(--pop-red) !important;
+  }
+  @media (max-width:960px){
+    .gen-float{
+      bottom:calc(52px + env(safe-area-inset-bottom)) !important;
+      min-height:56px !important;
+    }
+    body.suggest-active{padding-bottom:calc(128px + env(safe-area-inset-bottom)) !important}
+  }
+  @media (max-width:480px){
+    .gen-float{bottom:calc(50px + env(safe-area-inset-bottom)) !important}
+  }
+
+  /* Playful cartoon button pass inspired by the referenced animated style. */
+  .auto-btn,
+  .gen-float,
+  .sp-actionbar .gen-btn,
+  .apply-btn,
+  .welcome-go{
+    position:relative;
+    isolation:isolate;
+    overflow:hidden;
+    transform-origin:center bottom;
+  }
+  .auto-btn::before,
+  .gen-float::before,
+  .sp-actionbar .gen-btn::before,
+  .apply-btn::before,
+  .welcome-go::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    width:72px;
+    height:72px;
+    left:-22px;
+    top:50%;
+    border-radius:42% 58% 54% 46% / 48% 42% 58% 52%;
+    background:var(--pop-yellow);
+    opacity:.9;
+    transform:translateY(-50%);
+    animation:buttonBlob 5.4s ease-in-out infinite;
+  }
+  .auto-btn::after,
+  .gen-float::after,
+  .sp-actionbar .gen-btn::after,
+  .apply-btn::after,
+  .welcome-go::after{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    left:-18%;
+    top:54%;
+    width:136%;
+    height:7px;
+    background:rgba(255,255,255,.86);
+    transform:rotate(-8deg);
+    box-shadow:2px 2px 0 rgba(132,32,25,.42);
+    animation:buttonSlash 4.6s ease-in-out infinite reverse;
+  }
+  .auto-btn:hover,
+  .gen-float:hover,
+  .sp-actionbar .gen-btn:hover,
+  .apply-btn:hover,
+  .welcome-go:hover{
+    animation:buttonWiggle .32s ease-in-out;
+  }
+  .auto-btn:active,
+  .gen-float:active,
+  .sp-actionbar .gen-btn:active,
+  .apply-btn:active,
+  .welcome-go:active{
+    transform:translateY(4px) scale(.985) !important;
+    box-shadow:0 1px 0 var(--pop-red-dark) !important;
+  }
+  .auto-btn img{position:relative;z-index:1;animation:buttonIconBob 2.8s ease-in-out infinite}
+  .chain-btn.active,
+  .cat-btn.active,
+  .mobile-bar button,
+  .options-btn[aria-expanded="true"]{
+    transition:transform .14s ease, box-shadow .14s ease, background-color .14s ease;
+  }
+  .chain-btn.active:hover,
+  .cat-btn.active:hover,
+  .mobile-bar button:hover,
+  .options-btn[aria-expanded="true"]:hover{
+    animation:buttonWiggle .28s ease-in-out;
+  }
+  @keyframes buttonBlob{
+    0%,100%{transform:translate(-4px,-50%) scale(1,1) rotate(0deg)}
+    18%{transform:translate(18px,-46%) scale(1.12,.88) rotate(8deg)}
+    42%{transform:translate(46px,-58%) scale(.82,1.22) rotate(-10deg)}
+    62%{transform:translate(28px,-45%) scale(1.05,.95) rotate(5deg)}
+    82%{transform:translate(5px,-54%) scale(.94,1.08) rotate(-5deg)}
+  }
+  @keyframes buttonSlash{
+    0%,100%{transform:translateX(-3%) rotate(-8deg)}
+    28%{transform:translateX(7%) rotate(9deg)}
+    55%{transform:translateX(0) rotate(2deg)}
+    82%{transform:translateX(-8%) rotate(-14deg)}
+  }
+  @keyframes buttonWiggle{
+    0%,100%{transform:translateY(0) rotate(0)}
+    30%{transform:translateY(-2px) rotate(-1.2deg)}
+    65%{transform:translateY(1px) rotate(1deg)}
+  }
+  @keyframes buttonIconBob{
+    0%,100%{transform:translateY(0) rotate(-2deg)}
+    50%{transform:translateY(-2px) rotate(3deg)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .auto-btn::before,
+    .gen-float::before,
+    .sp-actionbar .gen-btn::before,
+    .apply-btn::before,
+    .welcome-go::before,
+    .auto-btn::after,
+    .gen-float::after,
+    .sp-actionbar .gen-btn::after,
+    .apply-btn::after,
+    .welcome-go::after,
+    .auto-btn img{animation:none !important}
+  }
+
+  /* Button polish: keep the playful motion, move decoration away from the label. */
+  .auto-btn,
+  .gen-float,
+  .apply-btn,
+  .welcome-go{
+    text-shadow:1px 1px 0 rgba(80,28,19,.32);
+  }
+  .auto-btn::before,
+  .gen-float::before,
+  .apply-btn::before,
+  .welcome-go::before{
+    z-index:0;
+    width:84px;
+    height:84px;
+    left:-30px;
+    top:78%;
+    opacity:.9;
+    background:var(--pop-yellow);
+  }
+  .auto-btn::after,
+  .gen-float::after,
+  .apply-btn::after,
+  .welcome-go::after{
+    z-index:0;
+    left:8%;
+    right:8%;
+    top:auto;
+    bottom:9px;
+    height:5px;
+    border-radius:99px;
+    opacity:.72;
+    background:rgba(255,246,205,.78);
+    transform-origin:center;
+  }
+  .auto-btn > *,
+  .gen-float > *,
+  .apply-btn > *,
+  .welcome-go > *{
+    position:relative;
+    z-index:1;
+  }
+  .gen-float::before{
+    width:128px;
+    height:128px;
+    left:-52px;
+    top:50%;
+  }
+  .gen-float::after{
+    left:22%;
+    right:22%;
+    bottom:11px;
+  }
+  .apply-btn::after{
+    bottom:6px;
+    height:4px;
+  }
+  .auto-btn[aria-expanded="true"]::before,
+  .auto-btn[aria-expanded="true"]::after{
+    opacity:.18;
+  }
+
+  /* Animated poster background based on rotating SVG blobs. */
+  html{background:#fbebc9}
+  body{
+    position:relative;
+    min-height:100vh;
+    background-color:transparent !important;
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.075) 1px, transparent 1.1px) !important;
+    background-size:14px 14px !important;
+  }
+  .motion-bg{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    pointer-events:none;
+    background:#fbebc9;
+  }
+  .motion-bg svg{
+    display:block;
+    width:100%;
+    height:100%;
+  }
+  .motion-bg path{
+    transform-box:view-box;
+    will-change:transform;
+  }
+  .motion-bg .blob-coral-main{
+    fill:#fc9a7a;
+    opacity:.58;
+    transform-origin:16px 24px;
+    animation:bgBlobSpin 34s linear infinite;
+  }
+  .motion-bg .blob-green-top{
+    fill:#93cda2;
+    opacity:.54;
+    transform-origin:25px 18px;
+    animation:bgBlobSpinReverse 24s linear infinite;
+  }
+  .motion-bg .blob-green-bottom{
+    fill:#93cda2;
+    opacity:.46;
+    transform-origin:84px 88px;
+    animation:bgBlobSpin 38s linear infinite;
+  }
+  .motion-bg .blob-coral-bottom{
+    fill:#fc9a7a;
+    opacity:.5;
+    transform-origin:82px 82px;
+    animation:bgBlobSpinReverse 28s linear infinite;
+  }
+  header.hero{
+    background:rgba(255,245,221,.86) !important;
+  }
+  .controls-sticky{
+    background-color:#fbebc9 !important;
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.075) 1px, transparent 1.1px) !important;
+    background-size:14px 14px !important;
+  }
+  @keyframes bgBlobSpin{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+  }
+  @keyframes bgBlobSpinReverse{
+    from{transform:rotate(360deg)}
+    to{transform:rotate(0deg)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .motion-bg path{animation:none !important}
+  }
+
+  /* Quiet comic direction: red push buttons + yellow dot poster background. */
+  :root{
+    --comic-yellow:#ffea64;
+    --comic-yellow-dot:#fddd50;
+    --comic-red:#e63838;
+    --comic-red-dark:#a22929;
+    --comic-black:#1a1208;
+    --comic-paper:#fff5dd;
+  }
+  .motion-bg{display:none !important}
+  html{background:var(--comic-yellow) !important}
+  body{
+    background-color:var(--comic-yellow) !important;
+    background-image:
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%),
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%) !important;
+    background-size:20px 20px !important;
+    background-position:0 0,10px 10px !important;
+  }
+  header.hero{
+    background:rgba(255,245,221,.9) !important;
+  }
+  .controls-sticky{
+    background-color:var(--comic-yellow) !important;
+    background-image:
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%),
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%) !important;
+    background-size:20px 20px !important;
+    background-position:0 0,10px 10px !important;
+  }
+  .auto-btn::before,
+  .auto-btn::after,
+  .gen-float::before,
+  .gen-float::after,
+  .sp-actionbar .gen-btn::before,
+  .sp-actionbar .gen-btn::after,
+  .apply-btn::before,
+  .apply-btn::after,
+  .welcome-go::before,
+  .welcome-go::after{
+    content:none !important;
+    display:none !important;
+    animation:none !important;
+  }
+  .chain-btn,
+  .cat-btn,
+  .reset,
+  .options-btn,
+  .variant-toggle,
+  .meal-target-btn,
+  .sp-form .gen-btn,
+  .auto-btn,
+  .gen-float,
+  .apply-btn,
+  .welcome-go,
+  .mobile-bar button,
+  .qty button,
+  .sp-close{
+    font-family:"M PLUS 1p","Noto Sans JP",sans-serif !important;
+    font-weight:900 !important;
+    letter-spacing:0 !important;
+    text-shadow:none !important;
+    animation:none !important;
+    transform-origin:center !important;
+    transition:transform .08s ease, box-shadow .08s ease, background-color .08s ease, color .08s ease, border-color .08s ease !important;
+  }
+  .auto-btn img{animation:none !important}
+  .chain-btn,
+  .cat-btn,
+  .reset,
+  .options-btn,
+  .variant-toggle,
+  .meal-target-btn{
+    background:var(--comic-paper) !important;
+    color:var(--comic-red-dark) !important;
+    border:3px solid var(--comic-black) !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.95), 2px 2px 0 var(--comic-black) !important;
+  }
+  .auto-btn,
+  .sp-form .gen-btn,
+  .apply-btn,
+  .welcome-go,
+  .sp-close{
+    background:var(--comic-red) !important;
+    color:#fff !important;
+    border:3px solid var(--comic-black) !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.92), 2px 2px 0 var(--comic-black) !important;
+    -webkit-text-stroke:.035em var(--comic-black);
+    paint-order:stroke fill;
+  }
+  .chain-btn.active,
+  .cat-btn.active,
+  .variant-toggle:has(input:checked),
+  .options-btn[aria-expanded="true"],
+  .mobile-bar button{
+    background:var(--comic-red) !important;
+    color:#fff !important;
+    border:3px solid var(--comic-black) !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.9), 2px 2px 0 var(--comic-black) !important;
+    -webkit-text-stroke:.035em var(--comic-black);
+    paint-order:stroke fill;
+  }
+  .chain-btn:hover,
+  .cat-btn:hover,
+  .reset:hover,
+  .options-btn:hover,
+  .variant-toggle:hover,
+  .meal-target-btn:hover:not(:disabled),
+  .auto-btn:hover,
+  .sp-form .gen-btn:hover,
+  .apply-btn:hover,
+  .welcome-go:hover,
+  .mobile-bar button:hover{
+    transform:translateY(1px) !important;
+    border-color:var(--comic-black) !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.92), 1px 1px 0 var(--comic-black) !important;
+  }
+  .chain-btn:active,
+  .cat-btn:active,
+  .reset:active,
+  .options-btn:active,
+  .variant-toggle:active,
+  .meal-target-btn:active:not(:disabled),
+  .auto-btn:active,
+  .sp-form .gen-btn:active,
+  .apply-btn:active,
+  .welcome-go:active,
+  .mobile-bar button:active{
+    transform:translateY(3px) !important;
+    background:var(--comic-red-dark) !important;
+    color:#f0f0f0 !important;
+    border-color:transparent !important;
+    box-shadow:inset 3px 3px 0 var(--comic-black), 1px 1px 0 var(--comic-black) !important;
+  }
+  .chain-btn:not(.active):active,
+  .cat-btn:not(.active):active,
+  .reset:active,
+  .options-btn:not([aria-expanded="true"]):active,
+  .variant-toggle:not(:has(input:checked)):active,
+  .meal-target-btn:active:not(:disabled){
+    background:#f7d95c !important;
+    color:var(--comic-black) !important;
+    -webkit-text-stroke:0;
+  }
+  .auto-btn[aria-expanded="true"]{
+    opacity:.62;
+    background:var(--comic-paper) !important;
+    color:var(--comic-red-dark) !important;
+    border-color:var(--comic-black) !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.92), 2px 2px 0 rgba(26,18,8,.55) !important;
+    -webkit-text-stroke:0;
+  }
+  .auto-btn[aria-expanded="true"] img{
+    opacity:.75;
+    filter:none !important;
+  }
+  .gen-float{
+    background:var(--comic-red) !important;
+    color:#fff !important;
+    border:0 !important;
+    border-top:3px solid var(--comic-black) !important;
+    border-bottom:3px solid var(--comic-black) !important;
+    border-radius:0 !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.9), 0 -4px 0 var(--comic-black), 0 -10px 16px rgba(26,18,8,.18) !important;
+    -webkit-text-stroke:.035em var(--comic-black);
+    paint-order:stroke fill;
+  }
+  .gen-float:hover{
+    background:var(--comic-red) !important;
+    transform:none !important;
+    box-shadow:inset 1px 1px 0 rgba(255,255,255,.9), 0 -4px 0 var(--comic-black), 0 -10px 16px rgba(26,18,8,.18) !important;
+  }
+  .gen-float:active{
+    background:var(--comic-red-dark) !important;
+    transform:translateY(2px) !important;
+    box-shadow:inset 3px 3px 0 var(--comic-black), 0 -2px 0 var(--comic-black) !important;
+  }
+  .cat-btn img,
+  .auto-btn img{
+    filter:none !important;
+  }
+  .meal-target-btn:disabled{
+    opacity:.48;
+    background:#f1dfaa !important;
+    color:rgba(26,18,8,.62) !important;
+    -webkit-text-stroke:0;
+  }
+
+  /* Fixed suggestion button: food icons pop once when the bar appears. */
+  .gen-float{
+    overflow:visible !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    gap:10px !important;
+  }
+  .gen-float-label{
+    position:relative;
+    z-index:4;
+  }
+  .gen-float-icons{
+    position:absolute !important;
+    top:50%;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    pointer-events:none;
+    z-index:5;
+    transform:translateY(-50%);
+  }
+  .gen-float-icons-left{right:calc(50% + 62px)}
+  .gen-float-icons-right{left:calc(50% + 62px)}
+  .gen-float-icons img{
+    width:34px;
+    height:34px;
+    object-fit:contain;
+    opacity:0;
+    filter:drop-shadow(2px 2px 0 rgba(26,18,8,.38));
+  }
+  .gen-float:not([hidden]) .gen-float-icons-left img{animation:floatFoodPopLeft .56s cubic-bezier(.16,1.35,.36,1) both}
+  .gen-float:not([hidden]) .gen-float-icons-right img{animation:floatFoodPopRight .56s cubic-bezier(.16,1.35,.36,1) both}
+  .gen-float:not([hidden]) .gen-float-icons-left img:nth-child(1){animation-delay:.08s}
+  .gen-float:not([hidden]) .gen-float-icons-left img:nth-child(2){animation-delay:.18s}
+  .gen-float:not([hidden]) .gen-float-icons-right img:nth-child(1){animation-delay:.13s}
+  .gen-float:not([hidden]) .gen-float-icons-right img:nth-child(2){animation-delay:.24s}
+  @keyframes floatFoodPopLeft{
+    0%{opacity:0;transform:translate(26px,24px) scale(.3) rotate(18deg)}
+    72%{opacity:1;transform:translate(-6px,-7px) scale(1.12) rotate(-9deg)}
+    100%{opacity:1;transform:translate(0,0) scale(1) rotate(-4deg)}
+  }
+  @keyframes floatFoodPopRight{
+    0%{opacity:0;transform:translate(-26px,24px) scale(.3) rotate(-18deg)}
+    72%{opacity:1;transform:translate(6px,-7px) scale(1.12) rotate(9deg)}
+    100%{opacity:1;transform:translate(0,0) scale(1) rotate(4deg)}
+  }
+
+  /* Category icons on menu and suggestion cards. */
+  .cat-mini-icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+    width:30px;
+    height:30px;
+    border:2px solid var(--comic-black);
+    border-radius:999px;
+    background:var(--comic-paper);
+    box-shadow:1px 1px 0 var(--comic-black);
+  }
+  .cat-mini-icon img{
+    display:block;
+    width:22px;
+    height:22px;
+    object-fit:contain;
+  }
+  .item-cat-icon{
+    width:32px;
+    height:32px;
+    margin-left:-2px;
+  }
+  .item-cat-icon img{
+    width:24px;
+    height:24px;
+  }
+  .combo-cat-icons{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    flex:1 1 auto;
+    min-width:0;
+  }
+  .combo-cat-icon{
+    width:28px;
+    height:28px;
+  }
+  .combo-cat-icon img{
+    width:20px;
+    height:20px;
+  }
+  .combo-line-icon{
+    width:24px;
+    height:24px;
+    border-width:2px;
+    box-shadow:none;
+    background:#fff;
+  }
+  .combo-line-icon img{
+    width:18px;
+    height:18px;
+  }
+  .combo-item-name{
+    flex:1 1 auto;
+    min-width:0;
+    line-height:1.35;
+  }
+  .combo-card li em{
+    flex:0 0 auto;
+    margin-left:4px !important;
+  }
+  @media (max-width:420px){
+    .gen-float-icons{gap:5px}
+    .gen-float-icons-left{right:calc(50% + 54px)}
+    .gen-float-icons-right{left:calc(50% + 54px)}
+    .gen-float-icons img{width:30px;height:30px}
+    .item-cat-icon{width:28px;height:28px}
+    .item-cat-icon img{width:20px;height:20px}
+    .combo-cat-icon{width:24px;height:24px}
+    .combo-cat-icon img{width:17px;height:17px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .gen-float-icons img{animation:none !important;opacity:1}
+  }
+
+  /* Keep the soft animated blob base only behind the main visual. */
+  header.hero{
+    position:relative !important;
+    overflow:hidden !important;
+    background:#fbebc9 !important;
+  }
+  .hero-motion-bg{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+    pointer-events:none;
+    background:#fbebc9;
+  }
+  .hero-motion-bg::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image:radial-gradient(circle at 1px 1px, rgba(132,32,25,.055) 1px, transparent 1.1px);
+    background-size:14px 14px;
+    opacity:.7;
+  }
+  .hero-motion-bg svg{
+    position:absolute;
+    inset:0;
+    display:block;
+    width:100%;
+    height:100%;
+  }
+  .hero-motion-bg path{
+    transform-box:view-box;
+    will-change:transform;
+  }
+  .hero-motion-bg .hero-blob-coral-main{
+    fill:#fc9a7a;
+    opacity:.58;
+    transform-origin:18px 24px;
+    animation:bgBlobSpin 34s linear infinite;
+  }
+  .hero-motion-bg .hero-blob-green-top{
+    fill:#93cda2;
+    opacity:.56;
+    transform-origin:26px 18px;
+    animation:bgBlobSpinReverse 24s linear infinite;
+  }
+  .hero-motion-bg .hero-blob-green-bottom{
+    fill:#93cda2;
+    opacity:.46;
+    transform-origin:84px 88px;
+    animation:bgBlobSpin 38s linear infinite;
+  }
+  .hero-motion-bg .hero-blob-coral-bottom{
+    fill:#fc9a7a;
+    opacity:.5;
+    transform-origin:82px 82px;
+    animation:bgBlobSpinReverse 28s linear infinite;
+  }
+  header.hero > picture,
+  header.hero .hero-tag,
+  header.hero .hero-updated{
+    position:relative;
+    z-index:1;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .hero-motion-bg path{animation:none !important}
+  }
+
+  /* Category icons inside menu/proposal cards are labels, not buttons. */
+  .item-cat-icon,
+  .combo-cat-icon,
+  .combo-line-icon{
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+  .item-cat-icon img,
+  .combo-cat-icon img,
+  .combo-line-icon img,
+  .category h2 img{
+    filter:none !important;
+  }
+  .item-cat-icon{
+    width:34px !important;
+    height:34px !important;
+    margin-left:-4px !important;
+    margin-right:-3px !important;
+  }
+  .item-cat-icon img{
+    width:32px !important;
+    height:32px !important;
+  }
+  .combo-cat-icon{
+    width:32px !important;
+    height:32px !important;
+  }
+  .combo-cat-icon img{
+    width:29px !important;
+    height:29px !important;
+  }
+  .combo-line-icon{
+    width:28px !important;
+    height:28px !important;
+    margin-left:-3px !important;
+    margin-right:-2px !important;
+  }
+  .combo-line-icon img{
+    width:26px !important;
+    height:26px !important;
+  }
+  .combo-card li{
+    gap:5px !important;
+  }
+  @media (max-width:420px){
+    .item-cat-icon{width:32px !important;height:32px !important}
+    .item-cat-icon img{width:30px !important;height:30px !important}
+    .combo-cat-icon{width:30px !important;height:30px !important}
+    .combo-cat-icon img{width:27px !important;height:27px !important}
+    .combo-line-icon{width:27px !important;height:27px !important}
+    .combo-line-icon img{width:25px !important;height:25px !important}
+  }
+
+  /* MV and content share the yellow dot base; slow circles remain on top. */
+  header.hero{
+    background:var(--comic-yellow) !important;
+  }
+  .hero-motion-bg{
+    background:var(--comic-yellow) !important;
+  }
+  .hero-motion-bg::after{
+    background-image:
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%),
+      radial-gradient(var(--comic-yellow-dot) 20%, transparent 21%) !important;
+    background-size:20px 20px !important;
+    background-position:0 0,10px 10px !important;
+    opacity:1 !important;
+  }
+  .hero-motion-bg .hero-blob-coral-main{opacity:.42}
+  .hero-motion-bg .hero-blob-green-top{opacity:.42}
+  .hero-motion-bg .hero-blob-green-bottom{opacity:.36}
+  .hero-motion-bg .hero-blob-coral-bottom{opacity:.38}
+
+  /* Make sticky category icons read larger without increasing button height. */
+  .controls-sticky .cat-btn:not([data-cat="all"]){
+    padding:2px 10px !important;
+    line-height:1 !important;
+  }
+  .controls-sticky .cat-btn:not([data-cat="all"]) img{
+    width:26px !important;
+    height:26px !important;
+    margin-right:0 !important;
+  }
+  @media (max-width:768px){
+    .controls-sticky .cat-btn:not([data-cat="all"]){
+      padding:4px 10px !important;
+    }
+    .controls-sticky .cat-btn:not([data-cat="all"]) img{
+      width:24px !important;
+      height:24px !important;
+    }
+  }
+  @media (max-width:480px){
+    .controls-sticky .cat-btn:not([data-cat="all"]){
+      padding:2px 9px !important;
+    }
+    .controls-sticky .cat-btn:not([data-cat="all"]) img{
+      width:20px !important;
+      height:20px !important;
+    }
+  }
+  @media (max-width:380px){
+    .controls-sticky .cat-btn:not([data-cat="all"]){
+      padding:1px 8px !important;
+    }
+  .controls-sticky .cat-btn:not([data-cat="all"]) img{
+    width:18px !important;
+    height:18px !important;
+  }
+  }
+
+  /* Kcal typography: keep numbers loud and make the unit clearly smaller. */
+  .kcal-pair,
+  .item-kcal,
+  .sel-row .kcal,
+  .combo-kcal,
+  .meal-target-kcal{
+    display:inline-flex;
+    align-items:baseline;
+    gap:2px;
+    white-space:nowrap;
+  }
+  .item-kcal small,
+  .sel-row .kcal small,
+  .combo-kcal small,
+  .total-kcal small,
+  .mobile-bar-kcal small,
+  .meal-target-kcal small,
+  .kcal-pair small,
+  .kcal-unit{
+    font-family:"M PLUS 1p","Noto Sans JP",sans-serif !important;
+    font-weight:900 !important;
+    letter-spacing:0 !important;
+    line-height:1 !important;
+    opacity:.8;
+  }
+  .item-kcal small{font-size:.56em !important;margin-left:1px}
+  .sel-row .kcal small{font-size:.58em !important;margin-left:1px}
+  .combo-kcal small{font-size:.46em !important;margin-left:2px}
+  .total-kcal small{font-size:.32em !important;margin-left:.14em}
+  .mobile-bar-kcal small{font-size:.44em !important;margin-left:.12em}
+  .meal-target-kcal small{font-size:.6em !important;margin-left:1px}
+  .kcal-pair small,
+  .kcal-unit{font-size:.62em !important;margin-left:2px}
+
+  /* PC full-width suggestion panel: prevent equal grid columns from stretching controls. */
+  .suggest-panel .sp-form{
+    display:flex !important;
+    flex-wrap:wrap !important;
+    align-items:center !important;
+    gap:12px !important;
+    padding:16px 18px 12px !important;
+  }
+  .suggest-panel .sp-form > label:first-child{
+    flex:1 1 284px !important;
+    max-width:320px;
+    min-height:64px !important;
+    display:grid !important;
+    grid-template-columns:max-content minmax(104px,1fr) auto !important;
+    align-items:center !important;
+    gap:10px !important;
+    padding:12px 14px !important;
+    line-height:1.35 !important;
+    white-space:nowrap !important;
+    word-break:keep-all !important;
+  }
+  .suggest-panel .sp-form > label:first-child input[type=number]{
+    width:100% !important;
+    min-width:104px !important;
+    font-size:26px !important;
+  }
+  .suggest-panel .meal-target-btn{
+    flex:0 1 230px !important;
+    max-width:260px;
+    min-height:64px !important;
+    align-self:center !important;
+  }
+  .suggest-panel .sp-form label:has(input[type=checkbox]){
+    flex:0 0 auto !important;
+    min-width:112px !important;
+    min-height:46px !important;
+    align-self:center !important;
+    padding:9px 16px !important;
+    line-height:1.2 !important;
+  }
+  .suggest-panel .sp-form label:has(#suggSameChain){
+    flex:1 1 260px !important;
+    max-width:360px;
+    min-width:220px !important;
+  }
+  .suggest-panel .sp-hint{
+    flex:1 0 100% !important;
+    margin-top:0 !important;
+  }
+  @media (max-width:560px){
+    .suggest-panel .sp-form > label:first-child,
+    .suggest-panel .meal-target-btn,
+    .suggest-panel .sp-form label:has(input[type=checkbox]){
+      flex:1 0 100% !important;
+      max-width:none !important;
+    }
+    .suggest-panel .sp-form label:has(input[type=checkbox]){
+      justify-content:flex-start !important;
+    }
+  }
 </style>
 </head>
 <body>
 
+<div class="motion-bg" aria-hidden="true">
+  <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <path class="blob-coral-main" d="M28-14C13-22-9-16-17 1c-10 21 5 52 27 58 19 5 43-7 48-27 5-18-12-37-30-46Z"/>
+    <path class="blob-green-top" d="M22-7C10-11-5-6-10 6c-6 15 4 34 20 38 16 5 34-6 35-22 2-13-10-25-23-29Z"/>
+    <path class="blob-green-bottom" d="M119 62c-13-12-35-13-50-4-19 12-24 40-8 57 17 18 50 12 62-8 9-15 8-34-4-45Z"/>
+    <path class="blob-coral-bottom" d="M107 78c-10-9-27-8-37 1-11 10-12 29-1 39 12 12 36 7 43-8 6-11 4-24-5-32Z"/>
+  </svg>
+</div>
+
 <header class="hero">
+  <div class="hero-motion-bg" aria-hidden="true">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" focusable="false">
+      <path class="hero-blob-coral-main" d="M28-14C13-22-9-16-17 1c-10 21 5 52 27 58 19 5 43-7 48-27 5-18-12-37-30-46Z"/>
+      <path class="hero-blob-green-top" d="M22-7C10-11-5-6-10 6c-6 15 4 34 20 38 16 5 34-6 35-22 2-13-10-25-23-29Z"/>
+      <path class="hero-blob-green-bottom" d="M119 62c-13-12-35-13-50-4-19 12-24 40-8 57 17 18 50 12 62-8 9-15 8-34-4-45Z"/>
+      <path class="hero-blob-coral-bottom" d="M107 78c-10-9-27-8-37 1-11 10-12 29-1 39 12 12 36 7 43-8 6-11 4-24-5-32Z"/>
+    </svg>
+  </div>
   <picture>
-    <source media="(max-width:768px)" srcset="assets/mv-sp.png">
-    <picture>
-      <source media="(min-width:769px)" srcset="assets/mv-pc.png">
-      <img src="assets/mv-sp.png" alt="BurgerCal — いろんなバーガーチェーンのカロリー比較" class="hero-mv">
-    </picture>
+    <source media="(min-width:769px)" srcset="assets/mv-pc.png">
+    <img src="assets/mv-sp.png" alt="BurgerCal — いろんなバーガーチェーンのカロリー比較" class="hero-mv">
   </picture>
   <p class="hero-tag">
     いろんなバーガーチェーンのメニューを比較してカロリー管理。
@@ -984,7 +2363,7 @@
       <div class="controls">
         <input type="text" class="search" placeholder="メニュー名で検索...">
         <div class="options-wrap">
-          <button class="options-btn" id="optionsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="optionsPop">⚙ オプション</button>
+          <button class="options-btn" id="optionsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="optionsPop">⚙ オプション<span class="options-badge" id="optionsBadge" hidden></span></button>
           <div class="options-pop" id="optionsPop" hidden role="dialog" aria-label="表示オプション">
             <label class="sort-axis" title="メニュー一覧の並び順を変更"><span>並び順</span><select id="sortAxis">
               <option value="default">標準（公式掲載順）</option>
@@ -1005,12 +2384,12 @@
 
     <div class="suggest-panel" id="suggestPanel" hidden>
       <div class="sp-head">
-        <h3>🤖 カロリー指定でおまかせ組み合わせ</h3>
+        <h3>カロリー指定でおまかせ組み合わせ</h3>
         <button class="sp-close" id="closeSuggest" aria-label="閉じる">×</button>
       </div>
       <div class="sp-form">
         <label>上限カロリー
-          <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> kcal
+          <input type="number" id="suggTarget" min="100" max="3000" step="50" value="800"> <small class="kcal-unit">kcal</small>
         </label>
         <button type="button" class="meal-target-btn" id="mealTargetBtn" title="プロフィールから1食分の目安カロリーを自動入力">🍽 一食の目安</button>
         <label><input type="checkbox" id="suggBurger" checked> バーガー</label>
@@ -1018,10 +2397,21 @@
         <label><input type="checkbox" id="suggDrink"> ドリンク</label>
         <label><input type="checkbox" id="suggDessert"> デザート</label>
         <label><input type="checkbox" id="suggSameChain" checked> 同じチェーンで揃える</label>
-        <button class="gen-btn" id="genSuggest">🎲 提案する</button>
+        <button class="gen-btn" id="genSuggest">提案する</button>
         <p class="sp-hint">※ 上限カロリー内で <b>PFCバランスが理想に近い組み合わせ</b>からランダム提案。押すたびに入れ替わります。</p>
       </div>
       <div class="sp-results" id="suggestResults"></div>
+      <button class="gen-float" id="genSuggestFloat" type="button" hidden>
+        <span class="gen-float-icons gen-float-icons-left" aria-hidden="true">
+          <img src="assets/burger.png" alt="">
+          <img src="assets/side.png" alt="">
+        </span>
+        <span class="gen-float-label">提案する</span>
+        <span class="gen-float-icons gen-float-icons-right" aria-hidden="true">
+          <img src="assets/drink.png" alt="">
+          <img src="assets/dessert.png" alt="">
+        </span>
+      </button>
     </div>
 
     <div id="menuArea"></div>
@@ -1057,15 +2447,15 @@
         </select>
       </label>
       <div class="profile-result">
-        1日の推奨カロリー: <b id="pfTarget">2,450</b> kcal<br>
-        <span class="profile-bmr">基礎代謝: <span id="pfBmr">1,400</span> kcal/日</span>
+        1日の推奨カロリー: <span class="kcal-pair"><b id="pfTarget">2,450</b><small>kcal</small></span><br>
+        <span class="profile-bmr">基礎代謝: <span class="kcal-pair"><span id="pfBmr">1,400</span><small>kcal/日</small></span></span>
       </div>
     </div>
 
     <h2>合計</h2>
     <div class="total-kcal" id="totalKcal">0<small>kcal</small></div>
     <div class="target-bar"><div id="targetBar" style="width:0%"></div></div>
-    <div class="target-info">1日推奨 <span id="targetKcalText">2,700</span>kcal の <span id="targetPct">0</span>%　<span id="mealHint"></span></div>
+    <div class="target-info">1日推奨 <span class="kcal-pair"><span id="targetKcalText">2,700</span><small>kcal</small></span> の <span id="targetPct">0</span>%　<span id="mealHint"></span></div>
 
     <div class="selected-list">
       <h3>選択中のアイテム</h3>
@@ -1080,7 +2470,7 @@
     </div>
 
     <div class="pfc-chart"><canvas id="pfcChart"></canvas></div>
-    <p class="default-note" id="defaultNote" hidden>💡 プロフィール未入力時の概算（2,200kcal想定）。プロフィール入力で個別化されます。</p>
+    <p class="default-note" id="defaultNote" hidden>💡 プロフィール未入力時の概算（2,200<small class="kcal-unit">kcal</small>想定）。プロフィール入力で個別化されます。</p>
     <div class="pfc-compare" id="pfcCompare">
       <div class="pfcc-head"><span>PFC比率</span><span class="ideal-note" id="pfccIdealNote">vs 理想 (13/25/60)</span></div>
       <div class="pfcc-row" data-macro="p">
@@ -1673,10 +3063,22 @@ const VARIANT_BURGERS = {
   ],
   kf: [],
 };
+const VARIANT_NAME_KEYWORDS = [
+  "ダブル",
+  "トリプル",
+  "ジュニア",
+  "Jr.",
+  "Jr",
+  "ソイ",
+  "スパイシー",
+  "菜摘",
+  "キッズ",
+  "チキン代替",
+];
 function isVariantItem(item){
   if(item.cat !== "バーガー") return false;
   const list = VARIANT_BURGERS[item.chain];
-  return !!list && list.includes(item.name);
+  return (!!list && list.includes(item.name)) || VARIANT_NAME_KEYWORDS.some(word => item.name.includes(word));
 }
 
 // ===== 状態 =====
@@ -1684,6 +3086,31 @@ const state = {
   chain:"all", cat:"all", q:"", selected:{}, showVariants:false, sort:"default",
   profile:{gender:"M", age:1, height:100, weight:20, act:"mid"}
 };
+
+const SORT_SHORT_LABELS = {
+  kcalDesc:"高kcal",
+  kcalAsc:"低kcal",
+  proteinDesc:"高P",
+  fatAsc:"低脂質",
+  saltAsc:"低塩",
+  balance:"PFC",
+};
+function updateOptionControls(){
+  const sortAxis = document.getElementById("sortAxis");
+  const variantToggle = document.getElementById("variantToggle");
+  const optionsBtn = document.getElementById("optionsBtn");
+  const optionsBadge = document.getElementById("optionsBadge");
+  if(sortAxis && sortAxis.value !== state.sort) sortAxis.value = state.sort;
+  if(variantToggle && variantToggle.checked !== state.showVariants) variantToggle.checked = state.showVariants;
+  if(!optionsBtn || !optionsBadge) return;
+  const active = [];
+  if(state.sort !== "default") active.push(SORT_SHORT_LABELS[state.sort] || "並び");
+  if(state.showVariants) active.push("派生");
+  optionsBadge.hidden = active.length === 0;
+  optionsBadge.textContent = active.length ? String(active.length) : "";
+  optionsBtn.classList.toggle("has-options", active.length > 0);
+  optionsBtn.title = active.length ? `表示オプション: ${active.join(" / ")}` : "表示オプション";
+}
 
 // ===== メニュー一覧の並び替え軸 =====
 function sortMenuItems(list, sortKey){
@@ -1778,6 +3205,18 @@ const CAT_ICONS = {
   "ドリンク": "assets/drink.png",
   "デザート": "assets/dessert.png",
 };
+function catIconHTML(cat, className="cat-mini-icon"){
+  const src = CAT_ICONS[cat];
+  if(!src) return "";
+  return `<span class="${className}" title="${cat}" aria-hidden="true"><img src="${src}" alt=""></span>`;
+}
+function comboCatIconsHTML(items){
+  const cats = [];
+  for(const item of items){
+    if(!cats.includes(item.cat)) cats.push(item.cat);
+  }
+  return `<div class="combo-cat-icons">${cats.map(cat=>catIconHTML(cat,"cat-mini-icon combo-cat-icon")).join("")}</div>`;
+}
 // 折りたたみ状態（モバイルのみで効く。バーガーは既定で開、それ以外は閉）
 const collapsedCats = new Set(["サイド","ドリンク","デザート"]);
 const isMobileViewport = () => window.matchMedia("(max-width:768px)").matches;
@@ -1814,11 +3253,12 @@ function renderMenu(){
         <div class="item ${sel?"selected "+i.chain:""}" data-key="${k}">
           <div class="item-head">
             <input type="checkbox" ${checked} data-key="${k}" aria-labelledby="${nameId}">
+            ${catIconHTML(i.cat,"cat-mini-icon item-cat-icon")}
             <span class="item-name" id="${nameId}">${i.name}</span>
             <span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span>
           </div>
           <div class="item-stats">
-            <span class="item-kcal">${i.kcal}kcal</span>
+            <span class="item-kcal">${i.kcal}<small>kcal</small></span>
             <span>P ${i.p}g</span><span>F ${i.f}g</span><span>C ${i.c}g</span><span>塩 ${i.s}g</span>
           </div>
           ${nutriBarsHTML(i.p,i.f,i.c,i.s,targets)}
@@ -2019,6 +3459,19 @@ function recalc(){
   }
 }
 
+function scrollToMenuCategory(cat){
+  requestAnimationFrame(()=>{
+    const sections = [...menuArea.querySelectorAll(".category")];
+    const target = cat === "all"
+      ? sections[0] || menuArea
+      : sections.find(sec => sec.dataset.cat === cat) || menuArea;
+    const sticky = document.querySelector(".controls-sticky");
+    const stickyHeight = sticky ? sticky.getBoundingClientRect().height : 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - stickyHeight - 12;
+    window.scrollTo({top:Math.max(0, top), behavior:"smooth"});
+  });
+}
+
 // ===== イベント =====
 document.querySelectorAll(".chain-btn").forEach(b=>{
   b.addEventListener("click",()=>{
@@ -2042,7 +3495,7 @@ document.querySelectorAll(".cat-btn").forEach(b=>{
       collapsedCats.delete(cat);
     }
     renderMenu();
-    window.scrollTo({top:0, behavior:"smooth"});
+    scrollToMenuCategory(cat);
   });
 });
 document.getElementById("mobileShowPanel").addEventListener("click",()=>{
@@ -2082,10 +3535,12 @@ mobileSearchInput.addEventListener("input", e => applySearchQuery(e.target.value
 })();
 document.getElementById("variantToggle").addEventListener("change",e=>{
   state.showVariants = e.target.checked;
+  updateOptionControls();
   renderMenu();
 });
 document.getElementById("sortAxis").addEventListener("change",e=>{
   state.sort = e.target.value;
+  updateOptionControls();
   renderMenu();
 });
 document.getElementById("resetBtn").addEventListener("click",()=>{
@@ -2243,14 +3698,27 @@ function renderCombos(){
       <div class="combo-card">
         <div class="combo-head">
           <span class="combo-rank">#${idx+1}</span>
+          ${comboCatIconsHTML(c.items)}
           <span class="combo-kcal">${c.kcal}<small>kcal</small></span>
         </div>
-        <ul>${c.items.map(i=>`<li><span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span> ${i.name}<em>${i.kcal}</em></li>`).join("")}</ul>
+        <ul>${c.items.map(i=>`<li>${catIconHTML(i.cat,"cat-mini-icon combo-line-icon")}<span class="chain-tag ${i.chain}">${chainLabel(i.chain)}</span><span class="combo-item-name">${i.name}</span><em>${i.kcal}</em></li>`).join("")}</ul>
         <div class="combo-stats">P ${tP.toFixed(1)} / F ${tF.toFixed(1)} / C ${tC.toFixed(1)} / 塩 ${tS.toFixed(1)}g</div>
         ${nutriBarsHTML(tP,tF,tC,tS,targets)}
         <button class="apply-btn" data-idx="${idx}">この組み合わせを選択</button>
       </div>`;
   }).join("");
+}
+
+function scrollToSuggestResults(){
+  const results = document.getElementById("suggestResults");
+  if(!results) return;
+  requestAnimationFrame(()=>{
+    const target = results.querySelector(".combo-card") || results;
+    const sticky = document.querySelector(".controls-sticky");
+    const stickyHeight = sticky ? sticky.getBoundingClientRect().height : 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - stickyHeight - 14;
+    window.scrollTo({top:Math.max(0, top), behavior:"smooth"});
+  });
 }
 
 function mealTargetKcal(){
@@ -2266,7 +3734,7 @@ function updateMealTargetBtn(){
     btn.textContent = "🍽 一食の目安（要プロフィール）";
   } else {
     btn.disabled = false;
-    btn.textContent = `🍽 一食の目安 ${v}kcal`;
+    btn.innerHTML = `🍽 一食の目安 <span class="meal-target-kcal">${v}<small>kcal</small></span>`;
   }
 }
 document.getElementById("mealTargetBtn").addEventListener("click",()=>{
@@ -2277,27 +3745,37 @@ document.getElementById("mealTargetBtn").addEventListener("click",()=>{
 
 document.getElementById("autoBtn").addEventListener("click",(e)=>{
   const panel = document.getElementById("suggestPanel");
-  panel.hidden = !panel.hidden;
-  e.currentTarget.setAttribute("aria-expanded", String(!panel.hidden));
+  const floatBtn = document.getElementById("genSuggestFloat");
   if(!panel.hidden){
-    updateMealTargetBtn();
-    if(!lastCombos.length){
-      // 推奨カロリーがあれば1食分を初期値に
-      const v = mealTargetKcal();
-      if(v) document.getElementById("suggTarget").value = v;
-      renderCombos();
-    }
-    // 下までスクロールしている時にパネルを開いても見落とさないよう、自動でスクロール
-    requestAnimationFrame(()=>{
-      panel.scrollIntoView({behavior:"smooth", block:"start"});
-    });
+    if(floatBtn) floatBtn.hidden = false;
+    panel.scrollIntoView({behavior:"smooth", block:"start"});
+    e.currentTarget.setAttribute("aria-expanded", "true");
+    return;
   }
+  panel.hidden = false;
+  if(floatBtn) floatBtn.hidden = false;
+  e.currentTarget.setAttribute("aria-expanded", "true");
+  updateMealTargetBtn();
+  if(!lastCombos.length){
+    const v = mealTargetKcal();
+    if(v) document.getElementById("suggTarget").value = v;
+    renderCombos();
+  }
+  requestAnimationFrame(()=>{
+    panel.scrollIntoView({behavior:"smooth", block:"start"});
+  });
 });
 document.getElementById("closeSuggest").addEventListener("click",()=>{
   document.getElementById("suggestPanel").hidden = true;
   document.getElementById("autoBtn").setAttribute("aria-expanded","false");
+  const floatBtn = document.getElementById("genSuggestFloat");
+  if(floatBtn) floatBtn.hidden = true;
 });
 document.getElementById("genSuggest").addEventListener("click", renderCombos);
+document.getElementById("genSuggestFloat")?.addEventListener("click",()=>{
+  renderCombos();
+  scrollToSuggestResults();
+});
 document.getElementById("suggestResults").addEventListener("click",e=>{
   const btn = e.target.closest(".apply-btn");
   if(!btn) return;
@@ -2499,6 +3977,7 @@ menuArea.addEventListener("change",e=>{
 });
 
 // 初期描画
+updateOptionControls();
 renderMenu(); recalc();
 </script>
 </body>

@@ -2525,7 +2525,7 @@
         </div>
         <label><input type="checkbox" id="suggSameChain" checked> 同じチェーンで揃える</label>
         <button class="gen-btn" id="genSuggest">提案する</button>
-        <p class="sp-hint">※ 上限カロリー内で <b>PFCバランスが理想に近い組み合わせ</b>からランダム提案。押すたびに入れ替わります。</p>
+        <p class="sp-hint">※ 上限カロリーになるべく近く、<b>PFCバランスが理想に近い組み合わせ</b>からランダム提案。押すたびに入れ替わります。</p>
       </div>
       <div class="sp-results" id="suggestResults"></div>
       <button class="gen-float" id="genSuggestFloat" type="button" hidden>
@@ -3715,11 +3715,14 @@ function generateCombos(){
     if(!state.showVariants && isVariantItem(i)) return false;
     return true;
   });
+  // 上限打ち切り(MAX_COMBOS/PER_BURGER_LIMIT)は列挙順の先頭に偏るため、
+  // カテゴリごとにシャッフルしてから列挙し、打ち切られても満遍なくサンプリングされるようにする。
+  const shuffleArr = a => { for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
   const byCat = {
-    "バーガー": opts.burger  ? pool.filter(i=>i.cat==="バーガー") : [null],
-    "サイド":   opts.side    ? [null, ...pool.filter(i=>i.cat==="サイド")]   : [null],
-    "ドリンク": opts.drink   ? [null, ...pool.filter(i=>i.cat==="ドリンク")] : [null],
-    "デザート": opts.dessert ? [null, ...pool.filter(i=>i.cat==="デザート")] : [null],
+    "バーガー": opts.burger  ? shuffleArr(pool.filter(i=>i.cat==="バーガー")) : [null],
+    "サイド":   opts.side    ? [null, ...shuffleArr(pool.filter(i=>i.cat==="サイド"))]   : [null],
+    "ドリンク": opts.drink   ? [null, ...shuffleArr(pool.filter(i=>i.cat==="ドリンク"))] : [null],
+    "デザート": opts.dessert ? [null, ...shuffleArr(pool.filter(i=>i.cat==="デザート"))] : [null],
   };
   // 必須カテゴリは null を含めない（バーガーが必須なら null なし）
   // 累積 kcal が target を超えた時点で内側ループに入らない早期枝刈りで計算量を圧縮。
@@ -3759,16 +3762,16 @@ function generateCombos(){
       }
     }
   }
-  // PFC比を理想（P15% / F25% / C60% = 「日本人の食事摂取基準」中央値）との偏差最小スコアでソート。
-  // 1食内のバランスが良いセットほどスコアが小さい。
-  combos.sort((a,b)=>{
-    const score = x => {
-      const tot = x.p*4 + x.f*9 + x.c*4;
-      if(!tot) return Infinity;
-      return Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60);
-    };
-    return score(a) - score(b);
-  });
+  // スコア = PFC偏差 + カロリー未消化ペナルティ（小さいほど良い）。
+  // PFC比は理想（P15% / F25% / C60% = 「日本人の食事摂取基準」中央値）との偏差。
+  // 未消化ペナルティがないと上限を上げても小さい組み合わせばかり上位に来るため、
+  // 上限に近いほどスコアが良くなる項を加える（係数1.2でPFC偏差より優勢になる程度）。
+  for(const x of combos){
+    const tot = x.p*4 + x.f*9 + x.c*4;
+    const pfc = tot ? Math.abs(x.p*4/tot - 0.15) + Math.abs(x.f*9/tot - 0.25) + Math.abs(x.c*4/tot - 0.60) : Infinity;
+    x.score = pfc + (1 - x.kcal/target) * 1.2;
+  }
+  combos.sort((a,b)=>a.score - b.score);
   // バランス上位プールから Fisher-Yates でシャッフル抽出。「提案する」連打で別の組合せが出るが質は保つ。
   const POOL_SIZE = 80;
   const headSize = Math.min(POOL_SIZE, combos.length);
